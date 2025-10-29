@@ -17,7 +17,7 @@ const BoardSection: React.FC = () => {
           <div className={`${s.card} ${s.card1}`}>
             <div className={s.imageWrap}>
               <Image
-                src="/image.png"
+                src="/image1.png"
                 alt="BFB training"
                 fill
                 className={s.image}

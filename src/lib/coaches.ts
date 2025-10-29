@@ -280,7 +280,31 @@ export const mapCoachToUi = (item: CoachApi): CoachUiItem => {
     avatar: item.avatar,
   });
 
-  const avatarValue = ensureString(item.avatar);
+  const rawAvatar = ensureString(item.avatar).trim();
+  const isLikelyImageUrl = (url: string): boolean => {
+    if (!url) return false;
+    if (url.includes("wp-admin")) return false; // це явно не картинка
+    try {
+      const u = new URL(
+        url,
+        typeof window === "undefined" ? "http://x" : undefined
+      );
+      const pathname = u.pathname.toLowerCase();
+      return (
+        pathname.endsWith(".jpg") ||
+        pathname.endsWith(".jpeg") ||
+        pathname.endsWith(".png") ||
+        pathname.endsWith(".webp") ||
+        pathname.endsWith(".gif")
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  const avatarValue = isLikelyImageUrl(rawAvatar)
+    ? rawAvatar
+    : "/placeholder.png";
 
   const city = joinToString(item.location_city);
   const country = joinToString(item.location_country);
