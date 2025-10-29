@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(_req: NextRequest) {
   try {
-    // Env або фолбек на надані користувачем креденшали
-    const username = process.env.ADMIN_USER || "so.slashua@gmail.com";
-    const password = process.env.ADMIN_PASS || "qb*y3%z$GsSVc@lG";
-    const upstreamBase =
-      process.env.UPSTREAM_BASE ||
-      "https://www.api.bfb.projection-learn.website";
+    const username = process.env.ADMIN_USER;
+    const password = process.env.ADMIN_PASS;
+    const upstreamBase = process.env.UPSTREAM_BASE;
 
     if (!username || !password || !upstreamBase) {
       return NextResponse.json(
