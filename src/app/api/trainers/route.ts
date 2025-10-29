@@ -51,9 +51,37 @@ export async function GET(request: NextRequest) {
       request.headers.get("X-Internal-Admin") === "1";
 
     // Визначаємо режим авторизації: Bearer (пріоритет) або Basic
-    const bearerToken = wantsAdmin
+    let bearerToken = wantsAdmin
       ? adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv
       : jwtFromHeader || jwtFromCookie || jwtFromEnv;
+
+    // Якщо це адмін-запит, але Bearer відсутній — спробуємо тихо отримати токен з WP
+    if (wantsAdmin && !bearerToken) {
+      const upstreamBase =
+        process.env.UPSTREAM_BASE ||
+        "https://www.api.bfb.projection-learn.website";
+      const username = process.env.ADMIN_USER;
+      const password = process.env.ADMIN_PASS;
+      if (username && password && upstreamBase) {
+        try {
+          const wpRes = await fetch(
+            `${upstreamBase}/wp-json/jwt-auth/v1/token`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+              cache: "no-store",
+            }
+          );
+          if (wpRes.ok) {
+            const data = await wpRes.json();
+            if (data?.token) {
+              bearerToken = data.token as string;
+            }
+          }
+        } catch {}
+      }
+    }
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
