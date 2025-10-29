@@ -20,7 +20,12 @@ export default function AdminAutoLogin() {
           return;
         }
 
+        // 1) Отримуємо admin JWT у httpOnly cookie
         await fetch("/api/admin-login", { method: "POST" });
+        // 2) Також отримуємо wp_jwt у httpOnly cookie для WC ендпоінтів
+        await fetch("/api/auth/wp-token", { method: "GET", cache: "no-store" });
+        // Невелика пауза, щоб кукі застосувалися для подальших серверних хендлерів
+        await new Promise((r) => setTimeout(r, 250));
       } catch {}
     };
 

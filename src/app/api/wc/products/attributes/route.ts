@@ -18,6 +18,12 @@ export async function GET(req: NextRequest) {
     const jwtFromCookie = req.cookies.get("wp_jwt")?.value
       ? `Bearer ${req.cookies.get("wp_jwt")?.value}`
       : "";
+    const jwtFromAdminCookie = req.cookies.get("bfb_admin_jwt")?.value
+      ? `Bearer ${req.cookies.get("bfb_admin_jwt")?.value}`
+      : "";
+    const jwtFromUserCookie = req.cookies.get("bfb_user_jwt")?.value
+      ? `Bearer ${req.cookies.get("bfb_user_jwt")?.value}`
+      : "";
     const jwtFromEnv = process.env.WP_JWT_TOKEN
       ? `Bearer ${process.env.WP_JWT_TOKEN}`
       : "";
@@ -27,7 +33,9 @@ export async function GET(req: NextRequest) {
 
     let authHeader = "";
     if (jwtFromHeader) authHeader = jwtFromHeader;
+    else if (jwtFromAdminCookie) authHeader = jwtFromAdminCookie;
     else if (jwtFromCookie) authHeader = jwtFromCookie;
+    else if (jwtFromUserCookie) authHeader = jwtFromUserCookie;
     else if (jwtFromEnv) authHeader = jwtFromEnv;
     else if (basicUser && basicPass)
       authHeader =

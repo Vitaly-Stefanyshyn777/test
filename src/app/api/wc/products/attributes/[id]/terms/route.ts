@@ -24,6 +24,12 @@ export async function GET(
     const jwtFromCookie = req.cookies.get("wp_jwt")?.value
       ? `Bearer ${req.cookies.get("wp_jwt")?.value}`
       : "";
+    const jwtFromAdminCookie = req.cookies.get("bfb_admin_jwt")?.value
+      ? `Bearer ${req.cookies.get("bfb_admin_jwt")?.value}`
+      : "";
+    const jwtFromUserCookie = req.cookies.get("bfb_user_jwt")?.value
+      ? `Bearer ${req.cookies.get("bfb_user_jwt")?.value}`
+      : "";
     const jwtFromEnv = process.env.WP_JWT_TOKEN
       ? `Bearer ${process.env.WP_JWT_TOKEN}`
       : "";
@@ -32,17 +38,20 @@ export async function GET(
     const basicPass = process.env.WC_CONSUMER_SECRET;
 
     let authHeader = "";
-    // Використовуємо тільки Basic Auth
-    if (basicUser && basicPass) {
+    // Пріоритет Bearer, фолбек Basic
+    if (jwtFromHeader) authHeader = jwtFromHeader;
+    else if (jwtFromAdminCookie) authHeader = jwtFromAdminCookie;
+    else if (jwtFromCookie) authHeader = jwtFromCookie;
+    else if (jwtFromUserCookie) authHeader = jwtFromUserCookie;
+    else if (jwtFromEnv) authHeader = jwtFromEnv;
+    else if (basicUser && basicPass)
       authHeader =
         "Basic " + Buffer.from(`${basicUser}:${basicPass}`).toString("base64");
-      console.log("[Attribute Terms API] 🔐 Використовується Basic Auth");
-    } else {
+    else
       return NextResponse.json(
-        { error: "Missing WC Basic Auth credentials" },
+        { error: "Missing WC auth (Bearer or Basic)" },
         { status: 500 }
       );
-    }
 
     const upstreamRes = await fetch(url.toString(), {
       cache: "no-store",
