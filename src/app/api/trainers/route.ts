@@ -51,9 +51,10 @@ export async function GET(request: NextRequest) {
       request.headers.get("X-Internal-Admin") === "1";
 
     // Визначаємо режим авторизації: Bearer (пріоритет) або Basic
-    let bearerToken = wantsAdmin
-      ? adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv
-      : jwtFromHeader || jwtFromCookie || jwtFromEnv;
+    // ВАЖЛИВО: якщо є admin cookie — використовуємо його завжди,
+    // навіть без x-internal-admin, щоб уникнути 401 при клієнтських запитах без заголовка
+    let bearerToken =
+      adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv;
 
     // Якщо це адмін-запит, але Bearer відсутній — спробуємо тихо отримати токен з WP
     // і позначимо, що треба встановити кукі
