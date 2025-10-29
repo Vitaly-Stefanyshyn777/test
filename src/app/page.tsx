@@ -10,6 +10,7 @@ import EventsSection from "@/components/sections/EventsSection/EventsSection";
 import Founder from "@/components/sections/AboutBFBSection/Founder/Founder";
 import InstructorAdvantages from "@/components/sections/InstructorAdvantages/InstructorAdvantages";
 import ContactsSection from "@/components/sections/ContactsSection/ContactsSection";
+import VideoSection from "@/components/sections/VideoSection/VideoSection";
 export default function Home() {
   return (
     <>
@@ -20,6 +21,7 @@ export default function Home() {
       <div className="py-[100px]">
         <LearningFormats />
       </div>
+      <VideoSection />
       <BoardSection />
       <CoursesShowcase />
       <EventsSection />

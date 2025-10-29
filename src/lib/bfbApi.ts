@@ -127,6 +127,7 @@ export type ThemeSettingsPost = {
     input_text_schedule?: string;
     input_text_email?: string;
     input_text_address?: string;
+    theme_video_url?: string;
     hl_data_contact?: Array<{
       hl_input_text_name?: string;
       hl_input_text_link?: string;
@@ -148,6 +149,29 @@ export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
   return safeFetch<ThemeSettingsPost[]>(
     `${BASE_URL}/wp-json/wp/v2/theme_settings`
   );
+}
+
+export async function fetchThemeVideoUrl(): Promise<string | null> {
+  try {
+    const settings = await fetchThemeSettings();
+    const videoUrl = settings[0]?.acf?.theme_video_url;
+
+    if (!videoUrl) {
+      return null;
+    }
+
+    // Повертаємо проксований URL для уникнення CORS проблем
+    const proxiedUrl = `/api/video-proxy?url=${encodeURIComponent(videoUrl)}`;
+    return proxiedUrl;
+  } catch (error) {
+    console.error("[API] Error fetching theme video URL:", error);
+    return null;
+  }
+}
+
+// Допоміжна функція для створення проксованого URL
+export function createProxiedVideoUrl(originalUrl: string): string {
+  return `/api/video-proxy?url=${encodeURIComponent(originalUrl)}`;
 }
 
 // Видаляємо неіснуючі ендпоінти calculator та board
@@ -934,7 +958,6 @@ export async function uploadMedia(
   }
 }
 
-// Custom media upload for coach fields (avatar/gallery/certificate)
 export async function uploadCoachMedia(params: {
   token: string;
   fieldType:

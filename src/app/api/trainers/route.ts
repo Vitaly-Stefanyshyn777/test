@@ -48,7 +48,8 @@ export async function GET(request: NextRequest) {
       adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv;
 
     let shouldSetAdminCookie = false;
-    if (wantsAdmin && !bearerToken) {
+    // Якщо взагалі немає Bearer — виконуємо тихий логін і виставляємо кукі
+    if (!bearerToken) {
       const upstreamBase =
         process.env.UPSTREAM_BASE ||
         "https://www.api.bfb.projection-learn.website";
