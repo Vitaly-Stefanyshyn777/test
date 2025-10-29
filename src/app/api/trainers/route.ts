@@ -56,6 +56,8 @@ export async function GET(request: NextRequest) {
       : jwtFromHeader || jwtFromCookie || jwtFromEnv;
 
     // Якщо це адмін-запит, але Bearer відсутній — спробуємо тихо отримати токен з WP
+    // і позначимо, що треба встановити кукі
+    let shouldSetAdminCookie = false;
     if (wantsAdmin && !bearerToken) {
       const upstreamBase =
         process.env.UPSTREAM_BASE ||
@@ -77,6 +79,7 @@ export async function GET(request: NextRequest) {
             const data = await wpRes.json();
             if (data?.token) {
               bearerToken = data.token as string;
+              shouldSetAdminCookie = true;
             }
           }
         } catch {}
@@ -122,7 +125,18 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     console.log("[Trainers API] ✅ Отримано тренерів:", data.length);
 
-    return NextResponse.json(data);
+    const res = NextResponse.json(data);
+    if (shouldSetAdminCookie && bearerToken) {
+      const isProd = process.env.NODE_ENV === "production";
+      res.cookies.set("bfb_admin_jwt", bearerToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: isProd,
+        path: "/",
+        maxAge: 60 * 60 * 12,
+      });
+    }
+    return res;
   } catch (error) {
     console.error("[Trainers API] ❌ Помилка:", error);
     return NextResponse.json(
