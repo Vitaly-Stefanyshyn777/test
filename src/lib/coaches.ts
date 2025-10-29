@@ -180,6 +180,7 @@ export const getCoachesPage = async (page: number): Promise<CoachApi[]> => {
       per_page: 100,
       page: page,
     },
+    headers: { "x-internal-admin": "1" },
   });
 
   return response.data;
@@ -265,6 +266,7 @@ export const getCoachesFiltered = async (
       countries: countries,
       cities: cities,
     },
+    headers: { "x-internal-admin": "1" },
   });
   const totalPages = Number(response.headers["x-wp-totalpages"]) || 1;
 
