@@ -7,12 +7,13 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // Витягуємо можливий Bearer із заголовків або з env
+    // Витягуємо можливий Bearer із заголовків, кукі або з env
     const incomingAuthHeader = request.headers.get("authorization") || "";
     const jwtFromHeader = incomingAuthHeader.startsWith("Bearer ")
       ? incomingAuthHeader.substring("Bearer ".length)
       : request.headers.get("x-wp-jwt") || "";
     const jwtFromCookie = request.cookies.get("bfb_user_jwt")?.value || "";
+    const adminCookie = request.cookies.get("bfb_admin_jwt")?.value || "";
     const jwtFromEnv = process.env.WP_JWT_TOKEN || "";
 
     // Отримуємо WordPress базові креденшалі (fallback)
@@ -44,14 +45,24 @@ export async function GET(request: NextRequest) {
       url.searchParams.set("roles", "bfb_coach");
     }
 
+    // Якщо є внутрішній адмін-запит — віддаємо пріоритет admin JWT із кукі
+    const wantsAdmin =
+      request.headers.get("x-internal-admin") === "1" ||
+      request.headers.get("X-Internal-Admin") === "1";
+
     // Визначаємо режим авторизації: Bearer (пріоритет) або Basic
-    const bearerToken = jwtFromHeader || jwtFromCookie || jwtFromEnv;
+    const bearerToken = wantsAdmin
+      ? adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv
+      : jwtFromHeader || jwtFromCookie || jwtFromEnv;
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
     if (bearerToken) {
       headers.Authorization = `Bearer ${bearerToken}`;
-      console.log("[Trainers API] 🔐 Auth: Bearer JWT");
+      console.log(
+        "[Trainers API] 🔐 Auth: Bearer JWT",
+        wantsAdmin ? "(admin)" : "(user)"
+      );
     } else if (wpUser && wpPass) {
       headers.Authorization = `Basic ${Buffer.from(
         `${wpUser}:${wpPass}`
