@@ -7,7 +7,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // Витягуємо можливий Bearer із заголовків, кукі або з env
     const incomingAuthHeader = request.headers.get("authorization") || "";
     const jwtFromHeader = incomingAuthHeader.startsWith("Bearer ")
       ? incomingAuthHeader.substring("Bearer ".length)
@@ -16,7 +15,6 @@ export async function GET(request: NextRequest) {
     const adminCookie = request.cookies.get("bfb_admin_jwt")?.value || "";
     const jwtFromEnv = process.env.WP_JWT_TOKEN || "";
 
-    // Отримуємо WordPress базові креденшалі (fallback)
     const wpUser = process.env.WP_BASIC_USER || process.env.ADMIN_USER;
     const wpPass = process.env.WP_BASIC_PASS || process.env.ADMIN_PASS;
 
@@ -28,36 +26,27 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Формуємо URL для WordPress Users API
     const url = new URL(`${UPSTREAM_BASE}/wp-json/wp/v2/users`);
 
-    // Додаємо всі параметри з запиту
     searchParams.forEach((value, key) => {
       url.searchParams.append(key, value);
     });
 
-    // Якщо не задана кількість — ставимо високе значення, щоб отримати всі
     if (!url.searchParams.has("per_page")) {
       url.searchParams.set("per_page", "100");
     }
-    // Якщо не задана роль — за замовчуванням беремо тренерів
+
     if (!url.searchParams.has("roles")) {
       url.searchParams.set("roles", "bfb_coach");
     }
 
-    // Якщо є внутрішній адмін-запит — віддаємо пріоритет admin JWT із кукі
     const wantsAdmin =
       request.headers.get("x-internal-admin") === "1" ||
       request.headers.get("X-Internal-Admin") === "1";
 
-    // Визначаємо режим авторизації: Bearer (пріоритет) або Basic
-    // ВАЖЛИВО: якщо є admin cookie — використовуємо його завжди,
-    // навіть без x-internal-admin, щоб уникнути 401 при клієнтських запитах без заголовка
     let bearerToken =
       adminCookie || jwtFromHeader || jwtFromCookie || jwtFromEnv;
 
-    // Якщо це адмін-запит, але Bearer відсутній — спробуємо тихо отримати токен з WP
-    // і позначимо, що треба встановити кукі
     let shouldSetAdminCookie = false;
     if (wantsAdmin && !bearerToken) {
       const upstreamBase =
@@ -104,7 +93,6 @@ export async function GET(request: NextRequest) {
 
     console.log("[Trainers API] 🚀 Запит до WordPress:", url.toString());
 
-    // Робимо запит з WordPress авторизацією
     const response = await fetch(url.toString(), {
       method: "GET",
       headers,
