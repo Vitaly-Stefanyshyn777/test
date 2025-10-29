@@ -1,0 +1,350 @@
+.section {
+  background-color: #fff;
+  padding-top: 8.49vw;
+  padding-bottom: 8.49vw;
+  border-radius: 2.92vw;
+
+  h2 {
+    margin-bottom: 3.75vw;
+    font-size: 2.92vw;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.56px;
+    color: var(--text-black);
+    text-align: center;
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    .firstBlock {
+      flex-shrink: 0;
+      width: 25.26vw;
+
+      .topBlock {
+        margin-bottom: 1.46vw;
+        padding: 1.67vw;
+        border-radius: 1.67vw;
+        background-color: var(--bg-light);
+
+        h3 {
+          margin-bottom: 0.42vw;
+          font-size: 1.67vw;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 1.2;
+          letter-spacing: -0.32px;
+          color: var(--text-black);
+        }
+
+        p {
+          margin-bottom: 1.15vw;
+          font-family: "Golos Text", sans-serif;
+          font-size: 0.83vw;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 1.4;
+          letter-spacing: -0.16px;
+          color: var(--text-black-transparent);
+        }
+
+        .photos {
+          display: flex;
+          justify-content: space-between;
+
+          .trainingImg {
+            width: 10.31vw;
+            height: 6.56vw;
+            border-radius: 0.31vw;
+          }
+
+          .group {
+            width: 11.1vw;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.63vw;
+
+            img {
+              width: 5.21vw;
+              height: 2.97vw;
+              border-radius: 0.31vw;
+            }
+
+            div {
+              width: 5.21vw;
+              height: 2.97vw;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-radius: 0.31vw;
+              background-color: var(--brand-primary);
+
+              svg {
+                width: 1.25vw;
+                height: 1.46vw;
+                fill: rgba(255, 254, 252, 0.4);
+              }
+            }
+          }
+        }
+      }
+
+      .bottomBlock {
+        height: 13.23vw;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        padding: 1.67vw;
+        border-radius: 1.67vw;
+        background-color: var(--brand-primary);
+        overflow: hidden;
+
+        .bg {
+          position: absolute;
+          z-index: 1;
+          top: -0.5vw;
+          right: -8vw;
+          width: 27.55vw;
+          height: 29.01vw;
+        }
+
+        .happyMen {
+          display: flex;
+
+          img {
+            position: relative;
+            width: 2.6vw;
+            height: 2.6vw;
+            border-radius: 50%;
+          }
+
+          img:first-child {
+            top: 0;
+            left: 0;
+          }
+
+          img:nth-child(2) {
+            left: -0.63vw;
+          }
+
+          img:nth-child(3) {
+            left: -1.25vw;
+          }
+
+          img:last-child {
+            left: -1.88vw;
+          }
+        }
+
+        h3 {
+          margin-top: auto;
+          margin-bottom: 0.42vw;
+          font-size: 2.92vw;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 1.2;
+          letter-spacing: -0.56px;
+          color: rgba(255, 254, 252, 1);
+        }
+
+        p {
+          font-family: "Golos Text", sans-serif;
+          font-size: 0.83vw;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 1.4;
+          letter-spacing: -0.16px;
+          color: rgba(255, 254, 252, 0.6);
+        }
+      }
+    }
+
+    .secondBlock {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      width: 25.26vw;
+      padding: 1.67vw;
+      border-radius: 1.67vw;
+      background-color: var(--bg-light);
+
+      h3 {
+        margin-bottom: 1.15vw;
+        font-size: 4.69vw;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 1.2;
+        letter-spacing: -0.9px;
+        color: rgba(14, 14, 14, 1);
+      }
+
+      .stonks {
+        position: relative;
+        height: 100%;
+        padding: 1.25vw;
+        border-radius: 1.35vw;
+        background-color: #fff;
+
+        .blockTitle {
+          display: flex;
+          align-items: center;
+          gap: 0.63vw;
+
+          span {
+            width: 3.33vw;
+            height: 3.33vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background-color: var(--bg-light);
+
+            svg {
+              width: 1.46vw;
+              height: 1.46vw;
+              fill: var(--brand-primary);
+            }
+          }
+
+          div {
+            h4 {
+              font-family: "Golos Text";
+              font-size: 0.83vw;
+              font-style: normal;
+              font-weight: 600;
+              line-height: 1.4;
+              color: rgba(14, 14, 14, 1);
+            }
+
+            p {
+              font-family: "Golos Text";
+              font-size: 0.73vw;
+              font-style: normal;
+              font-weight: 500;
+              line-height: 1.4;
+              color: rgba(14, 14, 14, 0.4);
+            }
+          }
+        }
+
+        .stonksImg {
+          position: absolute;
+          bottom: 1.25vw;
+          left: 1.25vw;
+          width: 19.5vw;
+          height: 18.02vw;
+        }
+      }
+    }
+
+    .thirdBlock {
+      width: 41.98vw;
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.63vw;
+
+      .communityBlock {
+        width: 41.98vw;
+        height: 14.48vw;
+        padding: 1.25vw;
+        border-radius: 1.67vw;
+        background-image: url(../../../../public/images/community-bg.jpg);
+        background-size: cover;
+        background-color: var(--bg-light);
+
+        h3 {
+          margin-bottom: 0.42vw;
+          font-size: 1.67vw;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 1.2;
+          letter-spacing: -0.32px;
+          color: rgba(14, 14, 14, 1);
+        }
+
+        p {
+          width: 36%;
+          font-family: "Golos Text", sans-serif;
+          font-size: 0.83vw;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 1.4;
+          letter-spacing: -0.16px;
+          color: rgba(14, 14, 14, 0.4);
+        }
+      }
+
+      .instructors {
+        display: flex;
+        flex-direction: column;
+        width: 20.26vw;
+        height: 14.48vw;
+        padding: 1.25vw;
+        border-radius: 1.67vw;
+        background-color: var(--bg-light);
+
+        ul {
+          margin-bottom: auto;
+          display: flex;
+          gap: 0.63vw;
+
+          li {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 3.33vw;
+            height: 3.33vw;
+            border-radius: 50%;
+            background-color: #fff;
+
+            svg {
+              width: 1.67vw;
+              height: 1.46vw;
+              fill: var(--brand-primary);
+            }
+          }
+        }
+
+        h3 {
+          margin-bottom: 0.42vw;
+          font-size: 2.92vw;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 1.2;
+          letter-spacing: -0.56px;
+          color: rgba(14, 14, 14, 1);
+        }
+
+        p {
+          font-family: "Golos Text", sans-serif;
+          font-size: 0.83vw;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 1.4;
+          letter-spacing: -0.16px;
+          color: var(--text-black-transparent);
+        }
+      }
+
+      .patent {
+        display: inline-block;
+        width: 20.26vw;
+        height: 14.48vw;
+        padding: 1.25vw;
+        border-radius: 1.67vw;
+        background-image: url(../../../../public/images/sitting-woman.jpg);
+        background-size: cover;
+
+        h3 {
+          font-size: 1.67vw;
+          font-style: normal;
+          font-weight: 600;
+          line-height: 1.1;
+          letter-spacing: -0.32px;
+          color: rgba(255, 254, 252, 1);
+        }
+      }
+    }
+  }
+}

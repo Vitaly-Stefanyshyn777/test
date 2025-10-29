@@ -1,0 +1,171 @@
+.breadcrumbs {
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
+  position: absolute;
+  top: 110px;
+  z-index: 10;
+}
+
+.breadcrumbsContainer {
+  max-width: 1200px;
+  margin: 0;
+  padding-left: 70px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breadcrumbLink {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.breadcrumbLink:hover {
+  color: var(--violet);
+  text-decoration: none;
+  background: rgba(111, 66, 193, 0.05);
+  transform: translateY(-1px);
+}
+
+.breadcrumbText {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  color: var(--black);
+}
+
+.breadcrumbText.active {
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+
+  color: rgb(14 14 14 / 30%);
+}
+
+.separator {
+  color: rgb(14 14 14 / 30%);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 4px;
+}
+
+.breadcrumbs.onTrainers .breadcrumbLink,
+.breadcrumbs.onTrainers .breadcrumbText,
+.breadcrumbs.onTrainers .separator {
+  color: var(--white);
+}
+
+.breadcrumbs.onTrainers .breadcrumbText.active {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.breadcrumbs.onTrainers .breadcrumbLink:hover {
+  color: var(--white);
+}
+
+.breadcrumbs.onOurCourses .breadcrumbLink,
+.breadcrumbs.onOurCourses .breadcrumbText,
+.breadcrumbs.onOurCourses .separator {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.breadcrumbs.onOurCourses .breadcrumbText.active {
+  opacity: 0.4;
+}
+
+.breadcrumbs.onOurCourses .breadcrumbLink:hover {
+  color: var(--white);
+}
+
+.breadcrumbs.onCoursesLanding .breadcrumbLink {
+  color: var(--white);
+}
+
+.breadcrumbs.onCoursesLanding .breadcrumbText {
+  color: var(--white);
+  opacity: 0.4;
+}
+
+.breadcrumbs.onCoursesLanding .separator {
+  color: var(--white);
+}
+
+.breadcrumbs.onCoursesLanding .breadcrumbLink:hover {
+  color: var(--white);
+}
+
+.breadcrumbs.onContacts .breadcrumbLink,
+.breadcrumbs.onContacts .breadcrumbText,
+.breadcrumbs.onContacts .separator {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.breadcrumbs.onContacts .breadcrumbText.active {
+  opacity: 0.4;
+}
+
+.breadcrumbs.onContacts .breadcrumbLink:hover {
+  color: var(--white);
+}
+
+.breadcrumbs.onAboutBfb .breadcrumbLink,
+.breadcrumbs.onAboutBfb .breadcrumbText,
+.breadcrumbs.onAboutBfb .separator {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.breadcrumbs.onAboutBfb .breadcrumbText.active {
+  opacity: 0.4;
+}
+
+.breadcrumbs.onAboutBfb .breadcrumbLink:hover {
+  color: var(--white);
+}
+
+@media (max-width: 1024px) {
+  .breadcrumbs {
+    padding: 14px 0 14px 0;
+    padding-top: calc(100px + 14px);
+  }
+
+  .breadcrumbsContainer {
+    padding-left: 16px;
+  }
+}

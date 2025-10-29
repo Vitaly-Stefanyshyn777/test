@@ -1,0 +1,134 @@
+.contactInfo {
+  flex: 0 0 41.1%;
+  padding: 32px;
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  backdrop-filter: blur(10px);
+  background: rgba(249, 249, 249, 0.1);
+  gap: 10px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: white;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.titleTextBlock {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-family: var(--second-family);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 110%;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.description {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.contactDetails {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contactItemBlock {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.contactIconsBlock {
+  width: auto;
+  height: auto;
+  display: grid;
+}
+
+.contactItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-family: var(--second-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 110%;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.value {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  color: white;
+}
+
+.socialIconsContainer {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12;
+}
+
+.socialIconBlock {
+  width: 100%;
+  height: auto;
+  display: flex;
+  gap: 12;
+}
+
+.socialIcons {
+  gap: 12px;
+  padding: 20px;
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  padding: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.socialIcon:hover {
+  background: var(--violet);
+  backdrop-filter: blur(20px);
+  color: var(--white);
+  border-color: var(--violet);
+}

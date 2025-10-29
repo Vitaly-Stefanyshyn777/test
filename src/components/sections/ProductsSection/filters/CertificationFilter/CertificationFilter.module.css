@@ -1,0 +1,98 @@
+.filterSection {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 24px 24px 28px;
+  transition: all 0.3s ease-in-out;
+}
+
+.filterSection.collapsedSection {
+  gap: 0;
+  padding: 24px 24px 24px;
+  border-radius: 8px;
+}
+
+.sectionTitleContainer {
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: var(--black);
+}
+
+.sectionTitleContainer svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.sectionContent {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  height: auto;
+  opacity: 1;
+}
+
+.sectionContent.collapsed {
+  height: 0;
+  opacity: 0;
+}
+
+.sectionContent.expanded {
+  height: auto;
+  opacity: 1;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.radioItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: all 0.2s ease;
+}
+
+.radioInput {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--violet);
+  cursor: pointer;
+}
+
+.radioLabel {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  cursor: pointer;
+}
+
+.error {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  color: var(--black);
+  text-align: center;
+  padding: 40px 20px;
+}

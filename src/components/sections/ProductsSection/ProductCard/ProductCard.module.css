@@ -1,0 +1,378 @@
+.productCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.cardImage {
+  position: relative;
+  width: 100%;
+  height: 251px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.05);
+}
+
+.badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 6px;
+  z-index: 2;
+}
+
+.badge {
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: lowercase;
+  color: #fff;
+  line-height: 1;
+  font-family: var(--font-family);
+
+  border-radius: 10px;
+  padding: 12px;
+  width: 42px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newBadge {
+  background: var(--white);
+  color: var(--violet);
+
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 10;
+  position: relative;
+
+  border-radius: 10px;
+  padding: 12px;
+  width: 75px;
+  height: 36px;
+}
+
+.hitBadge {
+  background: #ff3b30;
+}
+
+.discountBadge {
+  background: #8b5cf6;
+}
+
+.favoriteBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+  color: var(--violet);
+}
+
+/* .favoriteBtn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+} */
+
+.favoriteActive {
+  background: var(--violet) !important;
+  color: #fff !important;
+}
+
+.favoriteActive svg {
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 18px 24px 24px;
+  width: 100%;
+  height: auto;
+  height: 100%;
+}
+
+.category {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 140%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  opacity: 0.6;
+}
+
+.productName {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  color: var(--black);
+}
+
+.subscriptionBlock {
+  width: 100%;
+  height: auto;
+  display: flex;
+}
+
+.subscriptionPrice {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.subscriptionDiscount {
+  margin: -2px 0 4px 0;
+}
+
+.subscriptionBadge {
+  background: #f5f0ff;
+  color: var(--violet);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-block;
+  line-height: 1.2;
+  font-family: var(--font-family);
+}
+
+.subscriptionPriceAuth {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.subNewPrice {
+  color: var(--black);
+  font-weight: 700;
+}
+
+.subOldPrice {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.pricing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.currentPrice {
+  font-weight: 600;
+  color: var(--black);
+  font-size: 18px;
+  line-height: 1;
+  font-family: var(--font-family);
+}
+
+.originalPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+  line-height: 1;
+  font-family: var(--font-family);
+}
+
+.cartBtn {
+  position: absolute;
+  bottom: 18px;
+  right: 24px;
+  background: var(--violet);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--white);
+  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.cartBtn:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+/* Disable hover when active (trash icon state) */
+.cartBtn.cartBtnActive:hover {
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--black);
+}
+
+/* .cartBtn:hover {
+  background: var(--black);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+} */
+
+.cartBtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cartBtnActive {
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--black) !important;
+}
+
+.cartBtnActive svg {
+  stroke: var(--black) !important;
+}
+
+/* Кнопка "Немає сертифікації" */
+.noCertificationButton {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ff4444;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.noCertificationButton:hover {
+  background: #ff3333;
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 68, 68, 0.4);
+}
+
+/* Стилі для карток з категорією "Немає сертифікації" */
+.productCard[data-category="78"] {
+  position: relative;
+}
+
+.productCard[data-category="78"]::after {
+  content: "Немає сертифікації";
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 68, 68, 0.9);
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  pointer-events: none;
+
+  border-radius: 12px;
+  padding: 16px 32px;
+  width: auto;
+  max-width: none;
+  height: auto;
+  white-space: nowrap;
+  text-align: center;
+  display: block;
+
+  background: var(--style);
+
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--white);
+}
+
+/* Кнопки для товарів без сертифікації */
+.productCard[data-category="78"] .cartBtn {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+.productCard[data-category="78"] .cartBtn:hover {
+  opacity: 0.6 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Кнопка корзини для продуктів без сертифікації */
+.cartBtnNoCert {
+  opacity: 0.6;
+  background: var(--grey-for-cards);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Всі бейджі для продуктів без сертифікації */
+.productCard[data-category="78"] .badges .badge {
+  opacity: 0.6;
+}
+
+/* Бейдж знижки з підпискою для продуктів без сертифікації */
+.productCard[data-category="78"] .subscriptionBadge {
+  opacity: 0.6;
+}
+
+/* Всі основні елементи картки для продуктів без сертифікації */
+.productCard[data-category="78"] .productName {
+  opacity: 0.6;
+}
+
+.productCard[data-category="78"] .currentPrice {
+  opacity: 0.6;
+}
+
+.productCard[data-category="78"] .favoriteBtn {
+  opacity: 0.6;
+}
+
+.productCard[data-category="78"] .cardContent {
+  opacity: 0.6;
+}
+
+.productCard[data-category="78"] .cardImage {
+  opacity: 0.6;
+}

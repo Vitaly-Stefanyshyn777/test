@@ -1,0 +1,33 @@
+.portfolioSection {
+  height: auto;
+  padding: 0;
+  padding: 120px 44px 150px 44px;
+  background: var(--bg-color);
+}
+
+.container {
+  display: flex;
+  height: auto;
+  gap: 16px;
+}
+
+.sidebar {
+  width: 100%;
+  max-width: 476px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mainContent {
+  border-radius: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  width: 100%;
+  padding: 55px;
+  max-width: 1200px;
+  background-color: var(--white);
+}

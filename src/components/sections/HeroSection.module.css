@@ -1,0 +1,221 @@
+.hero {
+  color: #fff;
+  background: url(/images/Frame1321318139.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  align-items: center;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  width: 1896px;
+  height: 1110px;
+  margin: 0 auto;
+}
+
+.heroContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1896px;
+  margin: 0 auto;
+  padding: 0 98px;
+  gap: 80px;
+}
+
+.heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 56px;
+  max-width: 600px;
+  flex: 1;
+}
+
+.heroContentBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.roiBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+
+  border-radius: 8px;
+  padding: 10px 14px;
+  width: 263px;
+  height: 46px;
+  svg {
+    width: 23px;
+    height: 23px;
+  }
+}
+
+.roiIcon {
+  font-size: 16px;
+}
+
+.roiText {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.heroTitle {
+  font-family: var(--second-family);
+  font-weight: 800;
+  font-size: 72px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.heroDescription {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.heroActions {
+  display: flex;
+  gap: 13px;
+  margin-top: 10px;
+}
+.heroButtonPrimary,
+.heroButtonSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 100%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  border-radius: 20px;
+  height: 64px;
+  padding: 24px 42px;
+}
+.heroButtonPrimary {
+  color: var(--white);
+  background: var(--violet);
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 100%;
+  color: var(--white);
+}
+
+.heroButtonSecondary {
+  color: var(--white);
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  background: var(--white);
+  transition: all 0.3s ease;
+
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 100%;
+  color: #3b2d47;
+}
+
+.heroButtonPrimary:hover {
+  background: var(--black);
+  transition: all 0.3s ease;
+}
+
+.heroButtonSecondary:hover {
+  background: var(--black);
+  color: var(--white);
+  transition: all 0.3s ease;
+}
+
+.heroNavigation {
+  align-items: center;
+  gap: 24px;
+  margin-top: 1.04167vw;
+  display: flex;
+  position: absolute;
+  left: 94px;
+  bottom: 85px;
+}
+
+.navArrow {
+  border-radius: 62px;
+  padding: 24px;
+  width: 68px;
+  height: 68px;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 18px;
+
+  backdrop-filter: blur(20px);
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.navArrow:hover {
+  backdrop-filter: blur(20px);
+  background: var(--white);
+  color: var(--black);
+}
+
+.navDots {
+  display: flex;
+  gap: 8px;
+}
+
+.navDot {
+  border-radius: 10px;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navDotActive {
+  background: white;
+  transform: scale(1.2);
+}
+
+.heroImageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.heroImage {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}

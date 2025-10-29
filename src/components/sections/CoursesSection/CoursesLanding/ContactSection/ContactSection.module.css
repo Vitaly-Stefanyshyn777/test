@@ -1,0 +1,36 @@
+.contactSection {
+  padding: 200px 0px;
+  background-color: #9f57ff;
+  background-image: url(/images/Abstract-Background-Footer.png);
+  background-size: cover;
+  width: 100%;
+  max-width: 98.75vw;
+  border-radius: 56px;
+
+  margin: 0 auto;
+}
+
+.container {
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.innerContainer {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  max-width: 1528px;
+}
+
+.formWrapper {
+  flex: 0 0 58.9%;
+  background: white;
+  border-radius: 16px;
+  padding: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}

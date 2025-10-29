@@ -1,0 +1,138 @@
+.filterSection {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 24px 24px 28px;
+}
+
+.filterSection.collapsed {
+  gap: 0;
+  padding: 24px 24px 24px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.filterSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.filterSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.sectionTitleContainer {
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: var(--black);
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.sectionTitle {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: all 0.2s ease;
+  padding: 4px 0;
+}
+
+.radioInput {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid rgba(180, 186, 182, 0.7);
+  border-radius: 34px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.radioInput:checked {
+  border-color: var(--violet);
+  background-color: white;
+}
+
+.radioInput:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background-color: var(--violet);
+  border-radius: 50%;
+}
+
+.radioInput:hover {
+  border-color: var(--violet);
+}
+
+.radioInput:focus {
+  box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+}
+
+.radioText {
+  flex: 1;
+  line-height: 1.4;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.sectionContent {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  height: auto;
+  opacity: 1;
+}
+
+.sectionContent.collapsed {
+  height: 0;
+  opacity: 0;
+}
+
+.sectionContent.expanded {
+  height: auto;
+  opacity: 1;
+}
+
+.filterSection.collapsedSection {
+  gap: 0;
+  padding: 24px 24px 24px;
+  border-radius: 8px;
+}

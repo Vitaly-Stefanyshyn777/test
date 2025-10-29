@@ -1,0 +1,28 @@
+.coursePage {
+  background: #f9f9f9;
+  min-height: 100vh;
+}
+
+.container {
+  padding: 0 40px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  align-items: start;
+  padding: 163px 0px 130px 0px;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+}
+
+.rightColumn {
+  /* position: sticky; */
+  /* top: 20px; */
+  height: fit-content;
+}

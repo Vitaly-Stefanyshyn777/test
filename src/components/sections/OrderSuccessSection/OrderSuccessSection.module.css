@@ -1,0 +1,287 @@
+.page {
+  background: #f8f9fa;
+  padding: 100px 50px 0 50px;
+  margin-top: 80px;
+}
+
+.CartItemsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px 50px 20px;
+}
+
+.card {
+  background: white;
+  text-align: center;
+  border-radius: 32px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.headerBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.thanBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.numberOrdereBlock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.numberOrdereTitle {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.iconContainer {
+  display: flex;
+  justify-content: center;
+
+  border-radius: 12px;
+  padding: 18px;
+  width: 60px;
+  height: 60px;
+  background: var(--violet);
+}
+
+.icon {
+  background: #8426d7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+
+  border-radius: 12px;
+  padding: 18px;
+  width: 60px;
+  height: 60px;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.thankYou {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.successTitle {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 130%;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--black);
+}
+
+.orderNumber {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.productsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.products {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.productImage {
+  position: relative;
+  width: 136px;
+  height: 148px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f6f6f6;
+}
+
+.productImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quantityBadge {
+  position: absolute;
+  bottom: 9px;
+  right: 9px;
+  background: #8426d7;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+
+  font-family: var(--second-family);
+}
+
+.orderDetails {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-radius: 12px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.detailRow:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 144%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.value {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 144%;
+  letter-spacing: -0.02em;
+  color: #302215;
+}
+
+.divider {
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.costSummary {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.costRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.costLabel {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+.costLabelPrice {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--black);
+}
+
+.costValuePrice {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--black);
+}
+
+.costValue {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 130%;
+  letter-spacing: -0.02em;
+  color: var(--black);
+}
+
+.returnButton {
+  display: inline-block;
+  background: var(--violet);
+  color: white;
+  text-decoration: none;
+  font-family: var(--font-family);
+
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+
+  border-radius: 18px;
+  padding: 24px 42px;
+
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 135%;
+  color: var(--white);
+}
+
+.returnButton:hover {
+  background: #6b1fb8;
+}

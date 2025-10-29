@@ -1,0 +1,185 @@
+.section {
+  padding-top: 120px;
+  padding-bottom: 100px;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+
+    .leftBlock {
+      width: 750px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .imgCont {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 750px;
+        height: 513px;
+        border-radius: 32px;
+        overflow: hidden;
+        background-image: url(../../../../public/images/bfb-fitness-img.jpg);
+        background-size: contain;
+
+        p {
+          font-family: "Golos Text", sans-serif;
+          font-size: 38.756px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 1.4;
+          letter-spacing: -0.388px;
+          color: var(--white);
+
+          span {
+            font-family: "Plateia";
+          }
+        }
+      }
+
+      .target {
+        padding: 32px;
+        border-radius: 20px;
+        background-color: var(--white);
+
+        p {
+          margin-bottom: 24px;
+          font-family: "Golos Text", sans-serif;
+          font-size: 12px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 1.4;
+          letter-spacing: 0.96px;
+          text-transform: uppercase;
+          color: var(--text-black);
+        }
+
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+
+          li {
+            padding: 10px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--bg-color);
+
+            font-family: "Golos Text";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 1.4;
+            letter-spacing: -0.16px;
+            color: var(--text-black);
+
+            svg {
+              width: 20px;
+              height: 20px;
+            }
+          }
+        }
+      }
+    }
+
+    .rightBlock {
+      display: flex;
+      flex-direction: column;
+      width: 1065px;
+      padding: 52px;
+      border-radius: 32px;
+      background-image: url(../../../../public/images/target-right-bg.jpg);
+      background-size: contain;
+
+      .upperDescr {
+        margin-bottom: 24px;
+        font-family: "Golos Text";
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: 0.96px;
+        text-transform: uppercase;
+        color: rgba(255, 254, 252, 0.6);
+      }
+
+      h2 {
+        width: 80%;
+        margin-bottom: 40px;
+        font-family: "Inter Tight";
+        font-size: 56px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 120%;
+        letter-spacing: -1.68px;
+        color: var(--white);
+
+        span {
+          color: #c476ff;
+        }
+      }
+
+      ul {
+        display: flex;
+        gap: 8px;
+        height: 100%;
+
+        li {
+          width: 315px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 32px;
+          border-radius: 32px;
+
+          font-family: "Inter Tight";
+          font-size: 32px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 120%;
+          letter-spacing: -0.96px;
+
+          span {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            svg {
+              width: 29px;
+              height: 29px;
+            }
+          }
+        }
+
+        li.white {
+          background-color: var(--white);
+
+          color: var(--text-black);
+
+          span {
+            background-color: var(--bg-color);
+          }
+        }
+
+        li.violet {
+          border: 1px solid rgba(255, 255, 255, 0.6);
+          background: rgba(249, 249, 249, 0.1);
+          backdrop-filter: blur(5px);
+
+          color: var(--white);
+
+          span {
+            background-color: var(--white);
+          }
+        }
+      }
+    }
+  }
+}

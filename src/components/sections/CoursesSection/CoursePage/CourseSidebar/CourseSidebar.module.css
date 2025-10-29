@@ -1,0 +1,499 @@
+.sidebar {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  /* position: sticky; */
+  /* top: calc(var(--header-height) + 20px);
+  z-index: 10;
+  transition: all 0.2s ease-in-out; */
+}
+
+/* не чіпати це для хука useStickySidebar.ts */
+/* 
+.sidebar.sticky {
+  position: fixed;
+  top: calc(var(--header-height) + 20px);
+  z-index: 10;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar.noStick {
+  position: static;
+  top: auto;
+  transition: all 0.2s ease-in-out;
+} */
+
+.imageContainer {
+  position: relative;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.courseImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.newBadge {
+  background: #3b82f6;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-family);
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: -0.01em;
+}
+
+.hitBadge {
+  border-radius: 10px;
+  padding: 12px;
+
+  background: var(--style);
+  display: flex;
+  align-items: center;
+
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.discountBadge {
+  background: #8426d7;
+  color: white;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: -0.01em;
+  color: #fffefc;
+}
+
+.courseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.courseTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.categoryTagBlock {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.categoryTag {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: rgba(14, 14, 14, 0.8);
+}
+
+.titleWithBadges {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.courseBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.courseDescription {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: rgba(14, 14, 14, 0.4);
+  margin: 0;
+}
+
+.subscriptionOfferIcon {
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.courseTitle {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  /* text-align: right; */
+  color: var(--black);
+}
+
+.dateBlock {
+  align-items: center;
+  gap: 0.83333vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.availability {
+  display: flex;
+  align-items: center;
+  color: var(--black);
+  gap: 9px;
+}
+
+.inStock {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row-reverse;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: var(--violet);
+  font-size: 16px;
+}
+
+.starFilled {
+  color: #ffd700; /* Золотистий колір для заповнених зірок */
+}
+
+.reviewsCount {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  opacity: 0.4;
+}
+
+.courseIncludes {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.courseIncludesTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.courseIncludesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.courseIncludesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
+}
+
+.courseIncludesIcon {
+  width: 20px;
+  height: 20px;
+  background: var(--violet);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.courseIncludesIcon svg {
+  width: 12px;
+  height: 12px;
+  color: var(--white);
+}
+
+.courseIncludesText {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+  opacity: 0.6;
+}
+
+.pricingCartBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pricing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.currentPriceCurrency {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  text-align: right;
+  color: var(--black);
+}
+
+.currentPrice {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  text-align: right;
+  color: var(--black);
+}
+
+.oldPrice {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  text-align: right;
+  color: var(--grey-for-cards);
+  text-decoration: line-through;
+}
+
+.subscriptionOffer {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+
+  padding: 12px;
+  border-radius: 8px;
+
+  border-radius: 12px;
+  padding: 16px;
+
+  background: rgba(132, 38, 215, 0.16);
+}
+
+.subscriptionOffer p {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: #8426d7;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.addToCartButton {
+  flex: 1;
+  background: var(--violet);
+  color: white;
+  border: none;
+
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  border-radius: 16px;
+  padding: 24px 42px;
+
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 135%;
+  color: var(--white);
+}
+
+.addToCartButton:hover {
+  background: #6b1f9a;
+}
+
+.favoriteButton {
+  width: 66px;
+  height: 66px;
+  border-radius: 15px;
+  background: #f9f9f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--violet);
+  transition: all 0.3s ease;
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  border-radius: 15px;
+  fill: #f9f9f9;
+}
+
+.favoriteButton:hover {
+  background: var(--violet);
+  color: white;
+}
+
+.favoriteButton.favoriteActive {
+  background: var(--violet);
+  color: #fff;
+}
+
+.favoriteButton.favoriteActive svg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+.addToCartButtonDisabled {
+  background: var(--grey);
+  color: var(--white);
+  cursor: not-allowed;
+}
+
+.addToCartButtonDisabled:hover {
+  background: #e6e6e6;
+  transform: none;
+}
+
+.favoriteButtonDisabled {
+  background: var(--grey);
+  color: var(--white);
+  cursor: not-allowed;
+}
+
+.favoriteButtonDisabled:hover {
+  background: #e6e6e6;
+  transform: none;
+}
+
+.favoriteButtonDisabled svg {
+  fill: var(--white);
+  stroke: var(--white);
+}
+
+.registerCallout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.registerBlock {
+  width: 100%;
+  background: rgba(244, 67, 54, 0.12);
+  border-radius: 12px;
+  padding: 24px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--style);
+}
+
+.registerText {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 140%;
+  color: #e85454;
+  margin: 0;
+}
+
+.registerBtn {
+  background: var(--style);
+  cursor: pointer;
+  white-space: nowrap;
+
+  border-radius: 16px;
+  padding: 24px 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--third-family);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 135%;
+  color: var(--white);
+}

@@ -1,0 +1,629 @@
+.section {
+  padding: 100px 0;
+}
+
+.container {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+}
+
+.header {
+  text-align: center;
+}
+
+.title {
+  font-family: var(--second-family);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 120%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.content {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.leftColumnWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 588px;
+  width: 100%;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 52px;
+}
+
+.calendarBlock {
+  background: #ffffff;
+  border-radius: 16px;
+}
+
+.calendar {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendarContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.monthTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+  color: var(--black);
+}
+
+.monthNavigation {
+  display: flex;
+  gap: 8px;
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  backdrop-filter: blur(20px);
+  background: #8426d7;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  border-radius: 32px;
+  padding: 14px 12px;
+  width: 46px;
+  height: 46px;
+}
+
+.navButtonIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.navButton:hover {
+  backdrop-filter: blur(20px);
+  background: var(--black);
+  transform: scale(1.05);
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.weekDay {
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 41px;
+  width: 60px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 70px);
+  grid-auto-flow: row;
+}
+
+.calendarDay {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid var(--white);
+  width: 70px;
+  height: 70px;
+}
+
+.calendarDay:hover {
+  background: #f3f4f6;
+}
+
+.calendarDay.hasEvent {
+  background: #f3e8ff;
+  color: #7a5af8;
+
+  background-image: url(/images/Cell.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.calendarDay.selected {
+  background: var(--violet);
+  color: white;
+}
+
+.calendarDay.otherMonth {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  color: rgba(168, 168, 168, 0.4);
+  border: 2px solid var(--white);
+  border-radius: 12px;
+  background: #f9f9f9;
+}
+
+.eventsListBlock {
+  border-radius: 16px;
+  padding: 0px 15px 0px 0px;
+
+  height: 210px;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsList {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.TitleTextBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.headerText {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 135%;
+  text-align: center;
+  color: #8426d7;
+}
+
+.eventsTitle {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 140%;
+  text-align: center;
+  color: var(--black);
+}
+
+.eventItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 100px;
+  background: #f9f9f9;
+}
+
+.eventItem:hover {
+  background: #f9fafb;
+}
+
+.eventItem.activeEvent {
+  background: var(--violet);
+  color: white;
+}
+
+.eventItem.activeEvent .eventDay {
+  color: var(--white);
+}
+
+.eventItem.activeEvent .eventTime {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.eventItem.activeEvent .eventTitle {
+  color: var(--white);
+}
+
+.eventItem.activeEvent .eventDescription {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.eventDate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  gap: 10px;
+}
+
+.eventDay {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.eventItem:not(.activeEvent) .eventDay {
+  color: var(--black);
+}
+
+.eventTime {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: rgba(255, 254, 252, 0.6);
+}
+
+.eventItem:not(.activeEvent) .eventTime {
+  color: rgba(14, 14, 14, 0.6);
+}
+
+.eventDivider {
+  width: 2px;
+  height: 100%;
+  background: var(--black);
+  opacity: 0.3;
+
+  border-radius: 2px;
+}
+
+.eventItem.activeEvent .eventDivider {
+  background: var(--white);
+  opacity: 0.3;
+}
+
+.eventInfo {
+  flex: 1;
+}
+
+.eventTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.eventItem:not(.activeEvent) .eventTitle {
+  color: var(--black);
+}
+
+.eventDescription {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+  color: #6b7280;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventItem:not(.activeEvent) .eventDescription {
+  color: rgba(14, 14, 14, 0.4);
+}
+
+.eventCardBlock {
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.eventCard {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.eventCardImage {
+  position: relative;
+  width: 100%;
+  height: 364px;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.cardImage {
+  object-fit: cover;
+}
+
+.eventCardMeta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cardMetaItem {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  color: #6b7280;
+  background: #f9f9f9;
+
+  border-radius: 47px;
+  padding: 10px 16px;
+  height: 37px;
+}
+
+.cardMetaItemText {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 140%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(14, 14, 14, 0.6);
+}
+
+.eventCardTitle {
+  font-family: var(--second-family);
+  font-weight: 500;
+  font-size: 56px;
+  line-height: 120%;
+  letter-spacing: -0.03em;
+  color: var(--black);
+}
+
+.eventCardDescription {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: -0.01em;
+  color: rgba(14, 14, 14, 0.4);
+}
+
+.eventCardResults {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.resultsGrid {
+  display: flex;
+  gap: 12px;
+}
+
+.eventCardButton {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--violet);
+
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.eventCardButton:hover {
+  background: #6d4cdb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(122, 90, 248, 0.3);
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1228px;
+  width: 100%;
+  height: 100%;
+}
+
+.eventImage {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.eventMeta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 120%;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.eventDescription {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  color: #4b5563;
+  margin: 0;
+}
+
+.results {
+  margin-top: 24px;
+}
+
+.eventCardResults {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.resultsTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 140%;
+  color: var(--black);
+}
+
+.resultsList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.resultItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 20px;
+  padding: 10px 16px;
+  background: #f9f9f9;
+}
+
+.resultIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+}
+.resultIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.resultText {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 120%;
+  color: var(--black);
+}
+
+.signUpButton {
+  width: 100%;
+  padding: 16px 24px;
+  background: #7a5af8;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 24px;
+}
+
+.signUpButton:hover {
+  background: #6d4cdb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(122, 90, 248, 0.3);
+}
+
+.eventCardImageWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 52px 52px;
+  flex: 1;
+  height: 100%;
+  gap: 70px;
+  background: var(--white);
+}
+
+.eventCardBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

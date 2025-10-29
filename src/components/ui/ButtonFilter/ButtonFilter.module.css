@@ -1,0 +1,43 @@
+.filterActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.applyBtn {
+  background: var(--violet);
+  color: white;
+  border: none;
+  padding: 24px 42px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.applyBtn:hover {
+  background: #6a1b9a;
+}
+
+.resetBtn {
+  background: white;
+  color: var(--violet);
+  border: 2px solid var(--violet);
+  padding: 24px 42px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resetBtn:hover {
+  background: var(--violet);
+  color: white;
+}

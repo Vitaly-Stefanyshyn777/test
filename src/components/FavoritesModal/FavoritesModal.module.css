@@ -1,0 +1,172 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  background: rgba(14, 14, 14, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal {
+  background: #f9f9f9;
+  gap: 40px;
+  width: auto;
+  flex: 0 0 auto;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  padding: 52px;
+}
+.topbarListBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.title {
+}
+.topbarTitle {
+  font-family: var(--second-family);
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.close {
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: #f2f2f2;
+  width: 46px;
+  height: 46px;
+  color: var(--black);
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+.list {
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 332px);
+  justify-content: center;
+  gap: 16px;
+}
+.item {
+  border: 1px solid #f1f1f1;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.itemMain {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.meta {
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  font-weight: 500;
+}
+.price {
+  opacity: 0.7;
+  font-size: 14px;
+}
+.controls {
+  display: none;
+}
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+}
+.navWrap {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+}
+.buttonsWrap {
+  display: flex;
+  gap: 12px;
+}
+.secondary {
+  color: var(--white);
+  background: var(--violet);
+  cursor: pointer;
+
+  border-radius: 16px;
+  padding: 22px 56px;
+}
+.remove {
+  color: var(--violet);
+  cursor: pointer;
+  border: 2px solid var(--violet);
+  border-radius: 16px;
+  padding: 22px 80px;
+}
+.empty {
+  padding: 24px;
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px 20px;
+}
+
+.pagerBtn {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d6d6d6;
+}
+
+.dotActive {
+  background: #6c3bd7;
+}
