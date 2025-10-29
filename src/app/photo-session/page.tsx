@@ -8,6 +8,7 @@ import PhotoSevenBlock from "@/components/sections/PhotoSession/PhotoSevenBlock/
 import PhotoEightBlock from "@/components/sections/PhotoSession/PhotoEightBlock/PhotoEightBlock";
 import PhotoNineBlock from "@/components/sections/PhotoSession/PhotoNineBlock/PhotoNineBlock";
 import PhotoTenBlock from "@/components/sections/PhotoSession/PhotoTenBlock/PhotoTenBlock";
+import VideoInstruction from "@/components/VideoInstruction";
 
 export default function PhotoSessionPage() {
   return (
@@ -22,6 +23,22 @@ export default function PhotoSessionPage() {
       <PhotoEightBlock />
       <PhotoNineBlock />
       <PhotoTenBlock />
+      
+      {/* Відео інструкція */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <VideoInstruction
+            title="Відео інструкція для фотосесії"
+            description="Подивіться наше відео, щоб дізнатися більше про процес фотосесії та підготовку"
+            videoClassName="h-96 rounded-lg shadow-lg"
+            showTitle={true}
+            showDescription={true}
+            controls={true}
+            autoPlay={false}
+            muted={false}
+          />
+        </div>
+      </section>
     </div>
   );
 }

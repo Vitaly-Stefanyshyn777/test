@@ -9,8 +9,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'URL параметр не надано' }, { status: 400 });
     }
 
-    // Перевіряємо, чи URL належить до нашого домену
-    if (!videoUrl.startsWith('https://www.api.bfb.projection-learn.website/')) {
+    // Перевіряємо, чи URL належить до дозволених доменів (whitelist)
+    const allowedOrigins = [
+      'https://www.api.bfb.projection-learn.website/',
+      // Додаємо dev-відео для тестування плеєра
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/'
+    ];
+
+    const isAllowed = allowedOrigins.some((origin) => videoUrl.startsWith(origin));
+    if (!isAllowed) {
       return NextResponse.json({ error: 'Недопустимий URL' }, { status: 400 });
     }
 

@@ -153,15 +153,21 @@ export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
 
 export async function fetchThemeVideoUrl(): Promise<string | null> {
   try {
+    console.log("[API] Fetching theme settings...");
     const settings = await fetchThemeSettings();
+    console.log("[API] Theme settings received:", settings);
+
     const videoUrl = settings[0]?.acf?.theme_video_url;
+    console.log("[API] Video URL from settings:", videoUrl);
 
     if (!videoUrl) {
+      console.log("[API] No video URL found in settings");
       return null;
     }
 
     // Повертаємо проксований URL для уникнення CORS проблем
     const proxiedUrl = `/api/video-proxy?url=${encodeURIComponent(videoUrl)}`;
+    console.log("[API] Proxied video URL:", proxiedUrl);
     return proxiedUrl;
   } catch (error) {
     console.error("[API] Error fetching theme video URL:", error);
@@ -421,6 +427,13 @@ export async function fetchPurchasedProducts(
     );
 
     if (!response.ok) {
+      // 401/403 — повертаємо порожній список без кидання помилки, щоб не ламати UI
+      if (response.status === 401 || response.status === 403) {
+        console.warn(
+          "[API] Purchased products unauthorized/forbidden, returning empty list"
+        );
+        return [] as PurchasedProduct[];
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -428,7 +441,8 @@ export async function fetchPurchasedProducts(
     return data;
   } catch (error) {
     console.error("[API] Error fetching purchased products:", error);
-    throw new Error("Не вдалося завантажити придбані курси");
+    // На будь-якій неочікуваній помилці повертаємо безпечний fallback
+    return [] as PurchasedProduct[];
   }
 }
 
