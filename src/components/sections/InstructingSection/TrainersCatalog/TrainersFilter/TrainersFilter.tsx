@@ -23,7 +23,7 @@ interface TrainersFilterProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   onReset: () => void;
-  onTrainersChange?: (trainers: unknown[] | undefined) => void;
+  onTrainersChange?: (trainers: unknown[]) => void;
   trainers: Array<{ location?: string }>;
   searchTerm: string;
   hideButtons?: boolean; // Проп для приховування кнопок
@@ -49,14 +49,6 @@ const TrainersFilter = ({
   ) => {
     const newFilters = { ...filters, [key]: value };
     onFiltersChange(newFilters);
-  };
-
-  const handleReset = () => {
-    onReset();
-    // Скидаємо відфільтровані тренери, щоб показати всіх тренерів
-    if (onTrainersChange) {
-      onTrainersChange(undefined);
-    }
   };
 
   const handleApplyFilters = async () => {
@@ -164,7 +156,7 @@ const TrainersFilter = ({
       {!hideButtons && (
         <ButtonFilter
           onApply={handleApplyFilters}
-          onReset={handleReset}
+          onReset={onReset}
           loading={loading}
         />
       )}

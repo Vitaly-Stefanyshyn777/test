@@ -661,11 +661,7 @@ export default function MapPickerModal({
         <div className={s.sidePanel}>
           <div className={s.panelTitle}>
             {selectedCityState || selectedCity
-              ? `${
-                  activeTab === "branch"
-                    ? "Оберіть адресу доставки"
-                    : "Поштомати"
-                }`
+              ? `${activeTab === "branch" ? "Відділення" : "Поштомати"}`
               : "Оберіть місто"}
           </div>
           <div className={s.panelDivider}></div>

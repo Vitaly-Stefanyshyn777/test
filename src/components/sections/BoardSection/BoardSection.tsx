@@ -44,7 +44,7 @@ const BoardSection: React.FC = () => {
 
             <div className={`${s.card} ${s.card2}`}>
               <p className={s.cardDesc2}>
-                Спеціальне антиковзке покриття для кращого зчеплення з поверхнею
+                Для кращого зчеплення з поверхнею під час інтенсивних вправ.
               </p>
               <div className={s.assetWrap}>
                 <div className={s.asset}>
@@ -68,15 +68,16 @@ const BoardSection: React.FC = () => {
               <div className={s.cardTitleBlock}>
                 <h3 className={s.cardTitle}>Захист суглобів під час руху</h3>
                 <p className={s.cardDesc}>
-                  Анатомічно правильна форма вигину, яка забезпечує комфорт
-                  колінам та суглобам, але водночас зберігає балансуючу функцію.
+                  Анатомічно правильна форма вигину, яка забечує комфорт колінам
+                  та суглобам, але водночас зберігає балансуючу функцію.
                 </p>
               </div>
             </div>
 
             <div className={`${s.card} ${s.card4}`}>
               <p className={s.cardDesc4}>
-                Функціональність завдяки еспандерам у комплекті
+                Розширює кількість вправ та варіацій навантажень для більш
+                ефективного тренування.
               </p>
               <div className={s.asset}>
                 <Image

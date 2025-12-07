@@ -78,7 +78,7 @@ const CourseProcess: React.FC = () => {
     <section className={s.section}>
       <div className={s.container}>
         <div className={s.titleTextBlock}>
-          <h2 className={s.title}>Як буде проходити навчання</h2>
+          <h2 className={s.title}>Ваш шлях до тренерства</h2>
         </div>
 
         {isMobile ? (

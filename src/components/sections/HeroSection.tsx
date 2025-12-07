@@ -18,7 +18,7 @@ const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiper, setSwiper] = useState<SwiperClass | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [, setIsLoading] = useState(true);
+  // local loading not used in UI
 
   // Визначення мобільної версії
   useEffect(() => {
@@ -36,7 +36,6 @@ const HeroSection = () => {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      setIsLoading(true);
       try {
         const fetched = await fetchBanners();
         if (!mounted) return;
@@ -97,7 +96,7 @@ const HeroSection = () => {
         setBanners([]);
         setActiveBannerId(null);
       } finally {
-        setIsLoading(false);
+        // no-op
       }
     };
     load();
@@ -157,51 +156,39 @@ const HeroSection = () => {
   );
 
   const getVideoUrlFromBanner = (b?: BannerPost | null): string => {
-    let rawVideoUrl = "";
-
     if (!b) {
-      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-      rawVideoUrl = `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
-    } else {
-      // Нова структура: acf.video.url (якщо video є об'єктом)
-      if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
-        if (b.acf.video.url) {
-          rawVideoUrl = b.acf.video.url;
-        }
-      }
+      const baseUrl =
+        process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+      return `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
+    }
 
-      // Стара структура (якщо acf.video є рядком або масивом)
-      if (!rawVideoUrl) {
-        const video =
-          b.Aside_video ||
-          b.acf?.Aside_video ||
-          b.video ||
-          (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
-          (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
-          b.video_url ||
-          b.acf?.video_url;
-
-        if (Array.isArray(video) && video.length > 0) {
-          rawVideoUrl = video[0];
-        } else if (typeof video === "string" && video.length > 0) {
-          rawVideoUrl = video;
-        }
-      }
-
-      // Fallback до дефолтного відео
-      if (!rawVideoUrl) {
-        const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-        rawVideoUrl = `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
+    // Нова структура: acf.video.url (якщо video є об'єктом)
+    if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+      if (b.acf.video.url) {
+        return b.acf.video.url;
       }
     }
 
-    // Якщо URL вже є проксованим (починається з /api/video-proxy), повертаємо як є
-    if (rawVideoUrl.startsWith("/api/video-proxy")) {
-      return rawVideoUrl;
+    // Стара структура (якщо acf.video є рядком або масивом)
+    const video =
+      b.Aside_video ||
+      b.acf?.Aside_video ||
+      b.video ||
+      (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
+      (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
+      b.video_url ||
+      b.acf?.video_url;
+
+    if (Array.isArray(video) && video.length > 0) {
+      return video[0];
+    }
+    if (typeof video === "string" && video.length > 0) {
+      return video;
     }
 
-    // Інакше проксуємо через /api/video-proxy для уникнення CORS проблем
-    return `/api/video-proxy?url=${encodeURIComponent(rawVideoUrl)}`;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+    return `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
   };
 
   const getPosterFromBanner = (b?: BannerPost | null): string => {

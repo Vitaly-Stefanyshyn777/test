@@ -15,7 +15,6 @@ type Props = {
   schedule_five?: string;
   schedule_two?: string;
   address?: string;
-  coordinates?: string; // координати у форматі "lat, lng"
   onEdit?: () => void;
   onDelete?: () => void;
 };
@@ -27,7 +26,6 @@ export default function LocationCard({
   schedule_five,
   schedule_two,
   address,
-  coordinates,
   onEdit,
   onDelete,
 }: Props) {
@@ -69,12 +67,6 @@ export default function LocationCard({
             <span className={styles.addressLabel}>Адреса:</span>
             <span className={styles.addressValue}>{address || "—"}</span>
           </div>
-          {coordinates && (
-            <div className={styles.address}>
-              <span className={styles.addressLabel}>Координати:</span>
-              <span className={styles.addressValue}>{coordinates}</span>
-            </div>
-          )}
         </div>
         <div className={styles.addressActionsContainer}>
           <div className={styles.separatorLine}></div>

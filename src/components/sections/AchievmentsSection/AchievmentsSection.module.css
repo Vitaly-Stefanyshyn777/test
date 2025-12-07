@@ -5,7 +5,7 @@
   border-radius: 2.92vw;
   z-index: 10;
   position: relative;
-  bottom: 60px;
+  bottom: 40px;
 
   h2 {
     margin-bottom: 3.75vw;
@@ -13,6 +13,7 @@
     font-style: normal;
     font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.56px;
     color: var(--text-black);
     text-align: center;
   }
@@ -36,6 +37,7 @@
           font-style: normal;
           font-weight: 600;
           line-height: 1.2;
+          letter-spacing: -0.32px;
           color: var(--text-black);
         }
 
@@ -46,6 +48,7 @@
           font-style: normal;
           font-weight: 500;
           line-height: 1.4;
+          letter-spacing: -0.16px;
           color: var(--text-black-transparent);
         }
 
@@ -144,6 +147,7 @@
           font-style: normal;
           font-weight: 600;
           line-height: 1.2;
+          letter-spacing: -0.56px;
           color: rgba(255, 254, 252, 1);
         }
 
@@ -153,6 +157,7 @@
           font-style: normal;
           font-weight: 500;
           line-height: 1.4;
+          letter-spacing: -0.16px;
           color: rgba(255, 254, 252, 0.6);
         }
       }
@@ -173,6 +178,7 @@
         font-style: normal;
         font-weight: 600;
         line-height: 1.2;
+        letter-spacing: -0.9px;
         color: rgba(14, 14, 14, 1);
       }
 
@@ -249,7 +255,7 @@
         height: 14.48vw;
         padding: 1.25vw;
         border-radius: 1.67vw;
-        background-image: url(/Frame13213181005.png) !important;
+        background-image: url(/images/Frame13213181002.png) !important;
         background-size: cover;
         background-color: var(--bg-light);
 
@@ -259,6 +265,7 @@
           font-style: normal;
           font-weight: 600;
           line-height: 1.2;
+          letter-spacing: -0.32px;
           color: rgba(14, 14, 14, 1);
         }
 
@@ -269,6 +276,7 @@
           font-style: normal;
           font-weight: 500;
           line-height: 1.4;
+          letter-spacing: -0.16px;
           color: rgba(14, 14, 14, 0.4);
         }
       }
@@ -310,6 +318,7 @@
           font-style: normal;
           font-weight: 600;
           line-height: 1.2;
+          letter-spacing: -0.56px;
           color: rgba(14, 14, 14, 1);
         }
 
@@ -319,6 +328,7 @@
           font-style: normal;
           font-weight: 500;
           line-height: 1.4;
+          letter-spacing: -0.16px;
           color: var(--text-black-transparent);
         }
       }
@@ -337,6 +347,7 @@
           font-style: normal;
           font-weight: 600;
           line-height: 1.1;
+          letter-spacing: -0.32px;
           color: rgba(255, 254, 252, 1);
         }
       }
@@ -392,6 +403,7 @@
     font-weight: 700 !important;
     font-size: mvw(28) !important;
     line-height: 120% !important;
+    letter-spacing: -0.01em !important;
     color: var(--black) !important;
     margin-bottom: mvw(40) !important;
     text-align: center !important;
@@ -417,6 +429,7 @@
     font-weight: 600;
     font-size: mvw(18) !important;
     line-height: 120%;
+    letter-spacing: -0.01em;
 
     color: var(--black);
   }
@@ -426,6 +439,7 @@
     font-weight: 500;
     font-size: mvw(14);
     line-height: 140%;
+    letter-spacing: -0.01em;
     opacity: 0.4;
   }
   .section .content .firstBlock .bottomBlock {
@@ -452,6 +466,7 @@
     font-weight: 600;
     font-size: mvw(36);
     line-height: 120%;
+    letter-spacing: -0.01em;
     color: #fff;
   }
   .section .content .firstBlock .bottomBlock p {
@@ -460,6 +475,7 @@
     font-weight: 500;
     font-size: mvw(14);
     line-height: 140%;
+    letter-spacing: -0.01em;
     color: var(--white);
     opacity: 0.6;
   }
@@ -539,6 +555,7 @@
     font-weight: 600;
     font-size: mvw(16);
     line-height: 120%;
+    letter-spacing: -0.01em;
   }
   /* Перекриваємо десктопне правило з більшою специфічністю */
   .section .content .secondBlock .stonks .blockTitle div h4 {
@@ -546,12 +563,14 @@
     font-weight: 600;
     font-size: mvw(16) !important;
     line-height: 120% !important;
+    letter-spacing: -0.01em !important;
   }
   .section .content .secondBlock .stonks .blockTitle div p {
     font-family: var(--font-family) !important;
     font-weight: 500 !important;
     font-size: mvw(12) !important;
     line-height: 140% !important;
+    letter-spacing: -0.01em !important;
     color: rgba(14, 14, 14, 0.6) !important;
   }
   .section .content .secondBlock .stonks .blockTitle p {
@@ -559,6 +578,7 @@
     font-weight: 500;
     font-size: mvw(12);
     line-height: 140%;
+    letter-spacing: -0.01em;
     opacity: 0.6;
   }
   /* svg графік */
@@ -582,6 +602,7 @@
     font-family: var(--second-family);
     font-size: mvw(40);
     line-height: 120%;
+    letter-spacing: -0.01em;
     font-weight: 600;
     text-align: center;
     color: var(--black);
@@ -610,6 +631,7 @@
     font-weight: 600;
 
     line-height: 120%;
+    letter-spacing: -0.01em;
 
     color: var(--black);
   }
@@ -620,6 +642,7 @@
     font-weight: 500;
 
     line-height: 140%;
+    letter-spacing: -0.01em;
     color: var(--black);
     opacity: 0.4;
   }
@@ -661,6 +684,7 @@
     font-family: var(--second-family);
 
     line-height: 120%;
+    letter-spacing: -0.01em;
   }
   .section .content .instructors p {
     font-size: mvw(14);
@@ -691,6 +715,7 @@
     font-weight: 600;
 
     line-height: 120%;
+    letter-spacing: -0.01em;
     color: var(--white);
   }
   .happyMen {

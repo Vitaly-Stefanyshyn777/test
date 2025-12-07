@@ -5,12 +5,10 @@
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  display: block;
+  border: 1px solid #f0f0f0;
   position: relative;
   box-sizing: border-box;
-  border: 1px solid #f0f0f0;
 }
 
 .cardImage {
@@ -18,7 +16,6 @@
   width: 100%;
   height: 251px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 .productImage {
@@ -70,6 +67,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 100%;
+  letter-spacing: -0.01em;
   color: #8426d7;
 }
 .hitBadge {
@@ -84,6 +82,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 100%;
+  letter-spacing: -0.01em;
   color: var(--white);
 }
 .discountBadge {
@@ -102,6 +101,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 100%;
+  letter-spacing: -0.01em;
   color: #fffefc;
 }
 
@@ -139,11 +139,12 @@
 .cardContent {
   display: flex;
   flex-direction: column;
+
   padding: 18px 24px 24px;
   width: 100%;
+  height: 280px;
   box-sizing: border-box;
   justify-content: space-between;
-  flex: 1 1 auto;
 }
 
 .category {
@@ -151,6 +152,7 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 140%;
+  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -252,6 +254,7 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--violet);
   background: rgba(132, 38, 215, 0.1);
 
@@ -386,6 +389,7 @@
     font-weight: 500;
 
     line-height: 140%;
+    letter-spacing: -0.01em;
     color: var(--black);
   }
   .requirementsBadge {
@@ -433,6 +437,7 @@
     font-weight: 500;
     font-size: mvw(10);
     line-height: 140%;
+    letter-spacing: -0.01em;
     color: var(--violet);
     background: rgba(132, 38, 215, 0.1);
 
@@ -463,6 +468,7 @@
     font-weight: 500;
     font-size: mvw(14);
     line-height: 100%;
+    letter-spacing: -0.01em;
     color: var(--grey-for-cards);
   }
   .productInfo {

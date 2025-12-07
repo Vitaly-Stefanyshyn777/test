@@ -293,7 +293,7 @@ export default function AchievmentsSection() {
                     <li>{brain}</li>
                   </ul>
                   <div className={s.instructorsText}>
-                    <h3>400+ </h3>
+                    <h3>300+ </h3>
                     <p>
                       Сертифікованих інструкторів BFB по всій Україні та за її
                       межами

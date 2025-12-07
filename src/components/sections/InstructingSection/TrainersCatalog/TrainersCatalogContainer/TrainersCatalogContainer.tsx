@@ -4,7 +4,6 @@ import styles from "./TrainersCatalogContainer.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import TrainersGrid from "../TrainersGrid/TrainersGrid";
 import { useCoachesQuery } from "@/components/hooks/useCoachesQuery";
-import TrainersCatalogContainerSkeleton from "./TrainersCatalogContainerSkeleton";
 
 interface Props {
   block: {
@@ -67,17 +66,14 @@ const TrainersCatalogContainer = ({ filteredPosts }: Props) => {
 
   // pagination handled via SliderNav
 
-  if (isLoading) {
-    return <TrainersCatalogContainerSkeleton />;
-  }
-
   return (
     <div className={styles.catalogContainer}>
       <div className={styles.mainContent}>
         {isError && (
           <div className={styles.error}>Не вдалося завантажити тренерів</div>
         )}
-        {!isError && <TrainersGrid trainers={trainersForGrid} />}
+        {isLoading && <div className={styles.loading}>Завантаження…</div>}
+        {!isLoading && !isError && <TrainersGrid trainers={trainersForGrid} />}
         {totalPages > 1 && (
           <SliderNav
             activeIndex={activeIndex}

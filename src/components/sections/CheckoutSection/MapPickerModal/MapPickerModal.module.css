@@ -155,6 +155,7 @@
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
+  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.3;
 }
@@ -261,6 +262,7 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .panelDivider {
@@ -335,6 +337,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.02em;
   color: #cac9c9;
 
   width: 100%;
@@ -382,12 +385,14 @@
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
+  letter-spacing: -0.02em;
   color: var(--black);
 }
 .itemMeta {
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
+  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.3;
 }
@@ -595,43 +600,30 @@
 
 @media (max-width: 1000px) {
   .backdrop {
-    padding: mvw(40) 0;
     align-items: flex-end;
+    padding: 0;
   }
 
   .modal {
     width: 100%;
     max-width: 100%;
-    height: 100%;
-    max-height: 100%;
+    height: 90vh;
+    max-height: 90vh;
     border-radius: mvw(20) mvw(20) 0 0;
     display: flex;
     flex-direction: column;
-    width: mvw(343);
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    border-radius: mvw(12);
-  }
-
-  .modal::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    width: 343px;
   }
 
   .body {
     flex-direction: column;
-    flex: 1.2;
+    flex: 1;
     min-height: 0;
-    gap: mvw(8);
   }
 
   .mapBox {
     flex: 1;
     min-height: 0;
-    border-radius: mvw(12);
-    overflow: hidden;
-    background: var(--white);
   }
 
   .locationClose {
@@ -640,7 +632,6 @@
     width: mvw(40);
     height: mvw(40);
     border-radius: mvw(10);
-    background: #f2f2f2;
   }
 
   .locationClose svg {
@@ -654,24 +645,21 @@
     height: auto;
     max-height: 50vh;
     padding: mvw(20) mvw(16);
-    border-radius: mvw(12);
-    background: var(--white);
+    border-radius: 0;
     box-shadow: none;
     border-top: 1px solid #eee;
     order: -1;
     overflow-y: auto;
-    gap: mvw(16);
   }
 
   .panelTitle {
-    font-size: mvw(20);
+    font-size: mvw(18);
     padding: 0 mvw(40) 0 0;
-    width: mvw(180);
   }
 
   .panelDivider {
     width: 100%;
-    /* margin: mvw(12) 0; */
+    margin: mvw(12) 0;
   }
 
   .tabs {
@@ -679,30 +667,27 @@
   }
 
   .tab {
-    font-size: mvw(20);
-    color: var(--black);
+    font-size: mvw(16);
   }
 
   .tabActive {
-    font-size: mvw(20);
+    font-size: mvw(16);
+  }
+
+  .searchWrap {
+    margin-bottom: mvw(12);
   }
 
   .search {
-    padding: mvw(14) mvw(16) mvw(14) mvw(50);
+    padding: mvw(14) mvw(16) mvw(14) mvw(40);
     border-radius: mvw(10);
     font-size: mvw(14);
-    color: var(--black);
-    opacity: 0.5;
-    background: var(--bg-color);
-
-    border: none;
   }
 
   .searchIcon {
-    right: mvw(274);
+    right: mvw(12);
     width: mvw(20);
     height: mvw(20);
-    opacity: 0.2;
   }
 
   .list {

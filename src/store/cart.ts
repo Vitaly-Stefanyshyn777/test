@@ -9,7 +9,6 @@ export interface CartItem {
   quantity: number;
   color?: string;
   originalPrice?: number;
-  sku?: string;
 }
 
 export interface AddItemData {
@@ -19,7 +18,6 @@ export interface AddItemData {
   image?: string;
   color?: string;
   originalPrice?: number;
-  sku?: string;
 }
 
 interface CartState {
@@ -56,7 +54,6 @@ export const useCartStore = create<CartState>()(
               image: item.image,
               color: item.color,
               originalPrice: item.originalPrice,
-              sku: item.sku,
               quantity: nextQty,
             },
           };

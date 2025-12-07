@@ -11,9 +11,12 @@ export const mainNavigation: NavigationItem[] = [
   },
   {
     href: "/courses",
-    label: "Навчання B.F.B",
+    label: "Навчання",
   },
-
+  {
+    href: "/about-bfb",
+    label: "B.F.B",
+  },
   {
     href: "/products",
     label: "Інвентар",

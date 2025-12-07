@@ -34,7 +34,6 @@ export default function CoursesList({ courses, onWatch }: Props) {
                 src={course.image}
                 alt={course.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 300px"
                 className={styles.image}
               />
             </div>

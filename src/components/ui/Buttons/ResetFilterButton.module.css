@@ -16,8 +16,7 @@
 
 .resetButton:hover {
   background: var(--black);
-  color: var(--white);
-  border: 2px solid var(--black);
+  color: var(--violet);
 }
 
 .resetButton:disabled {
@@ -32,13 +31,9 @@
     border-radius: mvw(16);
     font-size: mvw(16);
     height: mvw(56);
-    background: var(--violet);
-    color: var(--white);
   }
 
   .resetButton:hover {
-    background: var(--black);
-    color: var(--white);
-    border: mvw(2) solid var(--black);
+    border-color: var(--black) !important;
   }
 }

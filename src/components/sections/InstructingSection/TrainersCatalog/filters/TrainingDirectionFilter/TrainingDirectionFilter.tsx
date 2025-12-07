@@ -3,8 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./TrainingDirectionFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 interface TrainingDirectionFilterProps {
   value: string;
@@ -102,14 +100,7 @@ export const TrainingDirectionFilter = ({
         }`}
       >
         {loading ? (
-          <div className={styles.radioGroup}>
-            {[...Array(3)].map((_, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <Skeleton width={20} height={20} borderRadius={10} />
-                <Skeleton width={180} height={16} />
-              </div>
-            ))}
-          </div>
+          <div className={styles.loadingText}>Завантаження...</div>
         ) : (
           <div className={styles.radioGroup}>
             {directions.map((direction) => {

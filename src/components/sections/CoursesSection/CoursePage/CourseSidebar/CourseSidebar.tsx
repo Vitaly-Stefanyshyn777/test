@@ -28,11 +28,9 @@ import {
 } from "@/components/hooks/useWpQueries";
 import { useCourseQuery as useCourseDataQuery } from "@/lib/coursesQueries";
 import { useCartStore } from "@/store/cart";
-import CourseSidebarCourseInfoSkeleton from "./CourseSidebarCourseInfoSkeleton";
-import CourseSidebarImageSkeleton from "./CourseSidebarImageSkeleton";
 
 interface CourseSidebarProps {
-  courseId?: string | number;
+  courseId?: number;
 }
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
@@ -92,14 +90,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   };
 
   // Отримуємо дані курсу для динамічного контенту
-  const { data: course, isLoading: isLoadingCourse } = useCourseQuery(courseId);
+  const { data: course } = useCourseQuery(courseId);
 
   // Отримуємо дані курсу з coursesQueries (як в CourseCard)
-  // Конвертуємо courseId в число для сумісності
-  const courseIdForQuery = typeof courseId === "number" ? courseId : 
-                           /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
-                           169;
-  const { data: courseData, isLoading: isLoadingCourseData } = useCourseDataQuery(courseIdForQuery);
+  const { data: courseData } = useCourseDataQuery(courseId || 169);
 
   // Логування для дебагу
   React.useEffect(() => {
@@ -146,8 +140,11 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (course?.featured_media) {
-      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-      fetch(`${baseUrl}/wp-json/wp/v2/media/${course.featured_media}`)
+      fetch(
+        `${
+          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua"
+        }/wp-json/wp/v2/media/${course.featured_media}`
+      )
         .then((res) => res.json())
         .then((data) => setCourseImage(data.source_url))
         .catch(() => setCourseImage(null));
@@ -182,22 +179,21 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (courseId) {
-      // Використовуємо ID з отриманого курсу, якщо він є, інакше використовуємо courseId
-      const courseIdForApi = course?.id || 
-                              (typeof courseId === "number" ? courseId : 
-                               /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
-                               courseId);
-      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-      fetch(`${baseUrl}/wp-json/wc/v3/products/${courseIdForApi}`, {
-        headers: {
-          Authorization:
-            "Basic " +
-            btoa(
-              "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
-            ),
-          "Content-Type": "application/json",
-        },
-      })
+      fetch(
+        `${
+          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua"
+        }/wp-json/wc/v3/products/${courseId}`,
+        {
+          headers: {
+            Authorization:
+              "Basic " +
+              btoa(
+                "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
+              ),
+            "Content-Type": "application/json",
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           setStoreProduct(data);
@@ -206,7 +202,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
           setStoreProduct(null);
         });
     }
-  }, [courseId, course?.id]);
+  }, [courseId]);
 
   const ratingValue = useMemo(() => {
     const parsed = parseFloat(
@@ -350,12 +346,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   React.useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Використовуємо ID з отриманого курсу, якщо він є
-        const courseIdForApi = course?.id || 
-                               (typeof courseId === "number" ? courseId : 
-                                /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
-                                courseId);
-        const response = await fetch(`/api/wc/v3/products/${courseIdForApi}`);
+        const response = await fetch(`/api/wc/v3/products/${courseId}`);
         if (response.ok) {
           const data = await response.json();
           const categoryIds =
@@ -370,50 +361,46 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
     if (courseId) {
       fetchCategories();
     }
-  }, [courseId, course?.id]);
+  }, [courseId]);
 
   const hasOnlineFormat = categories.includes(67);
   const hasOfflineFormat = categories.includes(68);
 
   return (
     <div className={styles.sidebar}>
-      {isLoadingCourse || isLoadingCourseData ? (
-        <CourseSidebarImageSkeleton />
-      ) : (
-        <div className={styles.imageContainer}>
-          <Image
-            src={normalizeImageUrl(
-              courseImage ||
-                product?.images?.[0]?.src ||
-                "/images/course-hero.jpg"
-            )}
-            alt={(
-              product?.name ||
-              course?.title?.rendered ||
-              "Основи тренерства BFB"
-            ).replace(/____FULL____/g, "")}
-            width={400}
-            height={300}
-            className={styles.courseImage}
-          />
-          <BadgeContainer>
-            {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
-            {isNewProduct(course?.course_data?.Date_start || undefined) && (
-              <Badge variant="new" />
-            )}
+      <div className={styles.imageContainer}>
+        <Image
+          src={normalizeImageUrl(
+            courseImage ||
+              product?.images?.[0]?.src ||
+              "/images/course-hero.jpg"
+          )}
+          alt={(
+            product?.name ||
+            course?.title?.rendered ||
+            "Основи тренерства BFB"
+          ).replace(/____FULL____/g, "")}
+          width={400}
+          height={300}
+          className={styles.courseImage}
+        />
+        <BadgeContainer>
+          {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
+          {isNewProduct(course?.course_data?.Date_start || undefined) && (
+            <Badge variant="new" />
+          )}
 
-            {/* Знижка - якщо курс на розпродажі */}
-            {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
-              <Badge variant="discount" text={`-${finalDiscount}%`} />
-            )}
+          {/* Знижка - якщо курс на розпродажі */}
+          {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
+            <Badge variant="discount" text={`-${finalDiscount}%`} />
+          )}
 
-            {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
-            {storeProduct && isHitProduct(storeProduct) && (
-              <Badge variant="hit" />
-            )}
-          </BadgeContainer>
-        </div>
-      )}
+          {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
+          {storeProduct && isHitProduct(storeProduct) && (
+            <Badge variant="hit" />
+          )}
+        </BadgeContainer>
+      </div>
 
       <div className={styles.courseInfoBlock}>
         <div className={styles.tagsCodeBlock}>
@@ -459,11 +446,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
         </div>
       </div>
 
-      {isLoadingCourse || isLoadingCourseData ? (
-        <CourseSidebarCourseInfoSkeleton />
-      ) : (
-        <div className={styles.courseInfo}>
-          <div className={styles.courseTitleBlock}>
+      <div className={styles.courseInfo}>
+        <div className={styles.courseTitleBlock}>
           <div className={styles.categoryTagBlock}>
             <div className={styles.categoryTag}>Курси</div>
             <div className={styles.titleWithDateRow}>
@@ -670,7 +654,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
           </div>
         </div>
       </div>
-      )}
 
       {!isLoggedIn && (
         <>

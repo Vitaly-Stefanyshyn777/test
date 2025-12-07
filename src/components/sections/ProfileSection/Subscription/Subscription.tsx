@@ -11,12 +11,11 @@ const Subscription: React.FC = () => {
   return (
     <div className={styles.subscriptionContainer}>
       <SubscriptionHeader />
-      <div className={styles.mobileTitleDivider} />
+
       <SectionDivider />
 
       <div className={styles.content}>
         <CurrentPlanCard />
-        <div className={styles.mobileTitleDivider} />
         {/* <PaymentHistory /> */}
         <SectionDivider />
         <PlansGrid />

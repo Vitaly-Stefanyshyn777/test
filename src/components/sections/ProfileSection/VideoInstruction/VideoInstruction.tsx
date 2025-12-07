@@ -4,7 +4,6 @@ import styles from "./VideoInstruction.module.css";
 // Image removed; not used when auto-playing by default
 import { СheckBrderIcon } from "@/components/Icons/Icons";
 import VideoPlayer from "./VideoPlayer";
-import VideoInstructionSkeleton from "./VideoInstructionSkeleton";
 import { fetchThemeVideoUrl } from "@/lib/bfbApi";
 
 const StatusButton: React.FC<{
@@ -39,7 +38,7 @@ interface VideoInstructionProps {
 
 const VideoInstruction: React.FC<VideoInstructionProps> = ({
   title = "Як заповнювати онлайн-кабінет",
-  description = "Перегляньте коротку відеоінструкцію, щоб дізнатися, як правильно заповнити свій онлайн-кабінет.",
+  description = "Перегляньте коротке відеоінструкцію, щоб дізнатися, як правильно заповнити свій онлайн-кабінет.",
   videoThumbnail = "/images/Frame-13213187831.jpg",
   videoUrl,
   isWatched = false,
@@ -74,15 +73,30 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
           setRealVideoUrl(url);
           console.log("[VideoInstruction] Video URL set successfully");
         } else {
-          console.log("[VideoInstruction] No video URL received");
-          setRealVideoUrl(null);
+          console.log(
+            "[VideoInstruction] No video URL received, using fallback"
+          );
+          // Використовуємо fallback URL з вашого API (реальне відео)
+          const baseUrl =
+            process.env.NEXT_PUBLIC_UPSTREAM_BASE ||
+            "https://www.api.bfb.in.ua";
+          const fallback = `/api/video-proxy?url=${encodeURIComponent(
+            baseUrl + "/wp-content/uploads/2025/10/2025-10-20-14-51-06.mp4"
+          )}`;
+          setRealVideoUrl(fallback);
         }
       } catch (error) {
         console.error(
           "[VideoInstruction] Помилка завантаження відео URL:",
           error
         );
-        setRealVideoUrl(null);
+        // Використовуємо fallback URL при помилці (реальне відео з API)
+        const baseUrl =
+          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+        const fallback = `/api/video-proxy?url=${encodeURIComponent(
+          baseUrl + "/wp-content/uploads/2025/10/2025-10-20-14-51-06.mp4"
+        )}`;
+        setRealVideoUrl(fallback);
       } finally {
         setIsLoading(false);
       }
@@ -97,16 +111,15 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
       currentVideoUrl
     );
     // Якщо URL вже готовий, просто переконуємось що плеєр увімкнено
-    if (currentVideoUrl) {
+    if (currentVideoUrl && currentVideoUrl !== "#") {
       setWatched(true);
     }
   };
 
   // Закриваюча кнопка не потрібна при автопрограванні
 
-  // Використовуємо реальний URL якщо він є, інакше пропс videoUrl
-  const currentVideoUrl = realVideoUrl || videoUrl;
-  const hasVideo = !!currentVideoUrl;
+  // Використовуємо реальний URL якщо він є, інакше fallback
+  const currentVideoUrl = realVideoUrl || videoUrl || "#";
 
   return (
     <div className={styles.videoInstruction}>
@@ -126,15 +139,17 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
       </div>
 
       {/* На мобілці обгортаємо videoContainer та statusButton в один блок */}
-      {isLoading ? (
-        <VideoInstructionSkeleton />
-      ) : isMobile ? (
+      {isMobile ? (
         <div className={styles.videoWithButtonBlock}>
-          <div
-            className={styles.videoContainer}
-            onClick={hasVideo ? handleWatchVideo : undefined}
-          >
-            {hasVideo ? (
+          <div className={styles.videoContainer} onClick={handleWatchVideo}>
+            {isLoading || !currentVideoUrl || currentVideoUrl === "#" ? (
+              <div className={styles.videoThumbnail}>
+                <div className={styles.loadingContainer}>
+                  <div className={styles.loadingSpinner}></div>
+                  <p className={styles.loadingText}>Завантаження відео...</p>
+                </div>
+              </div>
+            ) : (
               <div className={styles.videoPlayerContainer}>
                 <VideoPlayer
                   videoUrl={currentVideoUrl}
@@ -147,30 +162,23 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
                   overlayPlayButton={false}
                 />
               </div>
-            ) : (
-              <div className={styles.videoThumbnail}>
-                <div className={styles.loadingContainer}>
-                  <p className={styles.loadingText}>
-                    Відео інструкція тимчасово недоступна. Будь ласка,
-                    зверніться до підтримки.
-                  </p>
-                </div>
-              </div>
             )}
           </div>
-          {hasVideo && (
-            <StatusButton
-              watched={watched}
-              onToggle={() => setWatched(!watched)}
-            />
-          )}
+          <StatusButton
+            watched={watched}
+            onToggle={() => setWatched(!watched)}
+          />
         </div>
       ) : (
-        <div
-          className={styles.videoContainer}
-          onClick={hasVideo ? handleWatchVideo : undefined}
-        >
-          {hasVideo ? (
+        <div className={styles.videoContainer} onClick={handleWatchVideo}>
+          {isLoading || !currentVideoUrl || currentVideoUrl === "#" ? (
+            <div className={styles.videoThumbnail}>
+              <div className={styles.loadingContainer}>
+                <div className={styles.loadingSpinner}></div>
+                <p className={styles.loadingText}>Завантаження відео...</p>
+              </div>
+            </div>
+          ) : (
             <div className={styles.videoPlayerContainer}>
               <VideoPlayer
                 videoUrl={currentVideoUrl}
@@ -182,15 +190,6 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
                 poster={videoThumbnail}
                 overlayPlayButton={false}
               />
-            </div>
-          ) : (
-            <div className={styles.videoThumbnail}>
-              <div className={styles.loadingContainer}>
-                <p className={styles.loadingText}>
-                  Відео інструкція тимчасово недоступна. Будь ласка, зверніться
-                  до підтримки.
-                </p>
-              </div>
             </div>
           )}
         </div>

@@ -1,237 +1,100 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import styles from "./TrainerProfile.module.css";
 import {
-  DumbbellIcon,
+  Weight2Icon,
   ExamTaskIcon,
   LocationIcon,
   WalkingIcon,
   ChevronDownIcon,
 } from "@/components/Icons/Icons";
 import type { TrainerProfileForm } from "./types";
-import InputField from "@/components/ui/FormFields/InputField";
 
 type Props = {
   formData: TrainerProfileForm;
   onChange: (field: keyof TrainerProfileForm, value: string) => void;
-  errors?: {
-    position?: string;
-    experience?: string;
-    location?: string;
-    desiredBoards?: string;
-  };
 };
 
-const experienceOptions = [
-  { value: "1", label: "1 рік" },
-  { value: "2", label: "2 роки" },
-  { value: "3", label: "3 роки" },
-  { value: "5", label: "5+ років" },
-];
+const experienceOptions = ["1", "2", "3", "5"];
+const boardsOptions = ["1", "2", "3", "5"];
 
-const boardsOptions = [
-  { value: "1", label: "1 борд" },
-  { value: "2", label: "2 борди" },
-  { value: "3", label: "3 борди" },
-  { value: "5", label: "5+ бордів" },
-];
-
-export default function PersonalDataSection({
-  formData,
-  onChange,
-  errors = {},
-}: Props) {
-  const [experienceOpen, setExperienceOpen] = useState(false);
-  const [boardsOpen, setBoardsOpen] = useState(false);
-  const experienceRef = useRef<HTMLDivElement>(null);
-  const boardsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        experienceRef.current &&
-        !experienceRef.current.contains(event.target as Node)
-      ) {
-        setExperienceOpen(false);
-      }
-      if (
-        boardsRef.current &&
-        !boardsRef.current.contains(event.target as Node)
-      ) {
-        setBoardsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const getExperienceLabel = () => {
-    const option = experienceOptions.find(
-      (o) => o.value === formData.experience
-    );
-    return option ? option.label : "";
-  };
-
-  const getBoardsLabel = () => {
-    const option = boardsOptions.find(
-      (o) => o.value === formData.desiredBoards
-    );
-    return option ? option.label : "";
-  };
-
+export default function PersonalDataSection({ formData, onChange }: Props) {
   return (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>Особисті дані</h3>
 
       <div className={styles.inputGroup}>
-        <InputField
-          icon={<DumbbellIcon className={styles.inputIcon} />}
-          label="Посада"
-          value={formData.position}
-          hasError={!!errors.position}
-          supportingText={errors.position || "Поле обов'язкове"}
-          onChange={(e) => onChange("position", e.target.value)}
-        />
+        <div className={styles.inputContainer}>
+          <div className={styles.inputIconWrapper}>
+            <Weight2Icon className={styles.inputIcon} />
+          </div>
+          <input
+            type="text"
+            placeholder="Посада"
+            value={formData.position}
+            onChange={(e) => onChange("position", e.target.value)}
+            className={styles.input}
+          />
+        </div>
 
-        <div className={styles.inputContainer} ref={experienceRef}>
-          {(() => {
-            const experienceLabel = getExperienceLabel();
-            const hasExperience = !!experienceLabel;
-            return (
-              <span
-                className={`${styles.selectLabel} ${
-                  hasExperience ? styles.selectLabelFloating : ""
-                }`}
-              >
-                Досвід (років)
-              </span>
-            );
-          })()}
+        <div className={styles.inputContainer}>
           <div className={styles.inputIconWrapper}>
             <ExamTaskIcon className={styles.inputIcon} />
           </div>
-          <button
-            type="button"
-            className={`${styles.customSelectButton} ${
-              getExperienceLabel() ? styles.customSelectButtonFilled : ""
-            } ${experienceOpen ? styles.customSelectButtonActive : ""} ${
-              errors.experience ? styles.customSelectButtonError : ""
-            }`}
-            onClick={() => setExperienceOpen(!experienceOpen)}
+          <select
+            value={formData.experience}
+            onChange={(e) => onChange("experience", e.target.value)}
+            className={styles.select}
           >
-            <span className={styles.customSelectText}>
-              {getExperienceLabel()}
-            </span>
-            <span
-              className={`${styles.customSelectIcon} ${
-                experienceOpen ? styles.customSelectIconRotated : ""
-              }`}
-            >
-              {
-                <img
-                  src="/Frame13213188881.svg"
-                  alt=""
-                  className={styles.checkIcon}
-                />
-              }
-            </span>
-          </button>
-          {experienceOpen && (
-            <div className={styles.customDropdown}>
-              {experienceOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={styles.customDropdownItem}
-                  onClick={() => {
-                    onChange("experience", option.value);
-                    setExperienceOpen(false);
-                  }}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          )}
-          <span className={styles.fieldErrorText}>
-            {errors.experience || ""}
-          </span>
+            <option value="">Досвід (років)</option>
+            {experienceOptions.map((o) => (
+              <option key={o} value={o}>
+                {o === "5" ? "5+ років" : `${o} ${o === "1" ? "рік" : "роки"}`}
+              </option>
+            ))}
+          </select>
+          <div className={styles.chevronWrapper}>
+            <ChevronDownIcon className={styles.chevronIconTop} />
+            <ChevronDownIcon className={styles.chevronIconBottom} />
+          </div>
         </div>
 
-        <InputField
-          icon={<LocationIcon className={styles.inputIcon} />}
-          label="Локація"
-          value={formData.location}
-          hasError={!!errors.location}
-          supportingText={errors.location || "Поле обов'язкове"}
-          onChange={(e) => onChange("location", e.target.value)}
-        />
+        <div className={styles.inputContainer}>
+          <div className={styles.inputIconWrapper}>
+            <LocationIcon className={styles.inputIcon} />
+          </div>
+          <input
+            type="text"
+            placeholder="Локація"
+            value={formData.location}
+            onChange={(e) => onChange("location", e.target.value)}
+            className={styles.input}
+          />
+        </div>
 
-        <div className={styles.inputContainer} ref={boardsRef}>
-          {(() => {
-            const boardsLabel = getBoardsLabel();
-            const hasBoards = !!boardsLabel;
-            return (
-              <span
-                className={`${styles.selectLabel} ${
-                  hasBoards ? styles.selectLabelFloating : ""
-                }`}
-              >
-                Кількість бордів
-              </span>
-            );
-          })()}
+        <div className={styles.inputContainer}>
           <div className={styles.inputIconWrapper}>
             <WalkingIcon className={styles.inputIcon} />
           </div>
-          <button
-            type="button"
-            className={`${styles.customSelectButton} ${
-              getBoardsLabel() ? styles.customSelectButtonFilled : ""
-            } ${boardsOpen ? styles.customSelectButtonActive : ""} ${
-              errors.desiredBoards ? styles.customSelectButtonError : ""
-            }`}
-            onClick={() => setBoardsOpen(!boardsOpen)}
+          <select
+            value={formData.desiredBoards}
+            onChange={(e) => onChange("desiredBoards", e.target.value)}
+            className={styles.select}
           >
-            <span className={styles.customSelectText}>{getBoardsLabel()}</span>
-            <span
-              className={`${styles.customSelectIcon} ${
-                boardsOpen ? styles.customSelectIconRotated : ""
-              }`}
-            >
-              {
-                <img
-                  src="/Frame13213188881.svg"
-                  alt=""
-                  className={styles.checkIcon}
-                />
-              }
-            </span>
-          </button>
-          {boardsOpen && (
-            <div className={styles.customDropdown}>
-              {boardsOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={styles.customDropdownItem}
-                  onClick={() => {
-                    onChange("desiredBoards", option.value);
-                    setBoardsOpen(false);
-                  }}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          )}
-          <span className={styles.fieldErrorText}>
-            {errors.desiredBoards || ""}
-          </span>
+            <option value="">Бажана кількість бордів</option>
+            {boardsOptions.map((o) => (
+              <option key={o} value={o}>
+                {o === "5"
+                  ? "5+ бордів"
+                  : `${o} ${o === "1" ? "борд" : "борди"}`}
+              </option>
+            ))}
+          </select>
+          <div className={styles.chevronWrapper}>
+            <ChevronDownIcon className={styles.chevronIconTop} />
+            <ChevronDownIcon className={styles.chevronIconBottom} />
+          </div>
         </div>
       </div>
     </div>

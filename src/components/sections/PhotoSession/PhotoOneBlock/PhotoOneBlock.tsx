@@ -60,7 +60,6 @@ const PhotoOneBlock: React.FC = () => {
                 src="/images/2025-07-2916.32.481.png"
                 alt="Приклад"
                 fill
-                sizes="(max-width: 768px) 100vw, 800px"
                 className={s.photo}
               />
             </div>

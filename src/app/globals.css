@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "react-loading-skeleton/dist/skeleton.css";
 
 :root {
   --text-black: rgba(14, 14, 14, 1);
@@ -128,21 +127,4 @@ header {
 
 *::-webkit-scrollbar-thumb:hover {
   background: var(--black);
-}
-
-/* Кастомні стилі для react-loading-skeleton */
-.react-loading-skeleton {
-  animation: skeleton-loading 1.5s ease-in-out infinite;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
-    opacity: 1;
-  }
 }

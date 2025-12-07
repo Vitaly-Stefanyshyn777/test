@@ -12,12 +12,7 @@ import {
 import type { NavigationItem } from "./types";
 
 export const navigationItems: NavigationItem[] = [
-  {
-    id: "home",
-    label: "Головна",
-    href: "/profile",
-    icon: HouseIcon,
-  },
+  { id: "home", label: "Головна", href: "/profile", icon: HouseIcon },
   {
     id: "trainer-profile",
     label: "Профіль тренера",

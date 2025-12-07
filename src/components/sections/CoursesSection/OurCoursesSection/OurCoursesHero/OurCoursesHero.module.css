@@ -63,6 +63,7 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 140%;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -72,6 +73,7 @@
   font-weight: 800;
   font-size: 72px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -81,6 +83,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--white);
   width: 820px;
 }

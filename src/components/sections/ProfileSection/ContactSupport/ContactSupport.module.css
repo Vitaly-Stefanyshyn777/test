@@ -8,6 +8,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0 0 32px 0;
 }
@@ -15,7 +16,6 @@
 .contactGrid {
   display: flex;
   gap: 12px;
-  align-items: stretch;
 }
 
 .hoursInfoBlock {
@@ -27,9 +27,8 @@
 .contactInfo {
   background: #f9f9f9;
   border-radius: 16px;
-  width: 208px;
-  flex: 0 0 208px;
-  height: 184px;
+  width: auto;
+  height: auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -48,6 +47,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
+  letter-spacing: -0.02em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -57,20 +57,10 @@
 
   font-family: var(--second-family);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 110%;
+  letter-spacing: -0.02em;
   color: var(--black);
-}
-
-.contactPhoneValue {
-  font-size: 17px;
-}
-
-.contactEmailValue {
-  font-size: 16px;
-  line-height: 140%;
-  color: rgba(14, 14, 14, 0.8);
-  word-break: break-all;
 }
 
 .contactValue:hover {
@@ -82,11 +72,9 @@
   border-radius: 16px;
   padding: 32px;
   width: auto;
-  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 192px;
 }
 
 .socialIcons {
@@ -145,13 +133,11 @@
   padding: 32px;
   width: auto;
   height: auto;
-  justify-content: center;
-  /* height: 100%; */
+
   display: flex;
   flex-direction: column;
   gap: 12px;
-  justify-content: flex-start;
-  height: 192px;
+  justify-content: center;
 }
 
 .hoursItem {
@@ -165,6 +151,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
+  letter-spacing: -0.02em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -173,6 +160,7 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 130%;
+  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -187,6 +175,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
+  letter-spacing: -0.02em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -195,62 +184,56 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 110%;
+  letter-spacing: -0.02em;
   color: var(--black);
 }
 
-.mapBlock {
+.mapContainer {
   width: 276px;
-  height: 200px;
-  border-radius: 16px;
-  overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
-  background: #f0f8f0;
-  border: 1px solid rgba(14, 14, 14, 0.08);
-  height: 184px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.mapIframe {
+.mapContainer:hover {
+  transform: scale(1.02);
+}
+
+.mapPlaceholder {
   width: 100%;
   height: 100%;
-  border: 0;
-}
-
-.mapIcons {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.mapIcon {
-  position: absolute;
-  border: none;
-  padding: 0;
-  background: none;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.mapIconPrimary {
-  top: 32px;
-  left: 50%;
-  transform: translateX(-50%);
+  background: #f0f8f0;
   border-radius: 16px;
-  /* width: 82px;
-  height: 82px; */
-  img {
-    width: 82px;
-    height: 82px;
-  }
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.mapIconSecondary {
-  right: 18px;
-  bottom: 20px;
-  img {
-    width: 37px;
-    height: 37px;
-  }
+.mapPin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+  z-index: 2;
+}
+
+.mapLabels {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1;
+}
+
+.mapLabel {
+  font-size: 12px;
+  color: #333;
+  font-weight: 500;
 }
 
 @media (max-width: 1000px) {
@@ -286,7 +269,7 @@
   .contactInfo {
     background: transparent;
     padding: 0;
-    gap: mvw(20);
+    gap: mvw(16);
     border-radius: 0;
     flex: 1;
     border-radius: mvw(20);
@@ -349,22 +332,11 @@
   }
 
   .socialIcon {
-    background: var(--white);
     width: mvw(58);
     height: mvw(58);
-    border-radius: mvw(16);
+    border-radius: mvw(12);
     border-width: mvw(2);
     border: mvw(2) solid rgba(14, 14, 14, 0.1);
-  }
-
-  .mapIconPrimary img {
-    width: mvw(58);
-    height: mvw(58);
-  }
-
-  .mapIconSecondary img {
-    width: mvw(37);
-    height: mvw(37);
   }
 
   .socialIcon svg {
@@ -376,11 +348,7 @@
     background: var(--white);
     padding: mvw(16);
     gap: mvw(16);
-    border-radius: mvw(16);
-
-    padding: mvw(16);
-    width: mvw(343);
-    height: mvw(141);
+    border-radius: 0;
   }
 
   .hoursInfoBlock {
@@ -421,18 +389,28 @@
     line-height: 110%;
   }
 
-  .mapBlock {
+  .mapContainer {
     width: mvw(168);
     height: mvw(138);
+    flex-shrink: 0;
     border-radius: mvw(16);
   }
 
-  .mapIconPrimary {
-    top: mvw(16);
+  .mapPlaceholder {
+    border-radius: mvw(16);
   }
 
-  .mapIconSecondary {
-    right: mvw(12);
-    bottom: mvw(12);
+  .mapPin {
+    font-size: mvw(20);
+  }
+
+  .mapLabels {
+    top: mvw(8);
+    left: mvw(8);
+    gap: mvw(4);
+  }
+
+  .mapLabel {
+    font-size: mvw(10);
   }
 }

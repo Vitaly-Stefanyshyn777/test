@@ -23,7 +23,6 @@
   flex-direction: column;
   border-radius: 20px;
   padding: 52px;
-  min-width: 600px;
 }
 .topbarListBlock {
   display: flex;
@@ -42,6 +41,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .close {
@@ -60,23 +60,6 @@
     width: 14px;
     height: 14px;
   }
-}
-.close:hover {
-  background-color: var(--violet);
-  color: var(--white);
-}
-.desktopSliderWrap {
-  width: 100%;
-  overflow: hidden;
-  flex: 1;
-  min-height: 0;
-}
-
-.desktopGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 332px);
-  justify-content: center;
-  gap: 20px;
 }
 .list {
   overflow: auto;
@@ -138,38 +121,20 @@
   color: var(--white);
   background: var(--violet);
   cursor: pointer;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 135%;
+
   border-radius: 16px;
   padding: 22px 56px;
-  transition: all 0.3s ease;
-}
-.secondary:hover {
-  color: var(--white);
-  background: var(--black);
 }
 .remove {
   color: var(--violet);
   cursor: pointer;
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 135%;
   border: 2px solid var(--violet);
   border-radius: 16px;
   padding: 22px 80px;
-  background: transparent;
-  transition: all 0.3s ease;
-}
-.remove:hover {
-  color: var(--white);
-  background: var(--black);
-  border: 2px solid var(--black);
 }
 .empty {
   padding: 24px;
   text-align: center;
-  color: var(--black);
 }
 
 .footer {
@@ -209,8 +174,7 @@
 @media (max-width: 1000px) {
   .backdrop {
     padding: 0;
-    /* На мобільному центруємо модалку по вертикалі */
-    align-items: center;
+    align-items: flex-end;
     z-index: 1000;
   }
 
@@ -312,14 +276,12 @@
   .actionsRow {
     flex-direction: column;
     gap: mvw(16);
-    align-items: center;
   }
 
   .buttonsWrap {
     flex-direction: column;
     gap: mvw(12);
     width: 100%;
-    align-items: center;
   }
 
   .secondary {
@@ -340,7 +302,7 @@
 
   .navWrap {
     width: 100%;
-    justify-content: center;
+    /* justify-content: center; */
   }
 
   .empty {

@@ -3,8 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./ForWhomFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 interface ForWhomFilterProps {
   value: string;
@@ -93,14 +91,7 @@ export const ForWhomFilter = ({ value, onChange }: ForWhomFilterProps) => {
         }`}
       >
         {loading ? (
-          <div className={styles.radioGroup}>
-            {[...Array(4)].map((_, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <Skeleton width={20} height={20} borderRadius={10} />
-                <Skeleton width={160} height={16} />
-              </div>
-            ))}
-          </div>
+          <div className={styles.loadingText}>Завантаження...</div>
         ) : (
           <div className={styles.radioGroup}>
             {options.map((option) => {

@@ -32,6 +32,7 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
 }
@@ -93,10 +94,6 @@
   padding: 16px 20px;
 }
 
-.instagramBadge:hover {
-  background: var(--violet);
-}
-
 .instagramIcon {
   font-size: 14px;
 }
@@ -116,6 +113,7 @@
   font-weight: 600;
   font-size: 18px;
   line-height: 140%;
+  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -124,6 +122,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
+  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -236,10 +235,6 @@
     padding: mvw(8) mvw(12);
     border-radius: mvw(20);
     gap: mvw(6);
-    transition: all 0.3s;
-  }
-  .instagramBadge:hover {
-    background: var(--violet);
   }
   .instagramIcon {
     font-size: mvw(14);

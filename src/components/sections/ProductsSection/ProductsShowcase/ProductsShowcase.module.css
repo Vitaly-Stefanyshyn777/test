@@ -40,6 +40,7 @@
   font-weight: 700;
   font-size: 48px;
   line-height: 100%;
+  letter-spacing: -0.01em;
   color: var(--black);
   text-decoration: none;
   display: block;
@@ -109,9 +110,9 @@
 }
 
 .allCoursesBtn:hover {
-  background: var(--black);
+  background: #6d47e5;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 25px rgba(122, 90, 248, 0.3);
 }
 
 .loading,

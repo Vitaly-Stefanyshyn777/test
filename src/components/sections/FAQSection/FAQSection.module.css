@@ -31,7 +31,7 @@
 
 .leftColumn {
   display: flex;
-  /* gap: 40px; */
+  gap: 40px;
 }
 
 .titleContainer {
@@ -78,18 +78,14 @@
   position: relative;
   width: 100%;
   max-width: 893px;
-  /* aspect-ratio: 893 / 542; */
-  border-radius: 16px;
-  overflow: hidden;
-  height: 542px;
 }
 
 .heroImage {
   width: 100%;
-  height: 28.22917vw;
+  height: auto;
   border-radius: 16px;
   object-fit: cover;
-  display: block;
+  height: 542px;
 }
 
 .rightColumn {

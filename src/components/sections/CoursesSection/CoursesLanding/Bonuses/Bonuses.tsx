@@ -206,7 +206,6 @@ const Bonuses: React.FC = () => {
                   src={src}
                   alt={`Avatar ${i + 1}`}
                   fill
-                  sizes="40px"
                   className={s.avatarImg}
                 />
               </div>
@@ -313,7 +312,7 @@ const Bonuses: React.FC = () => {
       <div className={s.container}>
         <div className={s.header}>
           <p className={s.kicker}>Бонуси</p>
-          <h2 className={s.title}>Що ви отримаєте як тренер BFB?</h2>
+          <h2 className={s.title}>Ваші переваги як тренера BFB?</h2>
         </div>
 
         {isMobile ? (

@@ -1,12 +1,3 @@
-export interface WorkExperienceEntry {
-  gym: string;
-  startMonth: string;
-  startYear: string;
-  endMonth: string;
-  endYear: string;
-  description: string;
-}
-
 export interface TrainerProfileForm {
   position: string;
   experience: string;
@@ -27,7 +18,5 @@ export interface TrainingLocation {
   facebook?: string;
   schedule_five?: string; // будні
   schedule_two?: string; // вихідні
-  address?: string; // текстова адреса
-  coordinates?: string; // координати у форматі "lat, lng"
-  photos?: string[]; // фото залу
+  address?: string;
 }

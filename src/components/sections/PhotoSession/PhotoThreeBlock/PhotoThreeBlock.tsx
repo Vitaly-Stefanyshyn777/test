@@ -61,7 +61,6 @@ const PhotoThreeBlock: React.FC = () => {
                 src="/images/ScreenshotThree.png"
                 alt="Приклад"
                 fill
-                sizes="(max-width: 768px) 100vw, 800px"
                 className={s.photo}
               />
             </div>

@@ -27,6 +27,7 @@
   font-weight: 500;
   font-size: 26px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 .grid2 {
@@ -69,7 +70,7 @@
 }
 .inputWithIconsNova {
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 20px 20px 60px;
   background: var(--white);
   width: 100%;
   box-sizing: border-box;
@@ -79,8 +80,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  /* position: relative; */
+  position: relative;
 
   font-family: var(--font-family);
   font-weight: 400;
@@ -216,10 +216,10 @@
   gap: 8px;
 }
 .iconLeft {
-  /* position: absolute;
+  position: absolute;
   left: 25px;
-  top: 50%; */
-  /* transform: translateY(-50%); */
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   color: var(--black);
@@ -365,7 +365,6 @@
   cursor: pointer;
   width: auto;
   display: inline-block;
-  height: 64px;
 }
 
 .primary:disabled {
@@ -492,7 +491,6 @@
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  width: 924px;
 }
 
 .deliveryRow .inputWrap {
@@ -503,22 +501,12 @@
   width: 457px;
   flex: none;
   position: relative;
-  display: flex;
-}
-
-.deliveryRow .inputWrapBranch .inputWithIcons {
-  flex: 1;
-  width: auto;
 }
 
 .deliveryRow .primary {
   /* flex: 1; */
   width: 461px;
   align-self: flex-start;
-  height: 64px;
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 135%;
 }
 .paymentBlock {
   display: flex;
@@ -569,6 +557,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryTotalAmount {
@@ -576,6 +565,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryCurrency {
@@ -583,6 +573,7 @@
   font-weight: 500;
   font-size: 30px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryCard {
@@ -609,6 +600,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryDivider {
@@ -773,6 +765,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .rowTotalBlock {
@@ -786,6 +779,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .rowCurrencyTotal {
@@ -793,6 +787,7 @@
   font-weight: 500;
   font-size: 30px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .costValuePrice {
@@ -805,6 +800,7 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .costValueCurrency {
@@ -812,6 +808,7 @@
   font-weight: 500;
   font-size: 30px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 .back {
@@ -883,13 +880,6 @@
 .color {
   color: rgba(14, 14, 14, 0.6);
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.colorCode {
-  color: rgba(14, 14, 14, 0.4);
-  font-size: 12px;
 }
 .name {
   font-weight: 500;
@@ -923,6 +913,7 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -931,6 +922,7 @@
   font-weight: 500;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -988,7 +980,7 @@
 
   .grid2 {
     grid-template-columns: 1fr;
-    gap: mvw(16);
+    gap: mvw(8);
   }
 
   .inputWrap,
@@ -1009,26 +1001,18 @@
     padding: mvw(14) mvw(16) mvw(14) mvw(20);
     border-radius: mvw(12);
     font-size: mvw(14);
-    flex-direction: row-reverse;
-    gap: 10px;
   }
 
   .inputWithIconsNova {
-    padding-left: mvw(52);
+    padding-left: mvw(56);
   }
 
   .inputText {
     font-size: mvw(14);
-    width: mvw(290);
-  }
-
-  .dropdownList.scrollable {
-    max-height: mvw(156);
-    overflow-y: auto;
   }
 
   .iconLeft {
-    left: mvw(16);
+    left: mvw(20);
   }
 
   .iconRight {
@@ -1043,7 +1027,6 @@
   .dropdownItem {
     padding: mvw(16);
     font-size: mvw(14);
-    gap: mvw(10);
   }
 
   .courierRow {
@@ -1113,7 +1096,7 @@
   }
 
   .deliveryGrid {
-    gap: mvw(16);
+    gap: mvw(12);
   }
 
   .checkbox {
@@ -1124,8 +1107,7 @@
 
   .deliveryRow {
     flex-direction: column;
-    gap: mvw(16);
-    width: 100%;
+    gap: mvw(8);
   }
   .addressFields {
     gap: mvw(8);
@@ -1140,18 +1122,10 @@
 
   .deliveryRow .inputWrapBranch {
     width: 100%;
-    display: flex;
-  }
-
-  .deliveryRow .inputWrapBranch .inputWithIcons {
-    flex: 1;
-    width: auto;
   }
 
   .deliveryRow .primary {
     width: 100%;
-    height: mvw(52);
-    font-size: mvw(14);
   }
   .deliveryRowAddress {
     flex-direction: column;
@@ -1228,7 +1202,7 @@
     height: mvw(96);
     border-radius: mvw(12);
     flex-shrink: 0;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   .contentCol {
@@ -1254,6 +1228,7 @@
     font-size: mvw(14);
     font-weight: 500;
     line-height: 125%;
+    letter-spacing: -0.01em;
     flex: 1;
     min-width: 0;
   }
@@ -1261,12 +1236,8 @@
   .color {
     font-size: mvw(12);
     line-height: 125%;
+    letter-spacing: -0.01em;
     opacity: 0.6;
-    gap: mvw(4);
-  }
-  .colorCode {
-    font-size: mvw(10);
-    opacity: 0.4;
   }
 
   .controlsBlock {
@@ -1337,6 +1308,7 @@
     gap: mvw(4);
     font-weight: 500;
     line-height: 125%;
+    letter-spacing: -0.01em;
     color: var(--style);
   }
 
@@ -1344,6 +1316,7 @@
     font-size: mvw(14);
     font-weight: 500;
     line-height: 125%;
+    letter-spacing: -0.01em;
   }
 
   .oldPrice {

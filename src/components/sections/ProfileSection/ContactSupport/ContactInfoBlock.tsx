@@ -12,21 +12,15 @@ export default function ContactInfoBlock({
 }) {
   return (
     <div className={styles.contactInfo}>
-      <div className={`${styles.contactItem} ${styles.contactPhone}`}>
+      <div className={styles.contactItem}>
         <span className={styles.contactLabel}>Телефон:</span>
-        <a
-          href={`tel:${phone}`}
-          className={`${styles.contactValue} ${styles.contactPhoneValue}`}
-        >
+        <a href={`tel:${phone}`} className={styles.contactValue}>
           {phone}
         </a>
       </div>
-      <div className={`${styles.contactItem} ${styles.contactEmail}`}>
+      <div className={styles.contactItem}>
         <span className={styles.contactLabel}>Email:</span>
-        <a
-          href={`mailto:${email}`}
-          className={`${styles.contactValue} ${styles.contactEmailValue}`}
-        >
+        <a href={`mailto:${email}`} className={styles.contactValue}>
           {email}
         </a>
       </div>
