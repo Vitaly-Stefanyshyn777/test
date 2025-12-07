@@ -1,42 +1,27 @@
 "use client";
 import React, { useMemo, useState, useEffect } from "react";
 import styles from "./OurCoursesCatalog.module.css";
-import FilterSortPanel, { type SortType } from "@/components/ui/FilterSortPanel/FilterSortPanel";
+import FilterSortPanel from "@/components/ui/FilterSortPanel/FilterSortPanel";
 import ProductsCatalogContainer from "../../ProductsCatalogContainer/CourseCatalogContainer";
 import { useProducts } from "@/components/hooks/useProducts";
+import { useProductsQuery } from "@/components/hooks/useProductsQuery";
 import OurCoursesFilter from "../filters/OurCoursesFilter/OurCoursesFilter";
 import { useFilteredProducts } from "@/components/hooks/useFilteredProducts";
 import OurCoursesFilterModal from "@/components/ui/OurCoursesFilterModal/OurCoursesFilterModal";
 import { FilterMobileIcon, SortArrowIcon } from "@/components/Icons/Icons";
-import SortDropdown from "@/components/ui/FilterSortPanel/SortDropdown";
-import { SORT_OPTIONS } from "@/components/ui/FilterSortPanel/FilterSortPanel";
-import { mapSortTypeToWcParams } from "@/lib/sortMapping";
 
 const OurCoursesCatalog = () => {
   const { filters, updateFilters, resetFilters } = useProducts();
+  const { data: products = [], isLoading, isError } = useProductsQuery();
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<SortType>("popular");
-  const [itemsPerPage, setItemsPerPage] = useState<number>(12);
-  
-  // Формуємо фільтри з сортуванням та пагінацією
-  const sortParams = useMemo(() => mapSortTypeToWcParams(sortBy), [sortBy]);
   
   const filtersForQuery = useMemo(
-    () => ({
-      ...(selectedCategoryIds.length > 0 && {
-        category: selectedCategoryIds.map((id) => String(id)),
-      }),
-      orderby: sortParams.orderby,
-      order: sortParams.order,
-      per_page: itemsPerPage,
-      ...(sortParams.on_sale !== undefined && { on_sale: sortParams.on_sale }),
-    }),
-    [selectedCategoryIds, sortParams, itemsPerPage]
+    () => ({ category: selectedCategoryIds.map((id) => String(id)) }),
+    [selectedCategoryIds]
   );
-  
-  const { data: coursesToDisplay = [], isLoading, isError } = useFilteredProducts(filtersForQuery);
+  const { data: filteredProducts = [] } = useFilteredProducts(filtersForQuery);
 
   const searchTerm = "";
 
@@ -71,22 +56,15 @@ const OurCoursesCatalog = () => {
                   <span className={styles.filterMobileLabel}>Фільтр</span>
                 </button>
                 <div className={styles.sortSection}>
-                  <SortDropdown
-                    label="Сортування"
-                    value={sortBy}
-                    options={SORT_OPTIONS}
-                    onChange={(value) => setSortBy(value as SortType)}
-                  />
+                  <div className={styles.sortOptionWrapper}>
+                    <span className={styles.sortOptionLabel}>Сортування</span>
+                    <SortArrowIcon className={styles.sortIcon} />
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
-            <FilterSortPanel
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={setItemsPerPage}
-            />
+            <FilterSortPanel />
           )}
           <div className={styles.catalogContent}>
             <OurCoursesFilter
@@ -96,7 +74,7 @@ const OurCoursesCatalog = () => {
                 resetFilters();
                 setSelectedCategoryIds([]);
               }}
-              products={coursesToDisplay}
+              products={products}
               searchTerm={searchTerm}
               onApplyCategories={(ids) => {
                 setSelectedCategoryIds(ids);
@@ -105,7 +83,9 @@ const OurCoursesCatalog = () => {
 
             <ProductsCatalogContainer
               block={{ subtitle: "Наші товари", title: "Каталог товарів" }}
-              filteredProducts={coursesToDisplay}
+              filteredProducts={
+                selectedCategoryIds.length > 0 ? filteredProducts : products
+              }
             />
 
             {isError && (
@@ -140,7 +120,7 @@ const OurCoursesCatalog = () => {
             resetFilters();
             setSelectedCategoryIds([]);
           }}
-          products={coursesToDisplay}
+          products={products}
           searchTerm={searchTerm}
           onApply={handleApplyFilters}
           onApplyCategories={(ids) => {

@@ -35,13 +35,15 @@ const HeroSectionSkeleton = () => {
             {/* Skeleton для заголовка */}
             <div style={{ width: "100%" }}>
               <Skeleton
-                className={s.heroSkeletonTitleMain}
+                width="100%"
+                height={72}
                 style={{ lineHeight: "110%", marginBottom: "16px" }}
                 baseColor="rgba(255, 255, 255, 0.1)"
                 highlightColor="rgba(255, 255, 255, 0.2)"
               />
               <Skeleton
-                className={s.heroSkeletonTitleSub}
+                width="85%"
+                height={72}
                 style={{ lineHeight: "110%" }}
                 baseColor="rgba(255, 255, 255, 0.1)"
                 highlightColor="rgba(255, 255, 255, 0.2)"
@@ -80,10 +82,7 @@ const HeroSectionSkeleton = () => {
 
         {/* Skeleton для відео */}
         <div className={s.heroVideo}>
-          <VideoPlayerSkeleton
-            showCloseButton={true}
-            className="w-full h-full"
-          />
+          <VideoPlayerSkeleton showCloseButton={true} className="w-full h-full" />
         </div>
       </div>
 
@@ -94,3 +93,4 @@ const HeroSectionSkeleton = () => {
 };
 
 export default HeroSectionSkeleton;
+

@@ -59,23 +59,12 @@ export default function VideoPlayer({
 
     const handleLoadedData = () => {
       setIsLoading(false);
-
-      // Сповіщаємо глобально, що відео успішно завантажилось (для PageLoader на головній)
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("hero-video-ready"));
-      }
     };
 
     const handleError = () => {
       setIsLoading(false);
       const errorMsg = video.error?.message || "Не вдалося завантажити відео";
       setError(errorMsg);
-
-      // Сповіщаємо глобально про помилку відео, щоб PageLoader не висів вічно
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("hero-video-error"));
-      }
-
       if (process.env.NODE_ENV !== "production") {
         console.error("[VideoPlayer] Error loading video:", {
           url: videoUrl,

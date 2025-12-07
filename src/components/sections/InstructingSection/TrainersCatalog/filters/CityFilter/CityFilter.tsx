@@ -157,10 +157,7 @@ export const CityFilter = ({
         {loading ? (
           <div className={styles.checkboxGroup}>
             {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
-              >
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
                 <Skeleton width={20} height={20} borderRadius={3} />
                 <Skeleton width={120} height={16} />
               </div>

@@ -46,6 +46,7 @@
   color: #333;
   margin-bottom: 12px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .radioGroup,
@@ -133,6 +134,7 @@
   cursor: pointer;
   transition: background 0.3s ease;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .applyBtn:hover {
@@ -150,6 +152,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .resetBtn:hover {

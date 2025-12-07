@@ -52,10 +52,7 @@ export const TrainingTypeFilter = ({
           {loading ? (
             <div className={styles.checkboxGroup}>
               {[...Array(4)].map((_, i) => (
-                <div
-                  key={i}
-                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                >
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
                   <Skeleton width={20} height={20} borderRadius={3} />
                   <Skeleton width={120} height={16} />
                 </div>
@@ -66,11 +63,7 @@ export const TrainingTypeFilter = ({
               {options.map((option) => {
                 const inputId = `training-type-${option.key}`;
                 return (
-                  <label
-                    key={option.key}
-                    htmlFor={inputId}
-                    className={styles.checkboxLabel}
-                  >
+                  <label key={option.key} htmlFor={inputId} className={styles.checkboxLabel}>
                     <input
                       type="checkbox"
                       id={inputId}

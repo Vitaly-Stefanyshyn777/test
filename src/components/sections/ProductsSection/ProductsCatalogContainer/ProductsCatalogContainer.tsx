@@ -16,24 +16,19 @@ interface Props {
   filteredProducts: unknown[];
   isNoCertificationFilter?: boolean;
   selectedCertificationFilter?: string; // Вибраний фільтр сертифікації (78, 79, або undefined)
-  isLoading?: boolean; // Стан завантаження з батьківського компонента
 }
 
 const ProductsCatalogContainer = ({
   filteredProducts,
   isNoCertificationFilter = false,
   selectedCertificationFilter,
-  isLoading: parentIsLoading,
 }: Props) => {
   // Якщо зовнішній фільтр не передано – отримуємо товари категорії "товари для спорту"
   const {
     data: sportsProducts = [],
-    isLoading: localIsLoading,
+    isLoading,
     isError,
   } = useQuery(productsWithFiltersQuery({ category: "tovary-dlya-sportu" }));
-  
-  // Використовуємо isLoading з батьківського компонента, якщо передано, інакше локальний
-  const isLoading = parentIsLoading !== undefined ? parentIsLoading : localIsLoading;
 
   // debug logs removed
 

@@ -43,10 +43,7 @@ export const CertificationFilter = ({
           {loading ? (
             <div className={styles.checkboxGroup}>
               {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                >
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
                   <Skeleton width={20} height={20} borderRadius={3} />
                   <Skeleton width={140} height={16} />
                 </div>
@@ -59,15 +56,9 @@ export const CertificationFilter = ({
           ) : (
             <div className={styles.checkboxGroup}>
               {cities.map((city) => {
-                const inputId = `trainer-${city
-                  .toLowerCase()
-                  .replace(/\s+/g, "-")}`;
+                const inputId = `trainer-${city.toLowerCase().replace(/\s+/g, '-')}`;
                 return (
-                  <label
-                    key={city}
-                    htmlFor={inputId}
-                    className={styles.checkboxLabel}
-                  >
+                  <label key={city} htmlFor={inputId} className={styles.checkboxLabel}>
                     <input
                       type="checkbox"
                       id={inputId}

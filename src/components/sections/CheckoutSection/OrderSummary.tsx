@@ -58,9 +58,6 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
                   </div>
                   <div className={s.color}>
                     {it.color || "Колір не вказано"}
-                    {(it.sku || it.id) && (
-                      <span className={s.colorCode}> • {it.sku || it.id}</span>
-                    )}
                   </div>
                 </div>
                 <div className={s.controlsBlock}>

@@ -42,20 +42,15 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
     // Перевіряємо категорії продукту
     // Якщо продукт належить до категорії "Борди" або інших категорій продуктів - використовуємо 70
     // Можна додати інші маппінги за потреби
-    const productCategorySlugs = product.categories.map((cat) =>
-      cat.slug.toLowerCase()
-    );
-
+    const productCategorySlugs = product.categories.map((cat) => cat.slug.toLowerCase());
+    
     // Якщо є категорія, пов'язана з продуктами/бордами
-    if (
-      productCategorySlugs.some(
-        (slug) =>
-          slug.includes("board") ||
-          slug.includes("борд") ||
-          slug.includes("product") ||
-          slug.includes("товар")
-      )
-    ) {
+    if (productCategorySlugs.some((slug) => 
+      slug.includes("board") || 
+      slug.includes("борд") || 
+      slug.includes("product") ||
+      slug.includes("товар")
+    )) {
       return 70; // Борди
     }
 
@@ -161,11 +156,11 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
   const [expandedSections, setExpandedSections] = useState<
     Record<SectionKey, boolean>
   >({
-    description: false, // Закрита за замовчуванням
-    delivery: false, // Закрита за замовчуванням
-    payment: false, // Закрита за замовчуванням
-    return: false, // Закрита за замовчуванням
-    characteristics: false, // Закрита за замовчуванням
+    description: true, // Завжди відкрита
+    delivery: true, // Відкрита за замовчуванням
+    payment: true, // Відкрита за замовчуванням
+    return: true, // Відкрита за замовчуванням
+    characteristics: true,
   });
 
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
@@ -279,7 +274,6 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
         price: parsedPrice,
         image: previewImage,
         originalPrice: parsedOriginalPrice,
-        sku: product.sku,
       },
       quantity
     );
@@ -631,7 +625,7 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
                 </div>
                 <div className={styles.productCode}>
                   <p className={styles.productText}>Код товару:</p>{" "}
-                  {product.sku || product.id || "10001"}
+                  {product.sku || "10001"}
                 </div>
               </div>
             </div>
@@ -682,10 +676,9 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
                     <p className={styles.sectionContentTextOne}>
                       Нова пошта – доставка у відділення або кур’єром за 1–3
                       дні. <br />
-                      Укрпошта - бюджетний варіант доставки, термін 2-5
+                      Самовивіз з Мукачево, вул. Духновича 40.
                       <br />
-                      Самовивіз (за наявності шоуруму) - уточнюйте локацію.{" "}
-                      <br />
+                      Доставка за кордон через перевізників. <br />
                     </p>
                     <p className={styles.sectionContentTextTwo}>
                       {" "}
@@ -741,13 +734,9 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
               {expandedSections.return && (
                 <div className={styles.sectionContent}>
                   <p className={styles.sectionContentText}>
-                    Обмін та повернення можливі протягом 14 днів відповідно до
-                    Закону України «Про захист прав споживачів».
-                  </p>
-                  <p className={styles.sectionContentText}>
-                    Товари без слідів носіння, зі збереженими бирками та в
-                    оригінальній упаковці можна повернути. Доставка повернення -
-                    за рахунок покупця, якщо товар не має браку.
+                    Ми дбаємо про комфорт наших клієнтів. Якщо вам потрібно
+                    обміняти або повернути товар по певним причинам — зверніться
+                    до менеджера, і ми знайдемо найкраще рішення.с
                   </p>
                 </div>
               )}
