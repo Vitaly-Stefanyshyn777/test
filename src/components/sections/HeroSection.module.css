@@ -21,8 +21,8 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  /* background буде додано через inline style з JS */
-  /* Не блокуємо кліки по елементам зверху (навігація, кнопки) */
+  /* background Р±СѓРґРµ РґРѕРґР°РЅРѕ С‡РµСЂРµР· inline style Р· JS */
+  /* РќРµ Р±Р»РѕРєСѓС”РјРѕ РєР»С–РєРё РїРѕ РµР»РµРјРµРЅС‚Р°Рј Р·РІРµСЂС…Сѓ (РЅР°РІС–РіР°С†С–СЏ, РєРЅРѕРїРєРё) */
   pointer-events: none;
 }
 
@@ -82,6 +82,7 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 140%;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -91,22 +92,9 @@
   font-weight: 800;
   font-size: 72px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--white);
-}
-
-.heroSkeletonTitleMain {
-  width: 40vw;
-  height: 5vw;
-  max-width: 720px;
-  max-height: 72px;
-}
-
-.heroSkeletonTitleSub {
-  width: 34vw;
-  height: 4vw;
-  max-width: 612px;
-  max-height: 64px;
 }
 
 .heroDescription {
@@ -114,6 +102,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -155,7 +144,7 @@
   color: var(--white);
   background: var(--violet);
   font-family: var(--third-family);
-  font-weight: 600;
+  font-weight: 800;
   font-size: 16px;
   line-height: 100%;
   color: var(--white);
@@ -196,7 +185,7 @@
   position: absolute;
   left: 94px;
   bottom: 85px;
-  z-index: 2; /* вище за банер/слайди */
+  z-index: 2; /* РІРёС‰Рµ Р·Р° Р±Р°РЅРµСЂ/СЃР»Р°Р№РґРё */
 }
 
 /* Floating hero video container (replaces previous inline styles) */
@@ -213,7 +202,7 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
-/* Стилі для відео плеєра в хіро */
+/* РЎС‚РёР»С– РґР»СЏ РІС–РґРµРѕ РїР»РµС”СЂР° РІ С…С–СЂРѕ */
 .heroVideo :global(.closeButton) {
   position: absolute !important;
   left: 16px !important;
@@ -363,14 +352,14 @@
     padding: mvw(68) 0 0 0;
   }
 
-  /* Банер стає звичайним блоком зверху, а не absolute */
+  /* Р‘Р°РЅРµСЂ СЃС‚Р°С” Р·РІРёС‡Р°Р№РЅРёРј Р±Р»РѕРєРѕРј Р·РІРµСЂС…Сѓ, Р° РЅРµ absolute */
   .heroBanner {
     position: relative;
     width: 100%;
     height: mvw(256);
     border-radius: 0 0 mvw(16) mvw(16);
     overflow: hidden;
-    pointer-events: auto; /* Дозволяємо взаємодію з Swiper на мобільній */
+    pointer-events: auto; /* Р”РѕР·РІРѕР»СЏС”РјРѕ РІР·Р°С”РјРѕРґС–СЋ Р· Swiper РЅР° РјРѕР±С–Р»СЊРЅС–Р№ */
   }
 
   .heroBanner :global(.swiper),
@@ -430,6 +419,7 @@
     font-weight: 600;
     font-size: mvw(13);
     line-height: 140%;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--violet);
   }
@@ -439,6 +429,7 @@
     font-weight: 800;
     font-size: mvw(28);
     line-height: 120%;
+    letter-spacing: -0.01em;
     text-transform: uppercase;
     color: var(--black);
   }
@@ -502,7 +493,7 @@
     border: mvw(2) solid var(--violet);
   }
 
-  /* Приховуємо відео на мобільній версії */
+  /* РџСЂРёС…РѕРІСѓС”РјРѕ РІС–РґРµРѕ РЅР° РјРѕР±С–Р»СЊРЅС–Р№ РІРµСЂСЃС–С— */
   /* .heroVideo {
     display: none;
   } */
@@ -520,7 +511,7 @@
     right: 0;
   }
 
-  /* Мобільні стилі для відео плеєра в хіро */
+  /* РњРѕР±С–Р»СЊРЅС– СЃС‚РёР»С– РґР»СЏ РІС–РґРµРѕ РїР»РµС”СЂР° РІ С…С–СЂРѕ */
   .heroVideo :global(.closeButton) {
     left: mvw(16) !important;
     top: mvw(16) !important;
@@ -564,7 +555,7 @@
   .heroVideo :global(.playPauseButton.noBlur .playTriangle img) {
     fill: var(--black);
   }
-  /* Приховуємо навігацію на мобільній версії або змінюємо позиціювання */
+  /* РџСЂРёС…РѕРІСѓС”РјРѕ РЅР°РІС–РіР°С†С–СЋ РЅР° РјРѕР±С–Р»СЊРЅС–Р№ РІРµСЂСЃС–С— Р°Р±Рѕ Р·РјС–РЅСЋС”РјРѕ РїРѕР·РёС†С–СЋРІР°РЅРЅСЏ */
   .heroNavigation {
     display: flex;
     position: absolute;
@@ -573,24 +564,24 @@
     transform: translateX(-50%);
     gap: mvw(8);
     z-index: 5;
-    bottom: auto; /* скидаємо desktop-значення */
+    bottom: auto; /* СЃРєРёРґР°С”РјРѕ desktop-Р·РЅР°С‡РµРЅРЅСЏ */
     align-items: center;
     justify-content: center;
   }
 
-  /* Показуємо тільки лінії (без стрілок) на мобільній версії */
+  /* РџРѕРєР°Р·СѓС”РјРѕ С‚С–Р»СЊРєРё Р»С–РЅС–С— (Р±РµР· СЃС‚СЂС–Р»РѕРє) РЅР° РјРѕР±С–Р»СЊРЅС–Р№ РІРµСЂСЃС–С— */
   .heroNavigation .navArrow {
     display: none !important;
   }
 
-  /* Показуємо тільки контейнер з лініями */
+  /* РџРѕРєР°Р·СѓС”РјРѕ С‚С–Р»СЊРєРё РєРѕРЅС‚РµР№РЅРµСЂ Р· Р»С–РЅС–СЏРјРё */
   .heroNavigation .navDots {
     display: flex;
     gap: mvw(8);
     padding: mvw(68) 0 0 0;
   }
 
-  /* Лінії навігації (мобільна версія) */
+  /* Р›С–РЅС–С— РЅР°РІС–РіР°С†С–С— (РјРѕР±С–Р»СЊРЅР° РІРµСЂСЃС–СЏ) */
   .navDot {
     border-radius: 60px;
     width: mvw(81);
@@ -607,7 +598,7 @@
     transform: none;
   }
 
-  /* Контейнер для двох блоків контенту */
+  /* РљРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ РґРІРѕС… Р±Р»РѕРєС–РІ РєРѕРЅС‚РµРЅС‚Сѓ */
   .heroContent {
     display: flex;
     flex-direction: column;
