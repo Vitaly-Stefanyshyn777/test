@@ -155,14 +155,22 @@ const HeroSection = () => {
   // Helpers to read fields from a banner
   const getBackgroundFromBanner = useCallback(
     (b?: BannerPost | null): string => {
-      if (!b) return "";
+      if (!b) {
+        console.log("🎨 [getBackgroundFromBanner] ⚠️ Банер не передано");
+        return "";
+      }
+
+      console.log("🎨 [getBackgroundFromBanner] Banner ID:", b.id, "isMobile:", isMobile);
+      console.log("🎨 [getBackgroundFromBanner] acf.image:", b.acf?.image);
 
       // Нова структура: acf.image.mobile / acf.image.desctop
       if (b.acf?.image) {
         if (isMobile && b.acf.image.mobile) {
+          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю mobile:", b.acf.image.mobile);
           return b.acf.image.mobile;
         }
         if (!isMobile && b.acf.image.desctop) {
+          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю desktop:", b.acf.image.desctop);
           return b.acf.image.desctop;
         }
       }
@@ -170,7 +178,9 @@ const HeroSection = () => {
       // На мобільних використовуємо Banner_Mobile, якщо він є (стара структура)
       if (isMobile) {
         const mobileBg = b.Banner_Mobile || b.acf?.Banner_Mobile;
+        console.log("🎨 [getBackgroundFromBanner] mobileBg (fallback):", mobileBg);
         if (typeof mobileBg === "string" && mobileBg.length > 6) {
+          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю mobile fallback:", mobileBg);
           return mobileBg;
         }
       }
@@ -184,7 +194,10 @@ const HeroSection = () => {
         b.background ||
         b.acf?.background;
 
-      return typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
+      console.log("🎨 [getBackgroundFromBanner] rawBg (fallback):", rawBg);
+      const result = typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
+      console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю остаточний результат:", result || "ПОРОЖНІЙ РЯДОК!");
+      return result;
     },
     [isMobile]
   );
