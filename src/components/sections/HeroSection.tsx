@@ -299,23 +299,30 @@ const HeroSection = () => {
     "";
 
   // Для діагностики
-  console.log("🎨 [HeroSection RENDER] banners:", banners.length, "activeBannerId:", activeBannerId);
+  console.log(
+    "🎨 [HeroSection RENDER] banners:",
+    banners.length,
+    "activeBannerId:",
+    activeBannerId
+  );
 
   return (
     <section className={s.hero} data-hero-section>
       {/* Banner slider (background) */}
       {banners.length === 0 && (
-        <div style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          background: "rgba(255,0,0,0.8)",
-          color: "white",
-          padding: "20px",
-          borderRadius: "8px",
-          zIndex: 9999,
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "rgba(255,0,0,0.8)",
+            color: "white",
+            padding: "20px",
+            borderRadius: "8px",
+            zIndex: 9999,
+          }}
+        >
           ⚠️ Банери не завантажені! banners.length = {banners.length}
         </div>
       )}
