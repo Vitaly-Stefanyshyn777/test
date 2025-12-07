@@ -274,8 +274,8 @@ export default function CheckoutSection() {
         })
       );
 
-      // Перенаправлення на сторінку успіху
-      window.location.href = "/order-success";
+      // Перенаправлення на сторінку успіху з orderId в URL
+      window.location.href = `/order-success?orderId=${result.id}`;
     } catch (error) {
       // Silent error handling
       alert("Помилка створення замовлення. Спробуйте ще раз.");
