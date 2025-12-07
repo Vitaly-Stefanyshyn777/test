@@ -34,6 +34,9 @@
         font-weight: 600;
         line-height: 140%; /* 33.6px */
         color: var(--black);
+        align-items: center;
+        display: flex;
+        justify-content: center;
       }
 
       .form {

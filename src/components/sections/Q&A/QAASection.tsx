@@ -75,18 +75,22 @@ const QAASection: React.FC<QAASectionProps> = ({
     queryFn: () => fetchFAQByCategoryWithLogging(effectiveCategoryId),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    enabled: effectiveCategoryId !== undefined, // Не виконуємо запит, якщо категорія не визначена
   });
 
   useEffect(() => {
     if (!data) return;
     if (Array.isArray(data) && data.length > 0) {
       const mapped: QAAItem[] = (data as FaqItem[]).map((it) => {
-        const answer = it.Answer || it.content?.rendered || "";
+        // Використовуємо нові поля: acf.question та acf.answer
+        const answer = it.acf?.answer || it.content?.rendered || "";
         const cleanAnswer = answer.replace(/<[^>]*>/g, "");
+
+        const question = it.acf?.question || it.title?.rendered || "";
 
         return {
           id: it.id,
-          question: it.Question || it.title?.rendered || "",
+          question,
           answer: cleanAnswer,
         };
       });

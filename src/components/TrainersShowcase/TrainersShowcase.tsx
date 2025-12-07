@@ -58,15 +58,35 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
       (c: {
         id: number;
         title?: { rendered?: string };
+        acf?: {
+          img_link_data_avatar?: string;
+          instagram?: {
+            title?: string;
+            url?: string;
+            target?: string;
+          };
+          textarea_description?: string;
+        };
+        // Старі поля для сумісності
         Avatar?: string;
         Text_instagram?: string;
         Description?: string;
       }) => ({
         id: c.id,
         name: c?.title?.rendered || "",
-        image: c?.Avatar || "/placeholder.svg",
-        location: c?.Text_instagram || "",
-        specialization: c?.Description || "",
+        image:
+          c?.acf?.img_link_data_avatar ||
+          c?.Avatar ||
+          "/placeholder.svg",
+        location:
+          c?.acf?.instagram?.title ||
+          c?.acf?.instagram?.url ||
+          c?.Text_instagram ||
+          "",
+        specialization:
+          c?.acf?.textarea_description ||
+          c?.Description ||
+          "",
         superPower: undefined,
       })
     );

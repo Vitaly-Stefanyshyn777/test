@@ -85,9 +85,9 @@ export const useAuthStore = create<AuthState>()(
             return false;
           }
 
-          const resolvedName =
-            profile?.name ||
-            `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+          // SSOT: first_name + last_name має бути головним джерелом імені
+          const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+          const resolvedName = fullName || profile?.name || "";
           const resolvedEmail =
             profile?.email || profile?.user_email || user?.email;
 

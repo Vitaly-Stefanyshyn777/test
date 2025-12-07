@@ -140,11 +140,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (course?.featured_media) {
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua"
-        }/wp-json/wp/v2/media/${course.featured_media}`
-      )
+      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+      fetch(`${baseUrl}/wp-json/wp/v2/media/${course.featured_media}`)
         .then((res) => res.json())
         .then((data) => setCourseImage(data.source_url))
         .catch(() => setCourseImage(null));
@@ -179,21 +176,17 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (courseId) {
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua"
-        }/wp-json/wc/v3/products/${courseId}`,
-        {
-          headers: {
-            Authorization:
-              "Basic " +
-              btoa(
-                "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
-              ),
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+      fetch(`${baseUrl}/wp-json/wc/v3/products/${courseId}`, {
+        headers: {
+          Authorization:
+            "Basic " +
+            btoa(
+              "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
+            ),
+          "Content-Type": "application/json",
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           setStoreProduct(data);

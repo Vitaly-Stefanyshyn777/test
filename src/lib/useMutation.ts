@@ -127,17 +127,26 @@ export const useContactQuestion = () => {
 };
 
 export const useUpdateTrainerProfile = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: {
       payload: {
+        id?: string | number;
         email?: string;
         password?: string;
         first_name?: string;
         last_name?: string;
-        meta?: Record<string, unknown>;
+        acf?: Record<string, unknown>;
       };
       token?: string;
     }) => updateTrainerProfile(params.payload, params.token),
+    onSuccess: () => {
+      // Інвалідуємо queries для автоматичного оновлення даних
+      queryClient.invalidateQueries({ queryKey: ["user-profile", "me"] });
+      queryClient.invalidateQueries({ queryKey: ["trainer-profile-full"] });
+      queryClient.invalidateQueries({ queryKey: ["coach"] });
+      queryClient.invalidateQueries({ queryKey: ["coaches"] });
+    },
   });
 };
 

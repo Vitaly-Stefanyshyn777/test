@@ -1,8 +1,8 @@
 .resetButton {
   width: 100%;
   padding: 16px 24px;
-  background: var(--violet);
-  color: var(--white);
+  background: var(--white);
+  color: var(--violet);
   border: 2px solid var(--violet);
   border-radius: 16px;
   font-family: var(--font-family);

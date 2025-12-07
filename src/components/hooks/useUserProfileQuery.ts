@@ -2,6 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMyProfile } from "@/lib/auth";
 import { adminRequest } from "@/lib/api";
+import { useAuthStore } from "@/store/auth";
 
 export type WpUserMe = {
   id?: number | string;
@@ -14,17 +15,24 @@ export type WpUserMe = {
   social_instagram?: string;
   meta?: Record<string, string>;
   avatar?: string;
+  acf?: Record<string, unknown>; // РЕДАГУВАННЯ: додаємо acf для отримання контактних даних
 };
 
-async function fetchUserMe(): Promise<WpUserMe> {
-  const data = (await getMyProfile()) as unknown as WpUserMe;
-  return data;
-}
-
 export function useUserProfileQuery() {
+  const token = useAuthStore((s) => s.token);
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+
   return useQuery({
-    queryKey: ["user-profile", "me"],
-    queryFn: fetchUserMe,
+    queryKey: ["user-profile", "me", token], // Додаємо token до queryKey щоб оновлювати при зміні токена
+    queryFn: async () => {
+      // Передаємо токен з authStore в getMyProfile
+      // getMyProfile також перевірить localStorage як fallback
+      const data = (await getMyProfile(token)) as unknown as WpUserMe;
+      return data;
+    },
+    // Запит виконується якщо є токен або користувач залогінений (може бути httpOnly cookie)
+    // Якщо немає токена і не залогінений - запит не виконується
+    enabled: !!token || isLoggedIn,
     staleTime: 60_000,
   });
 }
@@ -45,16 +53,18 @@ export function useUpdateUserProfile() {
         method: "PATCH",
         url: "/api/proxy",
         params: {
-          path: `/wp-json/wp/v2/users/${encodeURIComponent(String(payload.id))}`,
+          path: `/wp-json/wp/v2/users/${encodeURIComponent(
+            String(payload.id)
+          )}`,
         },
         data: payload.body,
       });
       return res.data as unknown;
     },
     onSuccess: () => {
+      // Інвалідуємо всі queries, пов'язані з профілем, щоб обидва компоненти отримали актуальні дані
       qc.invalidateQueries({ queryKey: ["user-profile", "me"] });
+      qc.invalidateQueries({ queryKey: ["trainer-profile-full"] });
     },
   });
 }
-
-

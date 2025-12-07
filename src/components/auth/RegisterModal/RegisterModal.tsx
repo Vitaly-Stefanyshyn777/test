@@ -16,6 +16,7 @@ export interface RegisterFormValues {
   last_name: string;
   phone: string;
   certificate?: string;
+  comment?: string;
 }
 
 interface RegisterModalProps {

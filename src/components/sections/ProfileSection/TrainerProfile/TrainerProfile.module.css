@@ -49,13 +49,38 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
+  overflow: visible;
 }
 
 .inputContainer {
   width: 100%;
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.selectLabel {
+  position: absolute;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: rgba(14, 14, 14, 0.5);
+  pointer-events: none;
+  z-index: 2;
+  transition: all 0.15s ease;
+}
+
+.selectLabelFloating {
+  top: 8px;
+  transform: translateY(0);
+  font-size: 11px;
+  color: rgba(14, 14, 14, 0.4);
 }
 
 .inputIconWrapper {
@@ -113,17 +138,159 @@
   font-size: 14px;
   color: var(--black);
   transition: all 0.2s ease;
-  line-height: 130%;
-  border: none;
+  line-height: 140%;
+  border: 1px solid #f9f9f9;
   appearance: none;
   background-size: 16px;
   color: rgba(14, 14, 14, 0.4);
+  height: 63px;
+}
+
+.selectError {
+  border: 1px solid var(--style);
+}
+
+.fieldError {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.fieldErrorText {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 100%;
+  height: 16px;
+  font-family: var(--font3);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: -0.02em;
+  color: var(--style);
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .select:focus {
   outline: none;
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.inputContainer:hover .select {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Кастомний dropdown для select */
+.customSelectButton {
+  width: 100%;
+  padding: 20px 20px 20px 48px;
+  border-radius: 12px;
+  background: var(--bg-color);
+  border: 1px solid #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 140%;
+  color: rgba(14, 14, 14, 0.4);
+  transition: all 0.2s ease;
+  height: 63px;
+  box-sizing: border-box;
+  text-align: left;
+  position: relative;
+}
+
+.customSelectButtonFilled {
+  color: var(--black);
+  border-color: var(--bg-color);
+}
+
+/* .customSelectButtonActive {
+  border-color: #000;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+} */
+
+.customSelectButtonError {
+  border-color: var(--style);
+}
+
+.customSelectButton:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+.customSelectText {
+  flex: 1;
+  text-align: left;
+}
+
+.customSelectIcon {
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  width: 20px;
+  height: 20px;
+}
+
+.customSelectIconRotated {
+  transform: rotate(180deg);
+}
+
+.customDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 12px 32px rgba(5, 16, 55, 0.08);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.customDropdownItem {
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 140%;
+  color: var(--black);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(14, 14, 14, 0.08);
+}
+
+.customDropdownItem:last-child {
+  border-bottom: none;
+}
+
+.customDropdownItem:hover {
+  background-color: rgba(14, 14, 14, 0.04);
+}
+
+.customDropdownItem .checkIcon {
+  width: 11px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .textareaContainer {
@@ -228,9 +395,10 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  width: 100%;
 }
 
-.addInput {
+/* .addInput {
   flex: 1;
   border-radius: 12px;
   background: #f9f9f9;
@@ -243,17 +411,17 @@
   padding: 20px 20px 20px 22px;
   font-family: var(--font-family);
   color: rgba(14, 14, 14, 0.4);
-}
+} */
 
-.addInput:focus {
+/* .addInput:focus {
   outline: none;
   background: white;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
+} */
 
-.addInput::placeholder {
+/* .addInput::placeholder {
   color: rgba(14, 14, 14, 0.4);
-}
+} */
 
 .addBtn {
   width: 48px;
@@ -334,6 +502,8 @@
 .modalContent .inputGroup {
   display: flex;
   gap: 12px;
+  overflow: visible;
+  align-items: start;
 }
 
 .checkboxContainer {
@@ -373,7 +543,7 @@
 .chevronWrapper {
   position: absolute;
   right: 16px;
-  top: 50%;
+  top: 38%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -384,6 +554,8 @@
   width: 16px;
   height: 16px;
   color: rgba(14, 14, 14, 0.6);
+  transform-origin: center;
+  transition: transform 0.3s ease;
 }
 
 .chevronIconTop {
@@ -397,6 +569,10 @@
   width: 16px;
   height: 16px;
   color: rgba(14, 14, 14, 0.6);
+}
+
+.rotated {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .daggerIcon {
@@ -437,10 +613,12 @@
   gap: 8px;
 }
 
+.dateInputs > * {
+  flex: 1;
+}
+
 .dateSelectContainer {
   position: relative;
-  background: #f9f9f9;
-  border-radius: 9px;
   flex: 1;
   overflow: visible;
 }
@@ -450,9 +628,11 @@
   align-items: center;
   position: relative;
   cursor: pointer;
-  padding: 20px;
+  padding: 20px 20px 20px 48px;
   border-radius: 12px;
   background: #f9f9f9;
+  border: 1px solid #f9f9f9;
+  box-sizing: border-box;
 }
 
 .inputText {
@@ -466,6 +646,27 @@
 
 .inputTextSelected {
   color: var(--black) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkIcon {
+  width: 11px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.inputWithIconsActive {
+  border-color: #000;
+}
+
+.inputWithIconsFilled:not(.inputWithIconsActive) {
+  border-color: var(--bg-color);
+}
+
+.inputContainer:hover .inputWithIcons {
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 .iconRight {
@@ -473,14 +674,10 @@
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  transition: transform 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.rotated {
-  transform: translateY(-50%) rotate(180deg);
+  transition: transform 0.3s ease;
 }
 
 .chevron {
@@ -1153,7 +1350,17 @@
 .inputGroupBlock {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  overflow: visible;
+}
+
+/* Повна ширина інпутів у модалці тренувальних локацій */
+.fullWidthInput {
+  width: 100%;
+}
+
+.fullWidthInput > * {
+  width: 100%;
 }
 
 .photosSection {
@@ -1421,26 +1628,101 @@
   }
 
   .inputIconWrapper {
-    left: mvw(12);
-    width: mvw(18);
-    height: mvw(18);
+    left: mvw(16);
+    width: mvw(20);
+    height: mvw(20);
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .inputIcon {
-    width: mvw(18);
-    height: mvw(18);
+    width: mvw(20);
+    height: mvw(20);
   }
 
   .input {
-    padding: mvw(16) mvw(16) mvw(16) mvw(40);
+    padding: mvw(20) mvw(16) mvw(8) mvw(48);
     border-radius: mvw(12);
     font-size: mvw(14);
+    line-height: 140%;
+    font-weight: 400;
   }
 
   .select {
-    padding: mvw(12) mvw(12) mvw(12) mvw(40);
+    padding: mvw(20) mvw(16) mvw(8) mvw(48);
     border-radius: mvw(12);
     font-size: mvw(14);
+    line-height: 140%;
+    font-weight: 400;
+    height: auto;
+    min-height: mvw(44);
+  }
+
+  .customSelectButton {
+    padding: mvw(20) mvw(16) mvw(8) mvw(48);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+    line-height: 140%;
+    height: auto;
+    min-height: mvw(44);
+  }
+
+  .customSelectIcon {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .customDropdown {
+    margin-top: mvw(4);
+    border-radius: mvw(12);
+    max-height: mvw(220);
+  }
+
+  .customDropdownItem {
+    padding: mvw(12) mvw(16);
+    font-size: mvw(14);
+    line-height: 140%;
+    gap: mvw(10);
+  }
+
+  .selectLabel {
+    left: mvw(48);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.4);
+    font-weight: 400;
+  }
+
+  .selectLabelFloating {
+    top: mvw(8);
+    transform: translateY(0);
+    font-size: mvw(11);
+    color: rgba(14, 14, 14, 0.6);
+  }
+
+  .fieldError {
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+  }
+
+  .fieldErrorText {
+    position: absolute;
+    left: mvw(8);
+    right: mvw(8);
+    top: 100%;
+    height: mvw(16);
+    font-size: mvw(11);
+    line-height: 1.3;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .textarea {
@@ -1926,11 +2208,17 @@
   }
 
   .inputGroupBlock {
-    gap: mvw(8);
+    gap: mvw(16);
   }
 
   .inputGroup {
     gap: 12;
+    overflow: visible;
+    align-items: start;
+  }
+
+  .inputGroupBlock {
+    overflow: visible;
   }
 
   .timeInputs {

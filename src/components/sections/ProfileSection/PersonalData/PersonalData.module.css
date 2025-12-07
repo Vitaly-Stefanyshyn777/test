@@ -280,8 +280,17 @@
 
 .wrapperBlock {
   display: flex;
-
   gap: 12px;
+  width: 100%;
+}
+
+.wrapperBlock > * {
+  flex: 1;
+  width: 100%;
+}
+
+.wrapperBlockSingle {
+  max-width: 542px;
 }
 
 .input:focus {

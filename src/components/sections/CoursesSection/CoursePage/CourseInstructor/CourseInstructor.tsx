@@ -48,19 +48,84 @@ const CourseInstructor: React.FC<CourseInstructorProps> = ({
   // Підтримка як одного об'єкта, так і масиву інструкторів
   const coachData = course.course_data.Course_coach;
   const coaches = Array.isArray(coachData) ? coachData : [coachData];
-  
+
   // Відображаємо активного інструктора (можна перемикати якщо їх кілька)
   const coach = coaches[activeCoachIndex] || coaches[0];
 
-  // Парсимо спеціалізацію з JSON string
-  const specializations = coach.point_specialization
-    ? JSON.parse(coach.point_specialization)
-    : ["Спеціаліст", "Супервізор", "Персональний тренер", "Майстер спорту"];
+  // Парсимо спеціалізацію з JSON string (з безпечною обробкою)
+  const getSpecializations = () => {
+    if (!coach.point_specialization) {
+      return [
+        "Спеціаліст",
+        "Супервізор",
+        "Персональний тренер",
+        "Майстер спорту",
+      ];
+    }
 
-  // Парсимо аватар з JSON string
-  const avatarUrl = coach.img_link_avatar
-    ? JSON.parse(coach.img_link_avatar)[0]
-    : "/images/instructor-lika.jpg";
+    // Якщо це вже масив, повертаємо як є
+    if (Array.isArray(coach.point_specialization)) {
+      return coach.point_specialization;
+    }
+
+    // Якщо це рядок, намагаємося розпарсити JSON
+    if (typeof coach.point_specialization === "string") {
+      try {
+        const parsed = JSON.parse(coach.point_specialization);
+        return Array.isArray(parsed) ? parsed : [coach.point_specialization];
+      } catch {
+        // Якщо не JSON, повертаємо як масив з одного елемента
+        return [coach.point_specialization];
+      }
+    }
+
+    return [
+      "Спеціаліст",
+      "Супервізор",
+      "Персональний тренер",
+      "Майстер спорту",
+    ];
+  };
+
+  const specializations = getSpecializations();
+
+  // Парсимо аватар з JSON string (з безпечною обробкою)
+  const getAvatarUrl = () => {
+    if (!coach.img_link_avatar) {
+      return "/images/instructor-lika.jpg";
+    }
+
+    // Якщо це вже масив, беремо перший елемент
+    if (Array.isArray(coach.img_link_avatar)) {
+      return coach.img_link_avatar[0] || "/images/instructor-lika.jpg";
+    }
+
+    // Якщо це рядок, намагаємося розпарсити JSON
+    if (typeof coach.img_link_avatar === "string") {
+      // Якщо рядок починається з http/https, це вже URL
+      if (coach.img_link_avatar.startsWith("http")) {
+        return coach.img_link_avatar;
+      }
+
+      // Спробуємо розпарсити як JSON
+      try {
+        const parsed = JSON.parse(coach.img_link_avatar);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed[0];
+        }
+        if (typeof parsed === "string") {
+          return parsed;
+        }
+      } catch {
+        // Якщо не JSON, використовуємо як URL
+        return coach.img_link_avatar;
+      }
+    }
+
+    return "/images/instructor-lika.jpg";
+  };
+
+  const avatarUrl = getAvatarUrl();
 
   return (
     <section className={styles.instructor}>
@@ -121,14 +186,16 @@ const CourseInstructor: React.FC<CourseInstructorProps> = ({
                   <span className={styles.statNumber}>
                     {coach.input_text_history || "70+"}
                   </span>
-                  <span className={styles.statLabel}>Історій</span>
+                  <span className={styles.statLabel}>
+                    Історій трансформацій
+                  </span>
                 </div>
               </div>
             </div>
 
             {coaches.length > 1 && (
-            <div className={styles.sliderSection}>
-              <SliderNav
+              <div className={styles.sliderSection}>
+                <SliderNav
                   activeIndex={activeCoachIndex}
                   dots={coaches.length}
                   onPrev={() =>
@@ -142,8 +209,8 @@ const CourseInstructor: React.FC<CourseInstructorProps> = ({
                     )
                   }
                   onDotClick={(idx) => setActiveCoachIndex(idx)}
-              />
-            </div>
+                />
+              </div>
             )}
           </div>
 

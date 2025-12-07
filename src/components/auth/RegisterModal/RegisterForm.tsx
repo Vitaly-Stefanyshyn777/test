@@ -8,8 +8,12 @@ import {
   NumberIcon,
   UserIcon,
   CertificateIcon,
+  PasswordsIcon,
+  QuestionIcon,
 } from "@/components/Icons/Icons";
-import RegisterPasswordInput from "./RegisterPasswordInput";
+import InputField from "@/components/ui/FormFields/InputField";
+import PasswordField from "@/components/ui/FormFields/PasswordField";
+import TextareaField from "@/components/ui/FormFields/TextareaField";
 import s from "./RegisterModal.module.css";
 
 export interface RegisterFormValues {
@@ -19,6 +23,7 @@ export interface RegisterFormValues {
   last_name: string;
   phone: string;
   certificate?: string;
+  comment?: string;
 }
 
 interface RegisterFormProps {
@@ -41,82 +46,95 @@ export default function RegisterForm({
   isError,
 }: RegisterFormProps) {
   return (
-    <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
+    <form className={s.form} onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <UserIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваше ім'я та прізвище"
-                type="text"
-                {...register("first_name", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<UserIcon />}
+            label="Ваше ім'я та прізвище"
+            type="text"
+            id="register-form-name-field"
+            hasError={!!errors.first_name}
+            supportingText="Будь ласка, вкажіть імʼя та прізвище"
+            {...register("first_name", { required: true })}
+          />
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <NumberIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваш номер телефону"
-                type="tel"
-                {...register("phone", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<NumberIcon />}
+            label="Ваш номер телефону"
+            type="tel"
+            id="register-form-phone-field"
+            onlyDigits
+            hasError={!!errors.phone}
+            supportingText="Будь ласка, вкажіть номер телефону"
+            {...register("phone", { required: true })}
+          />
         </div>
       </div>
 
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <EmailIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваша пошта"
-                type="email"
-                {...register("email", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<EmailIcon />}
+            label="Ваша пошта"
+            type="email"
+            id="register-form-email-field"
+            hasError={!!errors.email}
+            supportingText={
+              (errors.email?.message as string) ||
+              'Електронна адреса має містити знак "@"'
+            }
+            {...register("email", {
+              required: true,
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message:
+                  'Електронна адреса має містити знак "@" та коректний домен',
+              },
+            })}
+          />
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <CertificateIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Номер сертифіката"
-                type="text"
-                {...register("certificate")}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<CertificateIcon />}
+            label="Номер сертифіката"
+            type="text"
+            {...register("certificate")}
+          />
         </div>
       </div>
 
-      <RegisterPasswordInput register={register} />
+      <div className={s.rowSingle}>
+        <TextareaField
+          icon={<QuestionIcon />}
+          label="Коментар (необов'язково)"
+          rows={4}
+          {...register("comment")}
+        />
+      </div>
 
-      {(errors.first_name || errors.email || errors.phone) && (
-        <p className={s.error}>
-          Будь ласка, заповніть всі обов&apos;язкові поля
-        </p>
-      )}
+      <div className={s.rowSingle}>
+        <PasswordField
+          icon={<PasswordsIcon />}
+          label="Пароль"
+          hasError={!!errors.password}
+          supportingText={
+            (errors.password?.message as string) ||
+            "Пароль має містити щонайменше 6 символів"
+          }
+          {...register("password", {
+            required: true,
+            minLength: {
+              value: 6,
+              message: "Пароль має містити щонайменше 6 символів",
+            },
+          })}
+        />
+      </div>
+
       {isError && (
         <p className={s.error}>Помилка реєстрації. Спробуйте ще раз.</p>
       )}

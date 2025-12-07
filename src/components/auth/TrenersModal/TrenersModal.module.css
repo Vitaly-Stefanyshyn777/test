@@ -90,7 +90,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 17px;
 }
 
 .row {
@@ -346,7 +346,7 @@
   }
 
   .form {
-    gap: mvw(8);
+    gap: mvw(14);
     flex: 1;
     min-height: 0;
     display: flex;
@@ -355,7 +355,7 @@
 
   .row {
     grid-template-columns: 1fr;
-    gap: mvw(8);
+    gap: mvw(14);
   }
 
   .rowSingle {

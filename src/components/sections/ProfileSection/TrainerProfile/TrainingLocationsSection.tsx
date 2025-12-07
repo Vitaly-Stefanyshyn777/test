@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./TrainerProfile.module.css";
 import { PlusIcon } from "@/components/Icons/Icons";
 import LocationCard from "./LocationCard";
@@ -13,6 +13,21 @@ export default function TrainingLocationsSection({
   onAddClick,
   locations = [],
 }: Props) {
+  // Логуємо тільки коли змінюються локації, а не при кожному ре-рендері
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[TrainingLocationsSection] Локації:", {
+        count: locations.length,
+        locations: locations.map((l) => ({
+          title: l.title,
+          phone: l.phone,
+          email: l.email,
+          coordinates: l.coordinates,
+        })),
+      });
+    }
+  }, [locations]);
+
   return (
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>Місця проведення тренувань:</h3>
@@ -20,13 +35,14 @@ export default function TrainingLocationsSection({
       <div className={styles.locationsContainer}>
         {locations.map((loc, idx) => (
           <LocationCard
-            key={`${loc.title}-${idx}`}
+            key={`${loc.title}-${idx}-${loc.phone || ""}`}
             title={loc.title}
             phone={loc.phone}
             email={loc.email}
             schedule_five={loc.schedule_five}
             schedule_two={loc.schedule_two}
             address={loc.address}
+            coordinates={loc.coordinates}
             onEdit={() =>
               window.dispatchEvent(
                 new CustomEvent("trainerLocationEdit", {

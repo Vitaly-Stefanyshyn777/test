@@ -140,23 +140,28 @@ type WPUserMe = {
   meta?: Record<string, unknown>;
 };
 
-export const getMyProfile = async (): Promise<WPUserMe | null> => {
+export const getMyProfile = async (token?: string | null): Promise<WPUserMe | null> => {
   try {
-    // Не вимагаємо токен з localStorage. Якщо він є у сторах – добре;
-    // інакше проксі додасть Authorization з httpOnly cookie.
-    const token: string | null = null;
+    // Спочатку пробуємо використати токен з параметра, потім з localStorage
+    let authToken: string | null = token || null;
+    
+    if (!authToken && typeof window !== "undefined") {
+      try {
+        authToken = localStorage.getItem("bfb_token");
+      } catch {}
+    }
 
     const response = await api.get("/api/proxy", {
       params: { path: "/wp-json/wp/v2/users/me?context=edit" },
-      headers: token
+      headers: authToken
         ? {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
           }
         : undefined,
     });
     if (process.env.NODE_ENV !== "production") {
       console.debug("[auth.getMyProfile] OK", {
-        hasToken: !!token,
+        hasToken: !!authToken,
         status: response.status,
       });
     }

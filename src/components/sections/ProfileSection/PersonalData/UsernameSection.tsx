@@ -3,6 +3,7 @@
 import React from "react";
 import styles from "./PersonalData.module.css";
 import { UserIcon } from "@/components/Icons/Icons";
+import InputField from "@/components/ui/FormFields/InputField";
 
 type Props = {
   firstName: string;
@@ -20,22 +21,17 @@ export default function UsernameSection({
       <h3 className={styles.sectionTitle}>Ім&#39;я користувача</h3>
 
       <div className={styles.inputGroup}>
-        <div className={styles.wrapperBlock}>
-          <div className={styles.inputContainer}>
-            <div className={styles.inputIconWrapper}>
-              <UserIcon className={styles.inputIcon} />
-            </div>
-            <input
-              type="text"
-              placeholder="Ваше ім'я та прізвище"
+        <div className={`${styles.wrapperBlock} ${styles.wrapperBlockSingle}`}>
+          <InputField
+            icon={<UserIcon />}
+            label="Ваше ім'я та прізвище"
+            id="profile-username-name-field"
               value={`${firstName} ${lastName}`.trim()}
               onChange={(e) => {
                 const [first = "", last = ""] = e.target.value.split(" ");
                 onChange(first, last);
               }}
-              className={styles.input}
             />
-          </div>
         </div>
       </div>
     </div>

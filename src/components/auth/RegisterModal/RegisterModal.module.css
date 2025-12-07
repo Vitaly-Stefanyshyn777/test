@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1001;
   padding: 20px;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .modal {
-  background: var(--bg-color);
+  background: var(--white);
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -111,7 +111,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .row {
@@ -230,11 +230,13 @@
   font-weight: 800;
   line-height: 135%;
   color: var(--white);
+  box-shadow: none;
 }
 
 .submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: none;
+  background: var(--black);
 }
 
 .submit:disabled {
@@ -376,7 +378,7 @@
   }
 
   .form {
-    gap: mvw(8);
+    gap: mvw(16);
     flex: 1;
     min-height: 0;
     display: flex;
@@ -385,7 +387,7 @@
 
   .row {
     grid-template-columns: 1fr;
-    gap: mvw(8);
+    gap: mvw(14);
   }
 
   .rowSingle {
@@ -445,6 +447,12 @@
     font-size: mvw(16);
     line-height: 135%;
     width: 100%;
+    box-shadow: none;
+  }
+
+  .submit:hover:not(:disabled) {
+    box-shadow: none;
+    background: var(--black);
   }
 
   .error {

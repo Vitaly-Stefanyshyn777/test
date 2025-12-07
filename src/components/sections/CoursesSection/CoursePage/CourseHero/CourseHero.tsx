@@ -66,7 +66,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
       <div className={styles.courseContentBlock}>
         <div className={styles.tagsCodeBlock}>
           <div className={styles.tags}>
-            {course.course_data.Date_start && (
+            {course.course_data?.Date_start && (
               <div className={styles.tag}>
                 <div className={styles.tagIcon}>
                   <СalendarIcon />
@@ -76,7 +76,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
                 </p>
               </div>
             )}
-            {course.course_data.Duration && (
+            {course.course_data?.Duration && (
               <div className={styles.tag}>
                 <div className={styles.tagIcon}>
                   <СlockIcon />
@@ -117,16 +117,18 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
           </div>
         </div>
       </div>
-      <div className={styles.topicsSection}>
-        <h3>ЯКІ ТЕМИ ПОКРИВАЄ КУРС:</h3>
-        <div className={styles.topicsGrid}>
-          {course.course_data.Course_themes.map((theme, index) => (
-            <div key={index} className={styles.topicTag}>
-              <p className={styles.topicText}>{theme}</p>
-            </div>
-          ))}
+      {course.course_data?.Course_themes && course.course_data.Course_themes.length > 0 && (
+        <div className={styles.topicsSection}>
+          <h3>ЯКІ ТЕМИ ПОКРИВАЄ КУРС:</h3>
+          <div className={styles.topicsGrid}>
+            {course.course_data.Course_themes.map((theme, index) => (
+              <div key={index} className={styles.topicTag}>
+                <p className={styles.topicText}>{theme}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

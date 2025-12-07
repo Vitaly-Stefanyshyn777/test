@@ -259,7 +259,7 @@
   line-height: 140%;
   text-align: center;
   color: var(--black);
-  display: none;
+  /* display: none; */
 }
 
 .eventItem {
@@ -271,7 +271,7 @@
   transition: all 0.2s ease;
   height: 100px;
   background: #f9f9f9;
-  display: none;
+  /* display: none; */
 }
 
 .eventItem:hover {
@@ -434,8 +434,8 @@
 .eventCardImage {
   position: relative;
   width: 100%;
-  /* height: 364px; */
-  height: 490px;
+  height: 364px;
+  /* height: 490px; */
   flex: 0 0 auto;
   overflow: hidden;
 }
@@ -517,7 +517,7 @@
   line-height: 120%;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: none;
+  /* display: none; */
 }
 
 .eventCardButton:hover {

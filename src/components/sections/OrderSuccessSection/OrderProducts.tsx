@@ -27,6 +27,7 @@ export default function OrderProducts({ orderNumber }: OrderProductsProps) {
                   src={item.image}
                   alt={item.name}
                   fill
+                  sizes="80px"
                   // style={{
                   //   objectFit: "cover",
                   // }}

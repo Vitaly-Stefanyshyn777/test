@@ -74,29 +74,16 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
           console.log("[VideoInstruction] Video URL set successfully");
         } else {
           console.log(
-            "[VideoInstruction] No video URL received, using fallback"
+            "[VideoInstruction] No video URL received"
           );
-          // Використовуємо fallback URL з вашого API (реальне відео)
-          const baseUrl =
-            process.env.NEXT_PUBLIC_UPSTREAM_BASE ||
-            "https://www.api.bfb.in.ua";
-          const fallback = `/api/video-proxy?url=${encodeURIComponent(
-            baseUrl + "/wp-content/uploads/2025/10/2025-10-20-14-51-06.mp4"
-          )}`;
-          setRealVideoUrl(fallback);
+          setRealVideoUrl(null);
         }
       } catch (error) {
         console.error(
           "[VideoInstruction] Помилка завантаження відео URL:",
           error
         );
-        // Використовуємо fallback URL при помилці (реальне відео з API)
-        const baseUrl =
-          process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
-        const fallback = `/api/video-proxy?url=${encodeURIComponent(
-          baseUrl + "/wp-content/uploads/2025/10/2025-10-20-14-51-06.mp4"
-        )}`;
-        setRealVideoUrl(fallback);
+        setRealVideoUrl(null);
       } finally {
         setIsLoading(false);
       }
@@ -111,15 +98,16 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
       currentVideoUrl
     );
     // Якщо URL вже готовий, просто переконуємось що плеєр увімкнено
-    if (currentVideoUrl && currentVideoUrl !== "#") {
+    if (currentVideoUrl) {
       setWatched(true);
     }
   };
 
   // Закриваюча кнопка не потрібна при автопрограванні
 
-  // Використовуємо реальний URL якщо він є, інакше fallback
-  const currentVideoUrl = realVideoUrl || videoUrl || "#";
+  // Використовуємо реальний URL якщо він є, інакше пропс videoUrl
+  const currentVideoUrl = realVideoUrl || videoUrl;
+  const hasVideo = !!currentVideoUrl;
 
   return (
     <div className={styles.videoInstruction}>
@@ -141,15 +129,15 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
       {/* На мобілці обгортаємо videoContainer та statusButton в один блок */}
       {isMobile ? (
         <div className={styles.videoWithButtonBlock}>
-          <div className={styles.videoContainer} onClick={handleWatchVideo}>
-            {isLoading || !currentVideoUrl || currentVideoUrl === "#" ? (
+          <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
+            {isLoading ? (
               <div className={styles.videoThumbnail}>
                 <div className={styles.loadingContainer}>
                   <div className={styles.loadingSpinner}></div>
                   <p className={styles.loadingText}>Завантаження відео...</p>
                 </div>
               </div>
-            ) : (
+            ) : hasVideo ? (
               <div className={styles.videoPlayerContainer}>
                 <VideoPlayer
                   videoUrl={currentVideoUrl}
@@ -162,23 +150,33 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
                   overlayPlayButton={false}
                 />
               </div>
+            ) : (
+              <div className={styles.videoThumbnail}>
+                <div className={styles.loadingContainer}>
+                  <p className={styles.loadingText}>
+                    Відео інструкція тимчасово недоступна. Будь ласка, зверніться до підтримки.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
-          <StatusButton
-            watched={watched}
-            onToggle={() => setWatched(!watched)}
-          />
+          {hasVideo && (
+            <StatusButton
+              watched={watched}
+              onToggle={() => setWatched(!watched)}
+            />
+          )}
         </div>
       ) : (
-        <div className={styles.videoContainer} onClick={handleWatchVideo}>
-          {isLoading || !currentVideoUrl || currentVideoUrl === "#" ? (
+        <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
+          {isLoading ? (
             <div className={styles.videoThumbnail}>
               <div className={styles.loadingContainer}>
                 <div className={styles.loadingSpinner}></div>
                 <p className={styles.loadingText}>Завантаження відео...</p>
               </div>
             </div>
-          ) : (
+          ) : hasVideo ? (
             <div className={styles.videoPlayerContainer}>
               <VideoPlayer
                 videoUrl={currentVideoUrl}
@@ -190,6 +188,14 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
                 poster={videoThumbnail}
                 overlayPlayButton={false}
               />
+            </div>
+          ) : (
+            <div className={styles.videoThumbnail}>
+              <div className={styles.loadingContainer}>
+                <p className={styles.loadingText}>
+                  Відео інструкція тимчасово недоступна. Будь ласка, зверніться до підтримки.
+                </p>
+              </div>
             </div>
           )}
         </div>

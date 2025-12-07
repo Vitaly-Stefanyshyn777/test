@@ -167,6 +167,7 @@ export default function VideoPlayer({
               src={poster}
               alt="Video preview"
               fill
+              sizes="(max-width: 768px) 100vw, 600px"
               className={styles.previewImage}
             />
           ) : null}
@@ -201,7 +202,6 @@ export default function VideoPlayer({
         preload="metadata"
         src={videoUrl}
       >
-        <source src={videoUrl} type="video/quicktime" />
         <source src={videoUrl} type="video/mp4" />
         Ваш браузер не підтримує відео тег.
       </video>

@@ -5,6 +5,12 @@ import styles from "./TrainerMap.module.css";
 import { TrainerUser } from "../types";
 import InstructingSlider from "../../InstructingSlider/InstructingSlider";
 import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
+import {
+  InstagramIcon,
+  TelegramIcon,
+  FacebookIcon,
+  WhatsappIcon,
+} from "@/components/Icons/Icons";
 
 type LeafletNS = {
   map: (element: HTMLElement) => TrainerLeafletMap;
@@ -55,10 +61,6 @@ interface TrainerMapProps {
   trainer?: TrainerUser;
 }
 
-interface GalleryItem {
-  hl_img_link_photo: string[];
-}
-
 interface ContactItem {
   hl_input_text_link?: string;
   hl_img_svg_icon: string;
@@ -69,10 +71,62 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
   const mapInstanceRef = useRef<TrainerLeafletMap | null>(null);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [activeLocationIndex, setActiveLocationIndex] = useState(0);
 
   // Отримуємо дані з API
   const { data: themeSettings } = useThemeSettingsQuery();
   const themeMapMarkers = themeSettings?.[0]?.acf?.map_markers;
+
+  // Контакти активного залу (my_wlocation[activeLocationIndex])
+  // Перевіряємо, чи індекс не виходить за межі масиву
+  const safeLocationIndex =
+    trainer?.my_wlocation && trainer.my_wlocation.length > 0
+      ? Math.min(activeLocationIndex, trainer.my_wlocation.length - 1)
+      : 0;
+  const activeLocation = trainer?.my_wlocation?.[safeLocationIndex] ?? null;
+  const hall = (activeLocation ?? null) as {
+    hl_input_text_phone?: string;
+    hl_input_text_instagram?: string;
+    hl_input_text_telegram?: string;
+    hl_input_text_facebook?: string;
+  } | null;
+
+  const hallPhone = hall?.hl_input_text_phone || "";
+  const hallInsta = hall?.hl_input_text_instagram || "";
+  const hallTelegram = hall?.hl_input_text_telegram || "";
+  const hallFb = hall?.hl_input_text_facebook || "";
+
+  const phoneDigits = hallPhone.replace(/[^\d]/g, "");
+  const whatsappLink = phoneDigits ? `https://wa.me/${phoneDigits}` : "";
+
+  const instagramLink = hallInsta
+    ? hallInsta.startsWith("http")
+      ? hallInsta
+      : `https://instagram.com/${hallInsta.replace(/^[@/]+/, "")}`
+    : "";
+
+  const telegramLink = hallTelegram
+    ? hallTelegram.startsWith("http")
+      ? hallTelegram
+      : `https://t.me/${hallTelegram.replace(/^[@/]+/, "")}`
+    : "";
+
+  const facebookLink = hallFb
+    ? hallFb.startsWith("http")
+      ? hallFb
+      : `https://facebook.com/${hallFb.replace(/^[@/]+/, "")}`
+    : "";
+
+  const hallContacts: {
+    type: "instagram" | "facebook" | "telegram" | "whatsapp";
+    href: string;
+  }[] = [];
+
+  if (instagramLink)
+    hallContacts.push({ type: "instagram", href: instagramLink });
+  if (facebookLink) hallContacts.push({ type: "facebook", href: facebookLink });
+  if (telegramLink) hallContacts.push({ type: "telegram", href: telegramLink });
+  if (whatsappLink) hallContacts.push({ type: "whatsapp", href: whatsappLink });
 
   const openGallery = (index: number) => {
     setSelectedImageIndex(index);
@@ -84,7 +138,45 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
   };
 
   const getGalleryImages = () => {
-    // 1) Пробуємо галерею з theme_settings (hl_data_gallery)
+    // 1) Пріоритет: фото з активної локації (my_wlocation[safeLocationIndex].hl_img_link_photo)
+    if (
+      trainer?.my_wlocation &&
+      Array.isArray(trainer.my_wlocation) &&
+      trainer.my_wlocation[safeLocationIndex]
+    ) {
+      const activeLoc = trainer.my_wlocation[safeLocationIndex];
+      if (
+        activeLoc.hl_img_link_photo &&
+        Array.isArray(activeLoc.hl_img_link_photo)
+      ) {
+        const locationPhotos = activeLoc.hl_img_link_photo.filter(
+          (url): url is string => typeof url === "string"
+        );
+        if (locationPhotos.length > 0) {
+          return locationPhotos;
+        }
+      }
+    }
+
+    // 2) Фолбек: фото з усіх локацій тренера
+    if (trainer?.my_wlocation && Array.isArray(trainer.my_wlocation)) {
+      const locationPhotos: string[] = [];
+      for (const location of trainer.my_wlocation) {
+        if (
+          location.hl_img_link_photo &&
+          Array.isArray(location.hl_img_link_photo)
+        ) {
+          locationPhotos.push(...location.hl_img_link_photo);
+        }
+      }
+      if (locationPhotos.length > 0) {
+        return locationPhotos.filter(
+          (url): url is string => typeof url === "string"
+        );
+      }
+    }
+
+    // 2) Фолбек: галерея з theme_settings (hl_data_gallery)
     const ts0 = themeSettings?.[0] as ThemeSettingsPost | undefined;
     const themeGallery =
       (ts0?.acf?.hl_data_gallery as
@@ -105,16 +197,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
       );
     }
 
-    // 2) Якщо немає в theme_settings — використовуємо галерею тренера
-    if (trainer?.hl_data_gallery && trainer.hl_data_gallery.length > 0) {
-      return trainer.hl_data_gallery.map(
-        (galleryItem: GalleryItem) =>
-          galleryItem.hl_img_link_photo[0] ||
-          "https://via.placeholder.com/400x300/f0f0f0/666?text=Зал"
-      );
-    }
-
-    // 3) Фолбек
+    // 3) Фолбек: placeholder
     return [
       "https://via.placeholder.com/400x300/f0f0f0/666?text=Зал",
       "https://via.placeholder.com/400x300/f0f0f0/666?text=Зал",
@@ -122,6 +205,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
   };
 
   useEffect(() => {
+    const container = mapRef.current;
     const loadMap = async () => {
       try {
         const link = document.createElement("link");
@@ -162,10 +246,12 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
             mapInstanceRef.current = map;
 
             // Отримуємо координати з my_wlocation тренера
-            const myWlocationMarkers: MapMarker[] = [];
+            const myWlocationMarkers: Array<
+              MapMarker & { locationIndex?: number }
+            > = [];
             if (trainer?.my_wlocation) {
               trainer.my_wlocation.forEach(
-                (location: Record<string, unknown>) => {
+                (location: Record<string, unknown>, index: number) => {
                   // Шукаємо координати в різних можливих полях
                   const lat =
                     location?.hl_input_text_coord_lat ||
@@ -186,10 +272,38 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                       coordinates: [
                         [parseFloat(String(lat)), parseFloat(String(lng))],
                       ],
+                      locationIndex: index, // Зберігаємо індекс локації
                     });
                   }
                 }
               );
+            }
+
+            // Якщо немає локацій, але є координати в location_city, парсимо їх
+            if (
+              myWlocationMarkers.length === 0 &&
+              trainer?.location_city &&
+              typeof trainer.location_city === "string"
+            ) {
+              const parts = trainer.location_city
+                .split(",")
+                .map((p) => p.trim());
+              if (
+                parts.length === 2 &&
+                parts[0] &&
+                parts[1] &&
+                !Number.isNaN(Number(parts[0])) &&
+                !Number.isNaN(Number(parts[1]))
+              ) {
+                const lat = parseFloat(parts[0]);
+                const lng = parseFloat(parts[1]);
+                if (lat && lng) {
+                  myWlocationMarkers.push({
+                    title: "Місце проведення",
+                    coordinates: [[lat, lng]],
+                  });
+                }
+              }
             }
 
             // Пріоритет: my_wlocation > themeMapMarkers > mapMarkers
@@ -216,19 +330,18 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                       icon: createTrainerIcon(),
                     }) as unknown as {
                       addTo: (m: unknown) => unknown;
-                      bindPopup: (s: string) => unknown;
+                      on: (event: string, handler: () => void) => unknown;
                     };
                     marker.addTo(map);
-                    marker.bindPopup(
-                      `<div style="min-width: 180px; text-align: center;">
-                        <strong>${markerGroup.title}</strong>
-                        <div style="font-size: 12px; margin-top: 4px; color: #64748b;">
-                          Координати: ${coord[0].toFixed(
-                            6
-                          )}, ${coord[1].toFixed(6)}
-                        </div>
-                      </div>`
-                    );
+                    // Додаємо обробник кліку на маркер (без popup)
+                    const locationIndex = (
+                      markerGroup as { locationIndex?: number }
+                    ).locationIndex;
+                    if (locationIndex !== undefined && locationIndex !== null) {
+                      marker.on("click", () => {
+                        setActiveLocationIndex(locationIndex);
+                      });
+                    }
                   }
                 });
               });
@@ -262,11 +375,31 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
     loadMap();
 
     return () => {
+      // Акуратно знищуємо інстанс карти, щоб уникнути
+      // "Map container is being reused by another instance"
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.remove();
+        } catch {
+          if (process.env.NODE_ENV !== "production") {
+            // Ігноруємо помилку, яка виникає, якщо Leaflet вже відʼєднав контейнер
+            // або контейнер перевикористовується React-ом
+            // console.warn("[TrainerMap] Помилка при remove() карти:", err);
+          }
+        } finally {
+          mapInstanceRef.current = null;
+          if (container) {
+            container.innerHTML = "";
+          }
+        }
       }
     };
-  }, [mapMarkers, themeMapMarkers, trainer?.my_wlocation]);
+  }, [
+    mapMarkers,
+    themeMapMarkers,
+    trainer?.my_wlocation,
+    trainer?.location_city,
+  ]);
 
   // Окремий useEffect для оновлення маркерів, коли дані завантажуються
   useEffect(() => {
@@ -285,30 +418,61 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
       });
 
       // Отримуємо координати з my_wlocation тренера
-      const myWlocationMarkers: MapMarker[] = [];
+      const myWlocationMarkers: Array<MapMarker & { locationIndex?: number }> =
+        [];
       if (trainer?.my_wlocation) {
-        trainer.my_wlocation.forEach((location: Record<string, unknown>) => {
-          // Шукаємо координати в різних можливих полях
-          const lat =
-            location?.hl_input_text_coord_lat ||
-            location?.coord_lat ||
-            location?.latitude ||
-            location?.lat;
-          const lng =
-            location?.hl_input_text_coord_ln ||
-            location?.coord_lng ||
-            location?.longitude ||
-            location?.lng;
+        trainer.my_wlocation.forEach(
+          (location: Record<string, unknown>, index: number) => {
+            // Шукаємо координати в різних можливих полях
+            const lat =
+              location?.hl_input_text_coord_lat ||
+              location?.coord_lat ||
+              location?.latitude ||
+              location?.lat;
+            const lng =
+              location?.hl_input_text_coord_ln ||
+              location?.coord_lng ||
+              location?.longitude ||
+              location?.lng;
+            if (lat && lng) {
+              myWlocationMarkers.push({
+                title: String(
+                  (location as { hl_input_text_title?: unknown })
+                    ?.hl_input_text_title ?? "Місце проведення"
+                ),
+                coordinates: [
+                  [parseFloat(String(lat)), parseFloat(String(lng))],
+                ],
+                locationIndex: index, // Зберігаємо індекс локації
+              });
+            }
+          }
+        );
+      }
+
+      // Якщо немає локацій, але є координати в location_city, парсимо їх
+      if (
+        myWlocationMarkers.length === 0 &&
+        trainer?.location_city &&
+        typeof trainer.location_city === "string"
+      ) {
+        const parts = trainer.location_city.split(",").map((p) => p.trim());
+        if (
+          parts.length === 2 &&
+          parts[0] &&
+          parts[1] &&
+          !Number.isNaN(Number(parts[0])) &&
+          !Number.isNaN(Number(parts[1]))
+        ) {
+          const lat = parseFloat(parts[0]);
+          const lng = parseFloat(parts[1]);
           if (lat && lng) {
             myWlocationMarkers.push({
-              title: String(
-                (location as { hl_input_text_title?: unknown })
-                  ?.hl_input_text_title ?? "Місце проведення"
-              ),
-              coordinates: [[parseFloat(String(lat)), parseFloat(String(lng))]],
+              title: "Місце проведення",
+              coordinates: [[lat, lng]],
             });
           }
-        });
+        }
       }
 
       // Пріоритет: my_wlocation > themeMapMarkers > mapMarkers
@@ -340,17 +504,17 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                 }),
               }) as unknown as {
                 addTo: (m: unknown) => unknown;
-                bindPopup: (s: string) => unknown;
+                on: (event: string, handler: () => void) => unknown;
               };
               marker.addTo(mapInstanceRef.current as unknown);
-              marker.bindPopup(
-                `<div style="min-width: 180px; text-align: center;">
-                  <strong>${markerGroup.title}</strong>
-                  <div style="font-size: 12px; margin-top: 4px; color: #64748b;">
-                    Координати: ${coord[0].toFixed(6)}, ${coord[1].toFixed(6)}
-                  </div>
-                </div>`
-              );
+              // Додаємо обробник кліку на маркер (без popup)
+              const locationIndex = (markerGroup as { locationIndex?: number })
+                .locationIndex;
+              if (locationIndex !== undefined && locationIndex !== null) {
+                marker.on("click", () => {
+                  setActiveLocationIndex(locationIndex);
+                });
+              }
             }
           });
         });
@@ -374,7 +538,25 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
         // Якщо немає координат, карта залишається порожньою, але видимою
       }
     }
-  }, [themeMapMarkers, mapMarkers, trainer, trainer?.my_wlocation]);
+  }, [
+    themeMapMarkers,
+    mapMarkers,
+    trainer,
+    trainer?.my_wlocation,
+    trainer?.location_city,
+  ]);
+
+  // Скидаємо активний індекс локації, коли змінюються локації тренера
+  useEffect(() => {
+    if (trainer?.my_wlocation && trainer.my_wlocation.length > 0) {
+      // Перевіряємо, чи активний індекс не виходить за межі масиву
+      if (activeLocationIndex >= trainer.my_wlocation.length) {
+        setActiveLocationIndex(0);
+      }
+    } else {
+      setActiveLocationIndex(0);
+    }
+  }, [trainer?.my_wlocation, activeLocationIndex]);
 
   return (
     <div id="locations" className={styles.container}>
@@ -463,7 +645,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
               })()}
             </div>
             <h3>
-              {trainer.my_wlocation?.[0]?.hl_input_text_title ||
+              {activeLocation?.hl_input_text_title ||
                 trainer.my_experience?.[0]?.hl_input_text_gym ||
                 "The alfa elit fitness"}
             </h3>
@@ -473,9 +655,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>Телефон:</span>
                     <span className={styles.value}>
-                      {trainer.input_text_phone ||
-                        trainer.my_wlocation?.[0]?.hl_input_text_phone ||
-                        trainer.social_phone ||
+                      {activeLocation?.hl_input_text_phone ||
                         "+380 95 437 25 75"}
                     </span>
                   </div>
@@ -483,7 +663,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>Час роботи у вихідні:</span>
                     <span className={styles.value}>
-                      {trainer.my_wlocation?.[0]?.hl_input_text_schedule_two ||
+                      {activeLocation?.hl_input_text_schedule_two ||
                         "10:00 - 20:00"}
                     </span>
                   </div>
@@ -492,8 +672,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>Email:</span>
                     <span className={styles.value}>
-                      {trainer.input_text_email ||
-                        trainer.my_wlocation?.[0]?.hl_input_text_email ||
+                      {activeLocation?.hl_input_text_email ||
                         "bfb.board.ukraine@gmail.com"}
                     </span>
                   </div>
@@ -501,7 +680,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                   <div className={styles.infoItem}>
                     <span className={styles.label}>Час роботи у будні:</span>
                     <span className={styles.value}>
-                      {trainer.my_wlocation?.[0]?.hl_input_text_schedule_five ||
+                      {activeLocation?.hl_input_text_schedule_five ||
                         "09:00 - 22:00"}
                     </span>
                   </div>
@@ -511,8 +690,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
               <div className={styles.infoItemCenter}>
                 <span className={styles.label}>Адреса:</span>
                 <span className={styles.value}>
-                  {trainer.input_text_address ||
-                    trainer.my_wlocation?.[0]?.hl_input_text_address ||
+                  {activeLocation?.hl_input_text_address ||
                     `${trainer.location_city || "м. Київ"}, ${
                       trainer.location_country || "Україна"
                     }`}
@@ -520,20 +698,22 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
               </div>
             </div>
 
-            {trainer.hl_data_contact && trainer.hl_data_contact.length > 0 && (
+            {hallContacts.length > 0 && (
               <div className={styles.locationSocial}>
-                {trainer.hl_data_contact.map(
-                  (contact: ContactItem, index: number) => (
-                    <a
-                      key={index}
-                      href={contact.hl_input_text_link || "#"}
-                      className={styles.socialIcon}
-                      dangerouslySetInnerHTML={{
-                        __html: contact.hl_img_svg_icon,
-                      }}
-                    />
-                  )
-                )}
+                {hallContacts.map((c, i) => (
+                  <a
+                    key={i}
+                    href={c.href}
+                    className={styles.socialIcon}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {c.type === "instagram" && <InstagramIcon />}
+                    {c.type === "facebook" && <FacebookIcon />}
+                    {c.type === "telegram" && <TelegramIcon />}
+                    {c.type === "whatsapp" && <WhatsappIcon />}
+                  </a>
+                ))}
               </div>
             )}
           </div>

@@ -32,6 +32,33 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
   // Товари для спорту (категорія 30)
   const { data: relatedCategoryProducts = [] } = useProductsByCategory("30");
 
+  // Визначаємо категорію FAQ на основі категорій продукту
+  const getFaqCategoryId = (): number | undefined => {
+    if (!product?.categories || product.categories.length === 0) {
+      return undefined; // Використаємо автоматичне визначення в FAQSection
+    }
+
+    // Перевіряємо категорії продукту
+    // Якщо продукт належить до категорії "Борди" або інших категорій продуктів - використовуємо 70
+    // Можна додати інші маппінги за потреби
+    const productCategorySlugs = product.categories.map((cat) => cat.slug.toLowerCase());
+    
+    // Якщо є категорія, пов'язана з продуктами/бордами
+    if (productCategorySlugs.some((slug) => 
+      slug.includes("board") || 
+      slug.includes("борд") || 
+      slug.includes("product") ||
+      slug.includes("товар")
+    )) {
+      return 70; // Борди
+    }
+
+    // За замовчуванням для продуктів використовуємо категорію "Борди"
+    return 70;
+  };
+
+  const faqCategoryId = getFaqCategoryId();
+
   const baseItemsPerView = 5;
   const [slideIdx, setSlideIdx] = useState(0);
 
@@ -803,7 +830,7 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
         </div>
       </div>
 
-      <FAQSection />
+      <FAQSection categoryId={faqCategoryId} />
       <div className={styles.relatedProducts}>
         <div className={styles.relatedProductsHeader}>
           <p className={styles.relatedProductsSubtitle}>Інвентар</p>

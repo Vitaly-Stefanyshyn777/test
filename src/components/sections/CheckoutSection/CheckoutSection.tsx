@@ -69,16 +69,79 @@ export default function CheckoutSection() {
     paymentMethod: "Накладений платіж",
     comment: "",
   });
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    email?: string;
+    recipientFirstName?: string;
+    recipientLastName?: string;
+    recipientPhone?: string;
+    deliveryType?: string;
+    city?: string;
+    branch?: string;
+    house?: string;
+    building?: string;
+    apartment?: string;
+  }>({});
 
   const handleSubmit = async () => {
-    try {
-      // Валідація email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        alert("Будь ласка, введіть валідну email адресу");
-        return;
-      }
+    const newErrors: typeof errors = {};
 
+    // Валідація особистих даних
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Обов'язкове поле";
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Обов'язкове поле";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Обов'язкове поле";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Обов'язкове поле";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Невірний email";
+    }
+
+    // Валідація даних отримувача
+    if (hasDifferentRecipient) {
+      if (!formData.recipientFirstName.trim()) {
+        newErrors.recipientFirstName = "Обов'язкове поле";
+      }
+      if (!formData.recipientLastName.trim()) {
+        newErrors.recipientLastName = "Обов'язкове поле";
+      }
+      if (!formData.recipientPhone.trim()) {
+        newErrors.recipientPhone = "Обов'язкове поле";
+      }
+    }
+
+    // Валідація доставки
+    if (!deliveryType) {
+      newErrors.deliveryType = "Обов'язкове поле";
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = "Обов'язкове поле";
+    }
+    if (deliveryType === "courier") {
+      if (!formData.house.trim()) {
+        newErrors.house = "Обов'язкове поле";
+      }
+    } else {
+      if (!formData.branch.trim()) {
+        newErrors.branch = "Обов'язкове поле";
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    try {
       // console.log("[CheckoutSection] 🚀 Відправляю замовлення:", {
       //   formData,
       //   hasDifferentRecipient,
@@ -160,11 +223,9 @@ export default function CheckoutSection() {
       // WayForPay redirect if selected
       if (paymentMethod === "wayforpay" && result?.id) {
         try {
+          const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
           const res = await fetch(
-            `${
-              process.env.NEXT_PUBLIC_UPSTREAM_BASE ||
-              "https://www.api.bfb.in.ua"
-            }/wp-json/myplugin/v1/wayforpay?order_id=${result.id}`,
+            `${baseUrl}/wp-json/myplugin/v1/wayforpay?order_id=${result.id}`,
             { cache: "no-store" }
           );
           if (!res.ok) throw new Error(`WayForPay payload ${res.status}`);
@@ -247,6 +308,7 @@ export default function CheckoutSection() {
                   hasDifferentRecipient={hasDifferentRecipient}
                   setFormData={setFormData}
                   setHasDifferentRecipient={setHasDifferentRecipient}
+                  errors={errors}
                 />
 
                 <DeliveryForm
@@ -255,6 +317,7 @@ export default function CheckoutSection() {
                   setDeliveryType={setDeliveryType}
                   setFormData={setFormData}
                   setIsMapOpen={setIsMapOpen}
+                  errors={errors}
                 />
 
                 <PaymentForm formData={formData} setFormData={setFormData} />
@@ -287,6 +350,7 @@ export default function CheckoutSection() {
                   hasDifferentRecipient={hasDifferentRecipient}
                   setFormData={setFormData}
                   setHasDifferentRecipient={setHasDifferentRecipient}
+                  errors={errors}
                 />
 
                 <DeliveryForm
@@ -295,6 +359,7 @@ export default function CheckoutSection() {
                   setDeliveryType={setDeliveryType}
                   setFormData={setFormData}
                   setIsMapOpen={setIsMapOpen}
+                  errors={errors}
                 />
 
                 <PaymentForm formData={formData} setFormData={setFormData} />

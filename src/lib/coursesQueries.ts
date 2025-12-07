@@ -9,6 +9,17 @@ interface CourseFilters {
   featured?: boolean;
 }
 
+// Функція для парсингу JSON рядків з meta_data
+const parseMetaJson = <T>(jsonString: string | undefined, fallback: T): T => {
+  if (!jsonString) return fallback;
+  try {
+    const parsed = JSON.parse(jsonString);
+    return Array.isArray(parsed) ? (parsed as T) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 // Функція для отримання курсів з WooCommerce API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const fetchCourses = async (filters: CourseFilters = {}) => {
@@ -29,11 +40,41 @@ export const fetchCourses = async (filters: CourseFilters = {}) => {
     // Мапимо курси з WooCommerce API
     const mappedCourses = coursesWithData.map(
       (wcCourse: Record<string, unknown>) => {
-        // Витягуємо required_equipment з meta_data
+        // Витягуємо дані з meta_data
         const metaData = (wcCourse.meta_data as Array<{ key: string; value: string }>) || [];
-        const requiredEquipment = metaData.find(
-          (meta) => meta.key === "required_equipment" || meta.key === "input_required_equipment"
-        )?.value || "";
+        
+        const getMetaValue = (key: string): string | undefined => {
+          return metaData.find((meta) => meta.key === key)?.value;
+        };
+
+        // Парсимо course_data з meta_data
+        const courseThemes = parseMetaJson<string[]>(
+          getMetaValue("point_data_course_themes"),
+          []
+        );
+        const whatLearn = parseMetaJson<string[]>(
+          getMetaValue("point_data_course_what_learn"),
+          []
+        );
+        const courseInclude = parseMetaJson<string[]>(
+          getMetaValue("point_data_course_include"),
+          []
+        );
+        const courseProgram = parseMetaJson<Array<{
+          hl_input_text_title?: string;
+          hl_input_text_lesson_count?: string;
+          hl_textarea_description?: string;
+          hl_textarea_themes?: string;
+        }>>(
+          getMetaValue("hl_data_course_program"),
+          []
+        );
+
+        const dateStart = getMetaValue("input_date_date_start") || null;
+        const duration = getMetaValue("input_text_duration") || null;
+        const courseCoachId = getMetaValue("course_coach");
+        const requiredEquipment = getMetaValue("required_equipment") || 
+          getMetaValue("input_required_equipment") || "";
 
         // Отримуємо рейтинг та кількість відгуків з API
         const averageRating = parseFloat((wcCourse.average_rating as string) || "0");
@@ -57,7 +98,18 @@ export const fetchCourses = async (filters: CourseFilters = {}) => {
                 unknown
               >
             )?.src as string) || "/placeholder.svg",
-          courseData: null, // Поки що без course_data
+          courseData: {
+            Course_themes: courseThemes,
+            What_learn: whatLearn,
+            Course_include: courseInclude,
+            Course_program: courseProgram,
+            Date_start: dateStart,
+            Duration: duration,
+            Course_coach: courseCoachId ? { ID: parseInt(courseCoachId) } : null,
+            Required_equipment: requiredEquipment || null,
+            Blocks: null,
+            Online_lessons: null,
+          },
           dateCreated: (wcCourse.date_created as string) || "",
           rating: Math.round(averageRating), // Динамічний рейтинг з API
           reviewsCount: ratingCount, // Динамічна кількість відгуків з API
@@ -108,12 +160,41 @@ export const fetchCourse = async (courseId: number) => {
     }
     const wcCourse = await wcResponse.json();
 
-    // Витягуємо required_equipment з meta_data
+    // Витягуємо дані з meta_data
     const metaData = wcCourse.meta_data || [];
-    const requiredEquipment = metaData.find(
-      (meta: { key: string; value: string }) => 
-        meta.key === "required_equipment" || meta.key === "input_required_equipment"
-    )?.value || "";
+    
+    const getMetaValue = (key: string): string | undefined => {
+      return metaData.find((meta: { key: string; value: string }) => meta.key === key)?.value;
+    };
+
+    // Парсимо course_data з meta_data
+    const courseThemes = parseMetaJson<string[]>(
+      getMetaValue("point_data_course_themes"),
+      []
+    );
+    const whatLearn = parseMetaJson<string[]>(
+      getMetaValue("point_data_course_what_learn"),
+      []
+    );
+    const courseInclude = parseMetaJson<string[]>(
+      getMetaValue("point_data_course_include"),
+      []
+    );
+    const courseProgram = parseMetaJson<Array<{
+      hl_input_text_title?: string;
+      hl_input_text_lesson_count?: string;
+      hl_textarea_description?: string;
+      hl_textarea_themes?: string;
+    }>>(
+      getMetaValue("hl_data_course_program"),
+      []
+    );
+
+    const dateStart = getMetaValue("input_date_date_start") || null;
+    const duration = getMetaValue("input_text_duration") || null;
+    const courseCoachId = getMetaValue("course_coach");
+    const requiredEquipment = getMetaValue("required_equipment") || 
+      getMetaValue("input_required_equipment") || "";
 
     // Отримуємо рейтинг та кількість відгуків з API
     const averageRating = parseFloat(wcCourse.average_rating || "0");
@@ -129,7 +210,18 @@ export const fetchCourse = async (courseId: number) => {
       originalPrice: wcCourse.regular_price || "7000",
       // Використовуємо зображення з WooCommerce API
       image: wcCourse.images?.[0]?.src || "/placeholder.svg",
-      courseData: null,
+      courseData: {
+        Course_themes: courseThemes,
+        What_learn: whatLearn,
+        Course_include: courseInclude,
+        Course_program: courseProgram,
+        Date_start: dateStart,
+        Duration: duration,
+        Course_coach: courseCoachId ? { ID: parseInt(courseCoachId) } : null,
+        Required_equipment: requiredEquipment || null,
+        Blocks: null,
+        Online_lessons: null,
+      },
       dateCreated: wcCourse.date_created || "",
       rating: Math.round(averageRating), // Динамічний рейтинг з API
       reviewsCount: ratingCount, // Динамічна кількість відгуків з API

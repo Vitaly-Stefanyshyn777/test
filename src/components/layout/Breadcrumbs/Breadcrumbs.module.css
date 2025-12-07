@@ -148,15 +148,15 @@
   font-size: 14px;
   line-height: 100%;
   letter-spacing: -0.02em;
-  color: var(--black);
+  color: var(--white);
 }
 
 .breadcrumbs.onAboutBfb .breadcrumbText.active {
-  color: rgba(14, 14, 14, 0.3);
+  opacity: 0.4;
 }
 
 .breadcrumbs.onAboutBfb .breadcrumbLink:hover {
-  color: var(--violet);
+  color: var(--white);
 }
 
 @media (max-width: 1024px) {
@@ -270,16 +270,16 @@
   .breadcrumbs.onAboutBfb .breadcrumbLink,
   .breadcrumbs.onAboutBfb .breadcrumbText,
   .breadcrumbs.onAboutBfb .separator {
-    color: var(--black) !important;
+    color: var(--white) !important;
     font-size: mvw(12);
     line-height: 140%;
   }
 
   .breadcrumbs.onAboutBfb .breadcrumbText.active {
-    color: rgba(14, 14, 14, 0.3) !important;
+    opacity: 0.4 !important;
   }
 
   .breadcrumbs.onAboutBfb .separator {
-    color: rgb(14 14 14 / 30%) !important;
+    color: var(--white) !important;
   }
 }

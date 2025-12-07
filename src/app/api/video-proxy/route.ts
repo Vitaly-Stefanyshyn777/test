@@ -1,31 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const videoUrl = searchParams.get('url');
+    const videoUrl = searchParams.get("url");
 
     if (!videoUrl) {
-      return NextResponse.json({ error: 'URL параметр не надано' }, { status: 400 });
+      return NextResponse.json(
+        { error: "URL параметр не надано" },
+        { status: 400 }
+      );
     }
 
     // Перевіряємо, чи URL належить до дозволених доменів (whitelist)
-    const upstreamBase = process.env.UPSTREAM_BASE || process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+    const upstreamBase =
+      process.env.UPSTREAM_BASE || process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+    if (!upstreamBase) {
+      return NextResponse.json(
+        { error: "UPSTREAM_BASE is not configured" },
+        { status: 500 }
+      );
+    }
     const allowedOrigins = [
-      upstreamBase.endsWith('/') ? upstreamBase : `${upstreamBase}/`,
+      upstreamBase.endsWith("/") ? upstreamBase : `${upstreamBase}/`,
       // Додаємо dev-відео для тестування плеєра
-      'https://commondatastorage.googleapis.com/gtv-videos-bucket/'
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/",
     ];
 
-    const isAllowed = allowedOrigins.some((origin) => videoUrl.startsWith(origin));
+    const isAllowed = allowedOrigins.some((origin) =>
+      videoUrl.startsWith(origin)
+    );
     if (!isAllowed) {
-      return NextResponse.json({ error: 'Недопустимий URL' }, { status: 400 });
+      return NextResponse.json({ error: "Недопустимий URL" }, { status: 400 });
     }
 
     // Завантажуємо відео з оригінального сервера
     const response = await fetch(videoUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; VideoProxy/1.0)',
+        "User-Agent": "Mozilla/5.0 (compatible; VideoProxy/1.0)",
       },
     });
 
@@ -37,8 +49,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Отримуємо тип контенту
-    const contentType = response.headers.get('content-type') || 'video/mp4';
-    const contentLength = response.headers.get('content-length');
+    const contentType = response.headers.get("content-type") || "video/mp4";
+    const contentLength = response.headers.get("content-length");
 
     // Створюємо новий response з відео даними
     const videoBuffer = await response.arrayBuffer();
@@ -46,19 +58,19 @@ export async function GET(request: NextRequest) {
     return new NextResponse(videoBuffer, {
       status: 200,
       headers: {
-        'Content-Type': contentType,
-        'Content-Length': contentLength || videoBuffer.byteLength.toString(),
-        'Accept-Ranges': 'bytes',
-        'Cache-Control': 'public, max-age=3600', // Кешуємо на годину
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'Range',
+        "Content-Type": contentType,
+        "Content-Length": contentLength || videoBuffer.byteLength.toString(),
+        "Accept-Ranges": "bytes",
+        "Cache-Control": "public, max-age=3600", // Кешуємо на годину
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers": "Range",
       },
     });
   } catch (error) {
-    console.error('Помилка проксі відео:', error);
+    console.error("Помилка проксі відео:", error);
     return NextResponse.json(
-      { error: 'Внутрішня помилка сервера' },
+      { error: "Внутрішня помилка сервера" },
       { status: 500 }
     );
   }
@@ -69,9 +81,9 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Range',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Range",
     },
   });
 }

@@ -993,7 +993,7 @@
 
   .grid2 {
     grid-template-columns: 1fr;
-    gap: mvw(8);
+    gap: mvw(16);
   }
 
   .inputWrap,
@@ -1118,7 +1118,7 @@
   }
 
   .deliveryGrid {
-    gap: mvw(12);
+    gap: mvw(16);
   }
 
   .checkbox {
@@ -1129,7 +1129,7 @@
 
   .deliveryRow {
     flex-direction: column;
-    gap: mvw(8);
+    gap: mvw(16);
     width: 100%;
   }
   .addressFields {
@@ -1156,6 +1156,7 @@
   .deliveryRow .primary {
     width: 100%;
     height: mvw(52);
+    font-size: mvw(14);
   }
   .deliveryRowAddress {
     flex-direction: column;

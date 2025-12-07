@@ -259,6 +259,7 @@
   padding: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--black);
 }
 
 .IconsBlock {
@@ -276,6 +277,7 @@
   border-radius: 16px;
   border: 2px solid rgba(14, 14, 14, 0.1);
   backdrop-filter: blur(20px);
+  color: var(--black);
 }
 
 .IconsBlock:hover {

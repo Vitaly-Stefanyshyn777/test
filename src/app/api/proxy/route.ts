@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_BASE =
-  process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+const UPSTREAM_BASE = process.env.UPSTREAM_BASE;
 
 export async function GET(req: NextRequest) {
   try {
@@ -205,6 +204,13 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const body = await req.json().catch(() => null);
+
+  console.log("----- API DEBUG: PATCH /api/proxy -----");
+  console.log("Client → Next API:");
+  console.log("URL:", req.url);
+  console.log("Body:", body);
+
   try {
     const { searchParams } = new URL(req.url);
     const path = searchParams.get("path");
@@ -216,30 +222,54 @@ export async function PATCH(req: NextRequest) {
     }
 
     const targetUrl = `${UPSTREAM_BASE}${decodeURIComponent(path)}`;
-    const body = await req.json();
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    const upstreamRes = await fetch(targetUrl, {
+    // Додаємо Authorization так само, як у PUT/POST
+    const auth =
+      req.headers.get("authorization") || req.headers.get("Authorization");
+    const useAdminHeader =
+      req.headers.get("x-internal-admin") === "1" ||
+      req.headers.get("X-Internal-Admin") === "1";
+
+    if (auth) {
+      headers["Authorization"] = auth as string;
+    } else if (useAdminHeader) {
+      const cookieToken = req.cookies.get("bfb_admin_jwt")?.value;
+      if (cookieToken) {
+        headers["Authorization"] = `Bearer ${cookieToken}`;
+      }
+    } else {
+      const userCookie = req.cookies.get("bfb_user_jwt")?.value;
+      if (userCookie) {
+        headers["Authorization"] = `Bearer ${userCookie}`;
+      }
+    }
+
+    const wpResponse = await fetch(targetUrl, {
       method: "PATCH",
       headers,
-      body: JSON.stringify(body),
+      body: body !== null ? JSON.stringify(body) : undefined,
       cache: "no-store",
     });
 
-    const responseBody = await upstreamRes.text();
+    const wpText = await wpResponse.text();
 
-    return new NextResponse(responseBody, {
-      status: upstreamRes.status,
+    console.log("Next API → WordPress:");
+    console.log("Status:", wpResponse.status);
+    console.log("Response:", wpText);
+
+    return new NextResponse(wpText, {
+      status: wpResponse.status,
       headers: {
         "content-type":
-          upstreamRes.headers.get("content-type") || "application/json",
+          wpResponse.headers.get("content-type") || "application/json",
       },
     });
   } catch (error) {
-    console.error("Proxy GET error:", error);
+    console.error("Proxy PATCH error:", error);
     return NextResponse.json(
       {
         error: "Proxy error",

@@ -247,6 +247,7 @@ export default function InstructorAdvantages() {
                                 src="/images/Ellipse%2056.png"
                                 alt="Decoration"
                                 fill
+                                sizes="(max-width: 768px) 50vw, 200px"
                                 className={s.imageFill}
                               />
                             </div>
@@ -289,6 +290,7 @@ export default function InstructorAdvantages() {
                                     src={image}
                                     alt={advantage.title}
                                     fill
+                                    sizes="(max-width: 768px) 50vw, 300px"
                                     className={s.imageFill}
                                   />
                                 </div>
@@ -467,6 +469,7 @@ export default function InstructorAdvantages() {
                                 src="/images/Ellipse%2056.png"
                                 alt="Decoration"
                                 fill
+                                sizes="(max-width: 768px) 50vw, 200px"
                                 className={s.imageFill}
                               />
                             </div>
@@ -509,6 +512,7 @@ export default function InstructorAdvantages() {
                                     src={image}
                                     alt={advantage.title}
                                     fill
+                                    sizes="(max-width: 768px) 50vw, 300px"
                                     className={s.imageFill}
                                   />
                                 </div>

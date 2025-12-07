@@ -7,13 +7,24 @@ import styles from "./FAQSection.module.css";
 import { fetchFAQByCategoryWithLogging, FaqItem } from "@/lib/bfbApi";
 import { useQuery } from "@tanstack/react-query";
 
-const FAQSection = () => {
+interface FAQSectionProps {
+  /** ID категорії FAQ. Якщо не вказано, визначається автоматично на основі pathname */
+  categoryId?: number;
+}
+
+const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) => {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
   const [faqData, setFaqData] = useState<FaqItem[]>([]);
 
-  // Визначаємо категорію FAQ на основі поточної сторінки
+  // Визначаємо категорію FAQ на основі поточної сторінки або переданого пропса
   const getFaqCategoryId = (): number => {
+    // Якщо категорія передана як пропс, використовуємо її
+    if (propCategoryId !== undefined) {
+      return propCategoryId;
+    }
+
+    // Інакше визначаємо на основі pathname
     if (pathname?.includes("/products")) {
       return 70; // Борди
     }
@@ -129,8 +140,12 @@ const FAQSection = () => {
                 )}
 
                 {faqData.map((item) => {
+                  // Використовуємо нові поля: acf.answer та acf.question
                   const answerContent =
-                    item.Answer || item.content?.rendered || "";
+                    item.acf?.answer || item.content?.rendered || "";
+
+                  const questionText =
+                    item.acf?.question || item.title?.rendered || "Питання";
 
                   return (
                     <div
@@ -145,7 +160,7 @@ const FAQSection = () => {
                         aria-expanded={expandedItems.includes(item.id)}
                       >
                         <span className={styles.question}>
-                          {item.Question || item.title?.rendered || "Питання"}
+                          {questionText}
                         </span>
                         <span
                           className={`${styles.chevron} ${

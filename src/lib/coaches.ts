@@ -84,6 +84,7 @@ export const getCoachesFirstPage = async (): Promise<{
       params: {
         roles: "bfb_coach",
         per_page: 100,
+        context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
       },
       headers: { "x-internal-admin": "1" },
     });
@@ -189,6 +190,7 @@ export const getCoachesPage = async (page: number): Promise<CoachApi[]> => {
       roles: "bfb_coach",
       per_page: 100,
       page: page,
+      context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
     },
     headers: { "x-internal-admin": "1" },
   });
@@ -275,6 +277,7 @@ export const getCoachesFiltered = async (
       page: page,
       countries: countries,
       cities: cities,
+      context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
     },
     headers: { "x-internal-admin": "1" },
   });
@@ -343,10 +346,13 @@ export const mapCoachToUi = (item: CoachApi): CoachUiItem => {
       }))
     : [];
 
+  const fullName = `${item.first_name ?? ""} ${item.last_name ?? ""}`.trim();
+
   const mapped = {
     id: String(item.id),
-    name:
-      item.name || `${item.first_name ?? ""} ${item.last_name ?? ""}`.trim(),
+    // SSOT: завжди віддаємо пріоритет first_name + last_name з user,
+    // а title/name з CPT використовуємо лише як fallback
+    name: fullName || item.name || "",
     location: locationsValue,
     specialization: specializationValue,
     image: avatarValue,

@@ -10,6 +10,8 @@ import {
   QuestionIcon,
   UserIcon,
 } from "@/components/Icons/Icons";
+import InputField from "@/components/ui/FormFields/InputField";
+import TextareaField from "@/components/ui/FormFields/TextareaField";
 import s from "./TrenersModal.module.css";
 
 export interface TrainerFormValues {
@@ -43,91 +45,72 @@ export default function TrainerForm({
     <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <UserIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваше ім'я та прізвище"
-                type="text"
-                {...register("name", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<UserIcon />}
+            label="Ваше ім'я та прізвище"
+            type="text"
+            id="trainer-form-name-field"
+            hasError={!!errors.name}
+            supportingText="Будь ласка, вкажіть імʼя та прізвище"
+            {...register("name", { required: true })}
+          />
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <NumberIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваш номер телефону"
-                type="tel"
-                {...register("phone", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<NumberIcon />}
+            label="Ваш номер телефону"
+            type="tel"
+            id="trainer-form-phone-field"
+            hasError={!!errors.phone}
+            supportingText="Невірний номер"
+            {...register("phone", { required: true })}
+          />
         </div>
       </div>
 
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <EmailIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваша пошта"
-                type="email"
-                {...register("email", { required: true })}
-              />
-            </div>
-          </div>
+          <InputField
+            icon={<EmailIcon />}
+            label="Ваша пошта"
+            type="email"
+            id="trainer-form-email-field"
+            hasError={!!errors.email}
+            supportingText={
+              (errors.email?.message as string) ||
+              "Будь ласка, вкажіть коректну пошту"
+            }
+            {...register("email", {
+              required: true,
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Некоректний email",
+              },
+            })}
+          />
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <InstagramIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Нікнейм Instagram"
-                type="text"
-                {...register("instagram", { required: true })}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className={s.rowSingle}>
-        <div className={s.inputWrapper}>
-          <div className={s.inputIconWrapper}>
-            <QuestionIcon />
-          </div>
-          <textarea
-            className={`${s.input} ${s.textarea}`}
-            placeholder="Коментар (необов'язково)"
-            rows={4}
-            {...register("comment")}
+          <InputField
+            icon={<InstagramIcon />}
+            label="Нікнейм Instagram"
+            type="text"
+            hasError={!!errors.instagram}
+            supportingText="Будь ласка, вкажіть нікнейм Instagram"
+            {...register("instagram", { required: true })}
           />
         </div>
       </div>
 
-      {(errors.name || errors.phone || errors.email || errors.instagram) && (
-        <p className={s.error}>
-          Будь ласка, заповніть всі обов&apos;язкові поля
-        </p>
-      )}
+      <div className={s.rowSingle}>
+        <TextareaField
+          icon={<QuestionIcon />}
+          label="Коментар (необов'язково)"
+          rows={4}
+          {...register("comment")}
+        />
+      </div>
       {isError && (
         <p className={s.error}>Помилка відправки заявки. Спробуйте ще раз.</p>
       )}

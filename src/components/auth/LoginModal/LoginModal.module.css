@@ -14,7 +14,7 @@
 }
 
 .modal {
-  background: var(--bg-color);
+  background: var(--white);
   border-radius: 20px;
   padding: 52px;
   width: 100%;
@@ -103,7 +103,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 12px;
+  gap: 17px;
 }
 
 .inputWrapper {
@@ -340,7 +340,7 @@
 
   .inputGroup {
     width: 100%;
-    gap: mvw(8);
+    gap: mvw(14);
   }
 
   .inputWrapper {
@@ -373,8 +373,34 @@
     font-size: mvw(14);
   }
 
+  /* Стилі для InputField в LoginModal на мобілці */
+  .loginInputLabel {
+    top: 55% !important;
+  }
+
+  .loginInputBlock:has(input:focus) .loginInputLabel,
+  .loginInputBlock:has(input:not(:placeholder-shown)) .loginInputLabel {
+    top: mvw(10) !important;
+  }
+
+  /* Стилі для PasswordField в LoginModal на мобілці */
+  .loginPasswordLabel {
+    /* top: 55% !important;
+    transform: translateY(-50%) !important; */
+  }
+
+  .loginPasswordBlock:has(input:focus) .loginPasswordLabel,
+  .loginPasswordBlock:has(input:not(:placeholder-shown)) .loginPasswordLabel {
+    top: mvw(10) !important;
+    transform: translateY(0) !important;
+  }
+
+  .loginPasswordEyeBtn {
+    right: mvw(15) !important;
+  }
+
   .passwordToggle {
-    right: mvw(16);
+    right: mvw(20);
   }
 
   .passwordToggle svg {
