@@ -1,16 +1,28 @@
 import type { NextConfig } from "next";
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
-    domains: [
-      "via.placeholder.com",
-      "www.api.bfb.projection-learn.website",
-      "www.api.bfb.in.ua",
-      "secure.gravatar.com",
-      "gravatar.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.api.bfb.projection-learn.website",
+      },
+      {
+        protocol: "https",
+        hostname: "www.api.bfb.in.ua",
+      },
+      {
+        protocol: "https",
+        hostname: "secure.gravatar.com",
+      },
+      {
+        protocol: "https",
+        hostname: "gravatar.com",
+      },
     ],
     unoptimized: false,
     dangerouslyAllowSVG: true,
@@ -18,6 +30,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   turbopack: {
+    root: process.cwd(),
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
