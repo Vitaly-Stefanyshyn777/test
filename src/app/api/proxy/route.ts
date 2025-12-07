@@ -3,18 +3,29 @@ import { NextRequest, NextResponse } from "next/server";
 const UPSTREAM_BASE = process.env.UPSTREAM_BASE;
 
 export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const path = searchParams.get("path");
+  
+  console.log("🔀 [/api/proxy GET] → Запит:", {
+    path: path ? decodeURIComponent(path) : null,
+    hasUpstreamBase: !!UPSTREAM_BASE,
+    cookies: {
+      hasAdminJwt: !!req.cookies.get("bfb_admin_jwt")?.value,
+      hasUserJwt: !!req.cookies.get("bfb_user_jwt")?.value,
+    },
+  });
+
   try {
     if (!UPSTREAM_BASE) {
-      console.error("Proxy GET error: UPSTREAM_BASE is not set");
+      console.error("🔀 [/api/proxy GET] ❌ UPSTREAM_BASE не налаштовано");
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { error: "Server configuration error: UPSTREAM_BASE is not set" },
         { status: 500 }
       );
     }
 
-    const { searchParams } = new URL(req.url);
-    const path = searchParams.get("path");
     if (!path) {
+      console.error("🔀 [/api/proxy GET] ❌ Відсутній параметр path");
       return NextResponse.json(
         { error: "Missing path param" },
         { status: 400 }
@@ -22,6 +33,7 @@ export async function GET(req: NextRequest) {
     }
 
     const targetUrl = `${UPSTREAM_BASE}${decodeURIComponent(path)}`;
+    console.log("🔀 [/api/proxy GET] → Проксую до:", targetUrl);
 
     const headers: Record<string, string> = {};
 
@@ -56,23 +68,49 @@ export async function GET(req: NextRequest) {
       cache: "no-store",
     });
 
+    console.log("🔀 [/api/proxy GET] ← Отримано відповідь:", {
+      status: upstreamRes.status,
+      statusText: upstreamRes.statusText,
+      contentType: upstreamRes.headers.get("content-type"),
+    });
+
     const body = await upstreamRes.text();
+
+    if (!upstreamRes.ok) {
+      console.error("🔀 [/api/proxy GET] ❌ Помилка від WordPress:", {
+        status: upstreamRes.status,
+        body: body.substring(0, 500), // Перші 500 символів для діагностики
+      });
+    } else {
+      console.log("🔀 [/api/proxy GET] ✅ Успішна відповідь");
+    }
 
     return new NextResponse(body, {
       status: upstreamRes.status,
       headers: {
         "content-type":
           upstreamRes.headers.get("content-type") || "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
       },
     });
   } catch (error) {
-    console.error("Proxy GET error:", error);
+    console.error("🔀 [/api/proxy GET] ❌ Критична помилка:", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     return NextResponse.json(
       {
         error: "Proxy error",
         details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
   }
 }
