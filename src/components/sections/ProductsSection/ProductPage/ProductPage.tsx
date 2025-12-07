@@ -25,6 +25,7 @@ import { useAuthStore } from "@/store/auth";
 import RegisterModal from "@/components/auth/RegisterModal/RegisterModal";
 import { normalizeImageUrl } from "@/lib/imageUtils";
 import { useCartStore } from "@/store/cart";
+import ProductPageSkeleton from "./ProductPageSkeleton";
 
 export default function ProductPage({ productSlug }: { productSlug: string }) {
   // productSlug може бути як slug так і ID для сумісності
@@ -166,7 +167,7 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
   const isControlsDisabled = !isLoggedIn;
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
-  if (isLoading) return <div className={styles.loading}>Завантаження...</div>;
+  if (isLoading) return <ProductPageSkeleton />;
   if (isError || !product)
     return <div className={styles.error}>Товар не знайдено</div>;
 

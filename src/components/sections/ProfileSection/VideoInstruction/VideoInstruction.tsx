@@ -4,6 +4,7 @@ import styles from "./VideoInstruction.module.css";
 // Image removed; not used when auto-playing by default
 import { СheckBrderIcon } from "@/components/Icons/Icons";
 import VideoPlayer from "./VideoPlayer";
+import VideoInstructionSkeleton from "./VideoInstructionSkeleton";
 import { fetchThemeVideoUrl } from "@/lib/bfbApi";
 
 const StatusButton: React.FC<{
@@ -127,17 +128,12 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
       </div>
 
       {/* На мобілці обгортаємо videoContainer та statusButton в один блок */}
-      {isMobile ? (
+      {isLoading ? (
+        <VideoInstructionSkeleton />
+      ) : isMobile ? (
         <div className={styles.videoWithButtonBlock}>
           <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
-            {isLoading ? (
-              <div className={styles.videoThumbnail}>
-                <div className={styles.loadingContainer}>
-                  <div className={styles.loadingSpinner}></div>
-                  <p className={styles.loadingText}>Завантаження відео...</p>
-                </div>
-              </div>
-            ) : hasVideo ? (
+            {hasVideo ? (
               <div className={styles.videoPlayerContainer}>
                 <VideoPlayer
                   videoUrl={currentVideoUrl}
@@ -169,14 +165,7 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
         </div>
       ) : (
         <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
-          {isLoading ? (
-            <div className={styles.videoThumbnail}>
-              <div className={styles.loadingContainer}>
-                <div className={styles.loadingSpinner}></div>
-                <p className={styles.loadingText}>Завантаження відео...</p>
-              </div>
-            </div>
-          ) : hasVideo ? (
+          {hasVideo ? (
             <div className={styles.videoPlayerContainer}>
               <VideoPlayer
                 videoUrl={currentVideoUrl}

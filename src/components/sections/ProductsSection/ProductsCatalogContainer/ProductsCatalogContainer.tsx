@@ -4,6 +4,7 @@ import styles from "./ProductsCatalogContainer.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import type SwiperType from "swiper";
 import ProductsGrid from "../ProductsGrid/ProductsGrid";
+import ProductsGridSkeleton from "../ProductsGrid/ProductsGridSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { productsWithFiltersQuery } from "@/lib/productsQueries";
 
@@ -172,8 +173,9 @@ const ProductsCatalogContainer = ({
         {isError && (
           <div className={styles.error}>Не вдалося завантажити товари</div>
         )}
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {!isLoading && !isError && (
+        {isLoading ? (
+          <ProductsGridSkeleton />
+        ) : (
           <ProductsGrid
             products={productsForGrid}
             isNoCertificationFilter={isNoCertificationFilter}

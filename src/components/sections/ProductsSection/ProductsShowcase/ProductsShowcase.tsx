@@ -7,6 +7,7 @@ import type { SwiperRef } from "swiper/react";
 import { useProductsByCategory } from "@/components/hooks/useFilteredProducts";
 import ProductCard from "../ProductCard/ProductCard";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
+import ProductsShowcaseSkeleton from "./ProductsShowcaseSkeleton";
 import s from "./ProductsShowcase.module.css";
 import { fetchWcCategories } from "@/lib/bfbApi";
 import { normalizeImageUrl } from "@/lib/imageUtils";
@@ -201,21 +202,7 @@ const ProductsShowcase: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <section className={s.section}>
-        <div className={s.container}>
-          <div className={s.header}>
-            <div className={s.headerLeft}>
-              <p className={s.eyebrow}>Інвентар</p>
-              <Link href="/products" className={s.title}>
-                Товари для спорту{" "}
-              </Link>
-            </div>
-          </div>
-          <div className={s.loading}>Завантаження курсів...</div>
-        </div>
-      </section>
-    );
+    return <ProductsShowcaseSkeleton />;
   }
 
   if (isError) {

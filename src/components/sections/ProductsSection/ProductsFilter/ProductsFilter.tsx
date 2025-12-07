@@ -6,6 +6,7 @@ import { ColorFilter } from "../filters/ColorFilter/ColorFilter";
 import { SizeFilter } from "../filters/SizeFilter/SizeFilter";
 import { CertificationFilter } from "../filters/CertificationFilter/CertificationFilter";
 import ButtonFilter from "@/components/ui/ButtonFilter/ButtonFilter";
+import ProductsFilterSkeleton from "./ProductsFilterSkeleton";
 import { useMemo } from "react";
 import {
   useFilteredProducts,
@@ -43,6 +44,7 @@ interface ProductsFilterProps {
   products: Product[];
   searchTerm: string;
   onApply?: (params: Record<string, unknown>) => void;
+  loading?: boolean;
 }
 
 const ProductsFilter = ({
@@ -51,6 +53,7 @@ const ProductsFilter = ({
   onReset,
   products,
   onApply,
+  loading = false,
 }: ProductsFilterProps) => {
   const handleFilterChange = (
     key: keyof FilterState,
@@ -102,6 +105,10 @@ const ProductsFilter = ({
   }, [filters]);
 
   const { data: filteredProducts = [] } = useFilteredProducts(wcFilters);
+
+  if (loading) {
+    return <ProductsFilterSkeleton />;
+  }
 
   return (
     <div className={styles.filterContainer}>

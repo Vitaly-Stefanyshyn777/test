@@ -14,6 +14,7 @@ import ProductCard from "@/components/sections/ProductsSection/ProductCard/Produ
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import { CloseButtonIcon } from "@/components/Icons/Icons";
 import { useScrollLock } from "@/components/hooks/useScrollLock";
+import FavoritesModalSkeleton from "./FavoritesModalSkeleton";
 
 export default function FavoritesModal() {
   const isOpen = useFavoriteStore((st) => st.isOpen);
@@ -38,6 +39,14 @@ export default function FavoritesModal() {
   }, []);
 
   const [page, setPage] = useState(0);
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  // Короткий скелетон при відкритті, щоб уникнути стрибка контенту
+  useEffect(() => {
+    if (!isOpen) return;
+    setShowSkeleton(true);
+    const timer = setTimeout(() => setShowSkeleton(false), 300);
+    return () => clearTimeout(timer);
+  }, [isOpen]);
 
   const pageSize = 4;
   const pageCount = Math.ceil(items.length / pageSize) || 1;
@@ -72,9 +81,11 @@ export default function FavoritesModal() {
 
   useScrollLock(isOpen);
 
-  if (!isOpen || !isMounted || isMobile === null) return null;
+  if (!isOpen || !isMounted) return null;
 
-  const modalContent = (
+  const content = showSkeleton || isMobile === null ? (
+    <FavoritesModalSkeleton />
+  ) : (
     <div className={s.backdrop} onClick={close}>
       <div className={s.modal} onClick={(e) => e.stopPropagation()}>
         <div className={s.topbarListBlock}>
@@ -215,5 +226,5 @@ export default function FavoritesModal() {
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  return createPortal(content, document.body);
 }

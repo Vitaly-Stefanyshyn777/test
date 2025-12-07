@@ -8,6 +8,7 @@ import CartHeader from "./CartHeader";
 import CartItemsList from "./CartItemsList";
 import CartSummary from "./CartSummary";
 import CartRecommendations from "./CartRecommendations";
+import CartModalSkeleton from "./CartModalSkeleton";
 
 export default function CartModal() {
   const isOpen = useCartStore((st) => st.isOpen);
@@ -34,6 +35,7 @@ export default function CartModal() {
   );
 
   const [isMounted, setIsMounted] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -41,6 +43,14 @@ export default function CartModal() {
   }, []);
 
   useScrollLock(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setShowSkeleton(true);
+    const timer = setTimeout(() => setShowSkeleton(false), 300);
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
   if (!isOpen || !isMounted) return null;
 
   const handleCheckout = () => {
@@ -48,7 +58,9 @@ export default function CartModal() {
     window.location.href = "/checkout";
   };
 
-  const modalContent = (
+  const modalContent = showSkeleton ? (
+    <CartModalSkeleton />
+  ) : (
     <div className={s.backdrop} onClick={close}>
       <div className={s.modal} onClick={(e) => e.stopPropagation()}>
         <div className={s.topbarListBlock}>

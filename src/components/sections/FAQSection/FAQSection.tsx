@@ -6,6 +6,7 @@ import { СhevronIcon } from "../../Icons/Icons";
 import styles from "./FAQSection.module.css";
 import { fetchFAQByCategoryWithLogging, FaqItem } from "@/lib/bfbApi";
 import { useQuery } from "@tanstack/react-query";
+import FAQSectionSkeleton from "./FAQSectionSkeleton";
 
 interface FAQSectionProps {
   /** ID категорії FAQ. Якщо не вказано, визначається автоматично на основі pathname */
@@ -89,6 +90,10 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
     );
   };
 
+  if (isLoading) {
+    return <FAQSectionSkeleton />;
+  }
+
   return (
     <section className={styles.faqSection}>
       <div className={styles.container}>
@@ -121,12 +126,6 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
 
             <div className={styles.rightColumn}>
               <div className={styles.faqList}>
-                {isLoading && (
-                  <div className={styles.loading}>
-                    <p>Завантаження FAQ...</p>
-                  </div>
-                )}
-
                 {isError && (
                   <div className={styles.error}>
                     <p>Не вдалося завантажити FAQ</p>

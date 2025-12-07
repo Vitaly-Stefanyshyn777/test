@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./CoursesGrid.module.css";
 import CourseCard from "../CourseCard/CourseCard";
 import { useCoursesQuery } from "@/lib/coursesQueries";
+import CoursesGridSkeleton from "./CoursesGridSkeleton";
 
 const CoursesGrid = () => {
   const { data: courses = [], isLoading, isError } = useCoursesQuery();
@@ -10,7 +11,7 @@ const CoursesGrid = () => {
   // Courses loaded
 
   if (isLoading) {
-    return <div className={styles.loading}>Завантаження курсів...</div>;
+    return <CoursesGridSkeleton />;
   }
 
   if (isError) {

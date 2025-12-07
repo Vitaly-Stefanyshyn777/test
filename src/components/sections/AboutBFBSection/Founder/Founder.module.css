@@ -219,7 +219,7 @@
   height: 736px;
   padding: 60px;
   /* image30.png */
-  background-image: url(/images/image30.png);
+  /* background-image: url(/images/image30.png); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -462,7 +462,7 @@
     border-radius: mvw(16);
     align-items: flex-end;
     justify-content: flex-end;
-    background-image: url(/images/Frame-1321319179.png);
+    /* background-image: url(/images/Frame-1321319179.png); */
     background-position: initial;
     background-repeat: no-repeat;
     background-size: cover;

@@ -4,14 +4,16 @@ import React, { useEffect } from "react";
 import styles from "./TrainerProfile.module.css";
 import { PlusIcon } from "@/components/Icons/Icons";
 import LocationCard from "./LocationCard";
+import TrainingLocationsSectionSkeleton from "./TrainingLocationsSectionSkeleton";
 import type { TrainingLocation } from "./types";
 // removed unused imports
 
-type Props = { onAddClick?: () => void; locations?: TrainingLocation[] };
+type Props = { onAddClick?: () => void; locations?: TrainingLocation[]; loading?: boolean };
 
 export default function TrainingLocationsSection({
   onAddClick,
   locations = [],
+  loading = false,
 }: Props) {
   // Логуємо тільки коли змінюються локації, а не при кожному ре-рендері
   useEffect(() => {
@@ -27,6 +29,10 @@ export default function TrainingLocationsSection({
       });
     }
   }, [locations]);
+
+  if (loading) {
+    return <TrainingLocationsSectionSkeleton />;
+  }
 
   return (
     <div className={styles.section}>

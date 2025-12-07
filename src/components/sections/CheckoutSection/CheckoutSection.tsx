@@ -11,6 +11,7 @@ import DeliveryForm from "./DeliveryForm";
 import PaymentForm from "./PaymentForm";
 import CommentForm from "./CommentForm";
 import OrderSummary from "./OrderSummary";
+import OrderSummarySkeleton from "./OrderSummarySkeleton";
 import s from "./CheckoutSection.module.css";
 
 export default function CheckoutSection() {
@@ -20,6 +21,7 @@ export default function CheckoutSection() {
   const items = Object.values(itemsMap);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isSummarySkeleton, setIsSummarySkeleton] = useState(true);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -29,6 +31,12 @@ export default function CheckoutSection() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Короткий скелетон для summaryCard, щоб уникнути ривка при першому рендері
+  useEffect(() => {
+    const timer = setTimeout(() => setIsSummarySkeleton(false), 300);
+    return () => clearTimeout(timer);
   }, []);
 
   // Логування стану кошика (тільки для дебагу)
@@ -338,7 +346,11 @@ export default function CheckoutSection() {
                 </div>
               </div>
               <div className={s.right}>
-                <OrderSummary total={safeTotal} />
+                {isSummarySkeleton ? (
+                  <OrderSummarySkeleton />
+                ) : (
+                  <OrderSummary total={safeTotal} />
+                )}
               </div>
             </>
           ) : (
@@ -381,7 +393,11 @@ export default function CheckoutSection() {
               </div>
 
               <div className={s.right}>
-                <OrderSummary total={safeTotal} />
+                {isSummarySkeleton ? (
+                  <OrderSummarySkeleton />
+                ) : (
+                  <OrderSummary total={safeTotal} />
+                )}
               </div>
             </>
           )}

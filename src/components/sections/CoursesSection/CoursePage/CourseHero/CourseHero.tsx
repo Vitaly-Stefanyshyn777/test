@@ -9,6 +9,7 @@ import {
 } from "@/components/Icons/Icons";
 import { useCourseQuery } from "@/components/hooks/useWpQueries";
 import { CourseData } from "@/lib/bfbApi";
+import CourseHeroSkeleton from "./CourseHeroSkeleton";
 
 interface CourseHeroProps {
   courseId?: number;
@@ -43,13 +44,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
   const hasOfflineFormat = categories.includes(68);
 
   if (isLoading) {
-    return (
-      <section className={styles.hero}>
-        <div className={styles.courseContentBlock}>
-          <div className={styles.loading}>Завантаження...</div>
-        </div>
-      </section>
-    );
+    return <CourseHeroSkeleton />;
   }
 
   if (error || !course) {

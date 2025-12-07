@@ -28,6 +28,8 @@ import {
 } from "@/components/hooks/useWpQueries";
 import { useCourseQuery as useCourseDataQuery } from "@/lib/coursesQueries";
 import { useCartStore } from "@/store/cart";
+import CourseSidebarCourseInfoSkeleton from "./CourseSidebarCourseInfoSkeleton";
+import CourseSidebarImageSkeleton from "./CourseSidebarImageSkeleton";
 
 interface CourseSidebarProps {
   courseId?: number;
@@ -90,10 +92,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   };
 
   // Отримуємо дані курсу для динамічного контенту
-  const { data: course } = useCourseQuery(courseId);
+  const { data: course, isLoading: isLoadingCourse } = useCourseQuery(courseId);
 
   // Отримуємо дані курсу з coursesQueries (як в CourseCard)
-  const { data: courseData } = useCourseDataQuery(courseId || 169);
+  const { data: courseData, isLoading: isLoadingCourseData } = useCourseDataQuery(courseId || 169);
 
   // Логування для дебагу
   React.useEffect(() => {
@@ -361,39 +363,43 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   return (
     <div className={styles.sidebar}>
-      <div className={styles.imageContainer}>
-        <Image
-          src={normalizeImageUrl(
-            courseImage ||
-              product?.images?.[0]?.src ||
-              "/images/course-hero.jpg"
-          )}
-          alt={(
-            product?.name ||
-            course?.title?.rendered ||
-            "Основи тренерства BFB"
-          ).replace(/____FULL____/g, "")}
-          width={400}
-          height={300}
-          className={styles.courseImage}
-        />
-        <BadgeContainer>
-          {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
-          {isNewProduct(course?.course_data?.Date_start || undefined) && (
-            <Badge variant="new" />
-          )}
+      {isLoadingCourse || isLoadingCourseData ? (
+        <CourseSidebarImageSkeleton />
+      ) : (
+        <div className={styles.imageContainer}>
+          <Image
+            src={normalizeImageUrl(
+              courseImage ||
+                product?.images?.[0]?.src ||
+                "/images/course-hero.jpg"
+            )}
+            alt={(
+              product?.name ||
+              course?.title?.rendered ||
+              "Основи тренерства BFB"
+            ).replace(/____FULL____/g, "")}
+            width={400}
+            height={300}
+            className={styles.courseImage}
+          />
+          <BadgeContainer>
+            {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
+            {isNewProduct(course?.course_data?.Date_start || undefined) && (
+              <Badge variant="new" />
+            )}
 
-          {/* Знижка - якщо курс на розпродажі */}
-          {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
-            <Badge variant="discount" text={`-${finalDiscount}%`} />
-          )}
+            {/* Знижка - якщо курс на розпродажі */}
+            {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
+              <Badge variant="discount" text={`-${finalDiscount}%`} />
+            )}
 
-          {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
-          {storeProduct && isHitProduct(storeProduct) && (
-            <Badge variant="hit" />
-          )}
-        </BadgeContainer>
-      </div>
+            {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
+            {storeProduct && isHitProduct(storeProduct) && (
+              <Badge variant="hit" />
+            )}
+          </BadgeContainer>
+        </div>
+      )}
 
       <div className={styles.courseInfoBlock}>
         <div className={styles.tagsCodeBlock}>
@@ -439,8 +445,11 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
         </div>
       </div>
 
-      <div className={styles.courseInfo}>
-        <div className={styles.courseTitleBlock}>
+      {isLoadingCourse || isLoadingCourseData ? (
+        <CourseSidebarCourseInfoSkeleton />
+      ) : (
+        <div className={styles.courseInfo}>
+          <div className={styles.courseTitleBlock}>
           <div className={styles.categoryTagBlock}>
             <div className={styles.categoryTag}>Курси</div>
             <div className={styles.titleWithDateRow}>
@@ -647,6 +656,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
           </div>
         </div>
       </div>
+      )}
 
       {!isLoggedIn && (
         <>

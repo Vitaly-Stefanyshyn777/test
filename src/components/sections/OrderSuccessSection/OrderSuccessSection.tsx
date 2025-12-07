@@ -5,6 +5,7 @@ import { useCartStore, selectCartTotal } from "@/store/cart";
 import CheckoutHeader from "@/components/layout/CheckoutHeader/CheckoutHeader";
 import CheckoutFooter from "@/components/layout/CheckoutFooter/CheckoutFooter";
 import OrderHeader from "./OrderHeader";
+import OrderHeaderSkeleton from "./OrderHeaderSkeleton";
 import OrderProducts from "./OrderProducts";
 import OrderDetails from "./OrderDetails";
 import OrderSummary from "./OrderSummary";
@@ -35,6 +36,7 @@ export default function OrderSuccessSection() {
   const itemsMap = useCartStore((st) => st.items);
   const items = Object.values(itemsMap);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
+  const [isHeaderSkeleton, setIsHeaderSkeleton] = useState(true);
 
   const safeTotal = total || 0;
 
@@ -114,13 +116,18 @@ export default function OrderSuccessSection() {
   const chosenPhone = hasAltRecipient ? recipientPhoneRaw : phoneRaw;
   const phoneDisplay = chosenPhone.length ? chosenPhone : "Телефон не вказано";
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsHeaderSkeleton(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <CheckoutHeader />
       <div className={s.page}>
         <div className={s.container}>
           <div className={s.card}>
-            <OrderHeader />
+            {isHeaderSkeleton ? <OrderHeaderSkeleton /> : <OrderHeader />}
 
             <OrderProducts orderNumber={orderNumber} />
 

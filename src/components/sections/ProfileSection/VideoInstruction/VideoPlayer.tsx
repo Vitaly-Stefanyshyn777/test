@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import styles from "./VideoPlayer.module.css";
 import { CloseButtonIcon } from "@/components/Icons/Icons";
+import VideoPlayerSkeleton from "./VideoPlayerSkeleton";
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -182,13 +183,8 @@ export default function VideoPlayer({
           </span>
         </button>
       )}
-      {isLoading && (
-        <div className={styles.loaderOverlay}>
-          <div className="text-center">
-            <div className={styles.loaderSpinner}></div>
-            <p className={styles.loaderText}>Завантаження відео...</p>
-          </div>
-        </div>
+      {isLoading && !showPreview && (
+        <VideoPlayerSkeleton showCloseButton={showCloseButton} asOverlay={true} />
       )}
 
       <video
@@ -201,6 +197,9 @@ export default function VideoPlayer({
         poster={poster}
         preload="metadata"
         src={videoUrl}
+        style={{
+          opacity: isLoading && !showPreview ? 0 : 1,
+        }}
       >
         <source src={videoUrl} type="video/mp4" />
         Ваш браузер не підтримує відео тег.

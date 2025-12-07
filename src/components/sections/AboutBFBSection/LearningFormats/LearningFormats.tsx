@@ -10,6 +10,7 @@ import {
 } from "@/components/Icons/Icons";
 import { fetchMainCourses, MainCoursePost } from "@/lib/bfbApi";
 import TrenersModal from "@/components/auth/TrenersModal";
+import LearningFormatsSkeleton from "./LearningFormatsSkeleton";
 
 type Benefit = { text: string };
 
@@ -50,14 +51,14 @@ const onlineResults = [
 
 export default function LearningFormats() {
   const [courses, setCourses] = useState<MainCoursePost[]>([]);
-  const [, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         const data = await fetchMainCourses();
         setCourses(data);
@@ -65,7 +66,7 @@ export default function LearningFormats() {
         console.error("[LearningFormats] Помилка завантаження:", error);
         setError("Не вдалося завантажити курси формату");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -108,6 +109,11 @@ export default function LearningFormats() {
     // Fallback на статичний текст
     return "";
   };
+
+  // Показуємо skeleton поки дані завантажуються
+  if (isLoading) {
+    return <LearningFormatsSkeleton />;
+  }
 
   return (
     <section className={s.section}>

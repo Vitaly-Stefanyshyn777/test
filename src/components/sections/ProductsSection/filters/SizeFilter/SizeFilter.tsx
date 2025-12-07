@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import styles from "./SizeFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import {
   useProductAttributesQuery,
   useAttributeTermsQuery,
@@ -68,9 +70,15 @@ export const SizeFilter = ({ selectedSizes, onChange }: SizeFilterProps) => {
           isExpanded ? styles.expanded : styles.collapsed
         }`}
       >
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {isError && <div className={styles.error}>Помилка завантаження</div>}
-        {!isLoading && !isError && (
+        {isLoading ? (
+          <div className={styles.sizeButtons}>
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} width={80 + Math.random() * 40} height={40} borderRadius={8} />
+            ))}
+          </div>
+        ) : isError ? (
+          <div className={styles.error}>Помилка завантаження</div>
+        ) : (
           <div className={styles.sizeButtons}>
             {terms.map((term) => (
               <button

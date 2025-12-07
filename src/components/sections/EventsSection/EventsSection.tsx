@@ -14,6 +14,9 @@ import {
 import { useEventsQuery } from "@/components/hooks/useWpQueries";
 import type { EventPost } from "@/lib/bfbApi";
 import { normalizeImageUrl } from "@/lib/imageUtils";
+import EventsSectionSkeleton from "./EventsSectionSkeleton";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface Event {
   id: string;
@@ -225,6 +228,7 @@ const EventsSection: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Завантажуємо події з API
   const { data: eventsData = [], isLoading, isError } = useEventsQuery();
@@ -452,6 +456,11 @@ const EventsSection: React.FC = () => {
     }
   }, [events, selectedEvent, eventsData, isMobile]);
 
+  // Скидаємо стан завантаження зображення при зміні події
+  React.useEffect(() => {
+    setImageLoaded(false);
+  }, [selectedEvent]);
+
   // Функція для обробки кліку на день календаря
   const handleDayClick = (
     day: number,
@@ -497,24 +506,7 @@ const EventsSection: React.FC = () => {
   if (!isMounted) return null;
 
   if (isLoading) {
-    return (
-      <section className={s.section}>
-        <div className={s.container}>
-          <div className={s.header}>
-            <div className={s.headerLine}></div>
-            <div className={s.TitleTextBlock}>
-              <p className={s.headerText}>Календар подій</p>
-              <h2 className={s.title}>
-                Живі події, реальні люди, фітнес, який надихає
-              </h2>
-            </div>
-          </div>
-          <div style={{ padding: "60px 20px", textAlign: "center" }}>
-            Завантаження подій...
-          </div>
-        </div>
-      </section>
-    );
+    return <EventsSectionSkeleton />;
   }
 
   if (isError) {
@@ -714,12 +706,28 @@ const EventsSection: React.FC = () => {
                 <div className={s.eventCardBlock}>
                   <div className={s.eventCard}>
                     <div className={s.eventCardImage}>
+                      {!imageLoaded && (
+                        <Skeleton
+                          height="100%"
+                          width="100%"
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
                       <Image
                         src={selectedEvent.image}
                         alt={selectedEvent.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className={s.cardImage}
+                        onLoad={() => setImageLoaded(true)}
+                        style={{
+                          opacity: imageLoaded ? 1 : 0,
+                          transition: "opacity 0.3s ease",
+                        }}
                       />
                     </div>
                     <div className={s.eventCardImageWrap}>
@@ -812,12 +820,28 @@ const EventsSection: React.FC = () => {
                 <div className={s.eventCardBlock}>
                   <div className={s.eventCard}>
                     <div className={s.eventCardImage}>
+                      {!imageLoaded && (
+                        <Skeleton
+                          height="100%"
+                          width="100%"
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
                       <Image
                         src={selectedEvent.image}
                         alt={selectedEvent.title}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className={s.cardImage}
+                        onLoad={() => setImageLoaded(true)}
+                        style={{
+                          opacity: imageLoaded ? 1 : 0,
+                          transition: "opacity 0.3s ease",
+                        }}
                       />
                     </div>
                     <div className={s.eventCardImageWrap}>

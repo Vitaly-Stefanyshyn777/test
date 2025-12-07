@@ -21,15 +21,61 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Нормалізуємо upstreamBase (прибираємо trailing slash)
+    const normalizedBase = upstreamBase.endsWith("/")
+      ? upstreamBase.slice(0, -1)
+      : upstreamBase;
+
+    // Витягуємо домен з upstreamBase для більш гнучкої перевірки
+    let baseHostname = "";
+    try {
+      const baseUrl = new URL(normalizedBase);
+      baseHostname = baseUrl.hostname;
+    } catch {
+      // Якщо не вдалося розпарсити, використовуємо як є
+    }
+
+    // Перевіряємо hostname URL відео
+    let videoHostname = "";
+    try {
+      const videoUrlObj = new URL(videoUrl);
+      videoHostname = videoUrlObj.hostname;
+    } catch {
+      return NextResponse.json(
+        { error: "Недопустимий формат URL" },
+        { status: 400 }
+      );
+    }
+
+    // Перевіряємо, чи URL належить до дозволених доменів
     const allowedOrigins = [
-      upstreamBase.endsWith("/") ? upstreamBase : `${upstreamBase}/`,
+      normalizedBase,
+      `${normalizedBase}/`,
       // Додаємо dev-відео для тестування плеєра
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/",
     ];
 
-    const isAllowed = allowedOrigins.some((origin) =>
+    // Перевіряємо, чи URL починається з дозволеного домену
+    const startsWithAllowed = allowedOrigins.some((origin) =>
       videoUrl.startsWith(origin)
     );
+
+    // Перевіряємо, чи hostname відповідає базовому домену або його варіантам
+    const hostnameMatches =
+      baseHostname &&
+      (videoHostname === baseHostname ||
+        videoHostname === `www.${baseHostname}` ||
+        videoHostname === `api.${baseHostname}` ||
+        videoHostname === `www.api.${baseHostname}` ||
+        baseHostname === `www.${videoHostname}` ||
+        baseHostname === `api.${videoHostname}` ||
+        baseHostname === `www.api.${videoHostname}` ||
+        videoHostname.endsWith(`.${baseHostname}`) ||
+        baseHostname.endsWith(`.${videoHostname}`));
+
+    const isAllowed = startsWithAllowed || hostnameMatches;
+
     if (!isAllowed) {
       return NextResponse.json({ error: "Недопустимий URL" }, { status: 400 });
     }

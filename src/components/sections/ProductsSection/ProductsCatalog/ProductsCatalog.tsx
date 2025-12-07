@@ -234,6 +234,7 @@ const ProductsCatalog = () => {
               onReset={handleReset}
               products={wcFilteredProductsForFilter}
               searchTerm={searchTerm}
+              loading={isLoading}
               onApply={(params) => {
                 setAppliedWcFilters(params as Partial<ProductFilters>);
               }}

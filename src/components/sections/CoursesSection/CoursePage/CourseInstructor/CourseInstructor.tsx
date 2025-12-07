@@ -10,6 +10,7 @@ import {
   InstagramIcon,
 } from "@/components/Icons/Icons";
 import { useCourseQuery } from "@/components/hooks/useWpQueries";
+import CourseInstructorSkeleton from "./CourseInstructorSkeleton";
 
 interface CourseInstructorProps {
   courseId?: number;
@@ -22,15 +23,7 @@ const CourseInstructor: React.FC<CourseInstructorProps> = ({
   const [activeCoachIndex, setActiveCoachIndex] = React.useState(0);
 
   if (isLoading) {
-    return (
-      <section className={styles.instructor}>
-        <div className={styles.container}>
-          <div className={styles.loading}>
-            Завантаження інформації про інструктора...
-          </div>
-        </div>
-      </section>
-    );
+    return <CourseInstructorSkeleton />;
   }
 
   if (error || !course || !course.course_data.Course_coach) {

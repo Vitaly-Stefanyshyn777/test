@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import styles from "./ColorFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import {
   useProductAttributesQuery,
   useAttributeTermsQuery,
@@ -82,9 +84,19 @@ export const ColorFilter = ({ selectedColors, onChange }: ColorFilterProps) => {
           isExpanded ? styles.expanded : styles.collapsed
         }`}
       >
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {isError && <div className={styles.error}>Помилка завантаження</div>}
-        {!isLoading && !isError && (
+        {isLoading ? (
+          <div className={styles.colorList}>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className={styles.colorItem}>
+                <Skeleton width={24} height={24} borderRadius={8} />
+                <Skeleton width={100 + Math.random() * 50} height={16} />
+                <Skeleton width={30} height={16} />
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <div className={styles.error}>Помилка завантаження</div>
+        ) : (
           <div className={styles.colorList}>
             {terms.map((term) => {
               const slug = (term.slug || "").toLowerCase();

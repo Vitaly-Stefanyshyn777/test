@@ -9,6 +9,7 @@ import { PlusIcon } from "../Icons/Icons";
 import { fetchWcCategories } from "@/lib/bfbApi";
 import Badge from "@/components/ui/Badge/Badge";
 import BadgeContainer from "@/components/ui/Badge/BadgeContainer";
+import ProductsShowcaseSkeleton from "./ProductsShowcaseSkeleton";
 
 interface ProductsShowcaseProps {
   title: string;
@@ -33,6 +34,7 @@ export function ProductsShowcase({
   };
 
   const [categories, setCategories] = useState<InventoryCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [hasNewInCategory, setHasNewInCategory] = useState<
     Record<number, boolean>
@@ -42,6 +44,7 @@ export function ProductsShowcase({
   useEffect(() => {
     (async () => {
       try {
+        setIsLoading(true);
         const cats = (await fetchWcCategories({
           parent: 85, // Інвентар
           per_page: 50,
@@ -50,19 +53,31 @@ export function ProductsShowcase({
         const filtered = (cats || []).filter(Boolean);
         const sorted = filtered.sort((a, b) => {
           // Використовуємо date_modified або date_created, якщо доступні
-          const dateA = a.date_modified || a.date_modified_gmt || a.date_created || a.date_created_gmt || "";
-          const dateB = b.date_modified || b.date_modified_gmt || b.date_created || b.date_created_gmt || "";
-          
+          const dateA =
+            a.date_modified ||
+            a.date_modified_gmt ||
+            a.date_created ||
+            a.date_created_gmt ||
+            "";
+          const dateB =
+            b.date_modified ||
+            b.date_modified_gmt ||
+            b.date_created ||
+            b.date_created_gmt ||
+            "";
+
           if (!dateA && !dateB) return 0;
           if (!dateA) return 1; // Категорії без дати в кінець
           if (!dateB) return -1;
-          
+
           // Сортуємо від новіших до старіших
           return new Date(dateB).getTime() - new Date(dateA).getTime();
         });
         setCategories(sorted);
       } catch {
         setCategories([]);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -141,6 +156,10 @@ export function ProductsShowcase({
   })();
 
   const shouldShowMore = categories.length > 6 && !showAll;
+
+  if (isLoading) {
+    return <ProductsShowcaseSkeleton />;
+  }
 
   return (
     <section className={styles.wrapper}>

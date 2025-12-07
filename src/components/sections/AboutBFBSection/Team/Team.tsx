@@ -14,6 +14,9 @@ import type { SwiperRef } from "swiper/react";
 import s from "./Team.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import { normalizeImageUrl } from "@/lib/imageUtils";
+import TeamSkeleton from "./TeamSkeleton";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -65,6 +68,8 @@ export default function Team() {
   const swiperRef = useRef<SwiperRef>(null);
   const [active, setActive] = useState(0);
   const [members, setMembers] = useState<TeamMemberUi[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageLoadedStates, setImageLoadedStates] = useState<Record<string | number, boolean>>({});
 
   const baseMembers: TeamMemberUi[] = useMemo(
     () => [
@@ -99,6 +104,7 @@ export default function Team() {
 
   useEffect(() => {
     const controller = new AbortController();
+    setIsLoading(true);
     (async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
@@ -173,6 +179,8 @@ export default function Team() {
         setMembers(mapped.length > 0 ? mapped : baseMembers);
       } catch {
         setMembers(baseMembers);
+      } finally {
+        setIsLoading(false);
       }
     })();
     return () => controller.abort();
@@ -182,6 +190,14 @@ export default function Team() {
 
   const handlePrev = () => swiperRef.current?.swiper.slidePrev();
   const handleNext = () => swiperRef.current?.swiper.slideNext();
+
+  const handleImageLoad = (memberId: number | string) => {
+    setImageLoadedStates((prev) => ({ ...prev, [memberId]: true }));
+  };
+
+  if (isLoading) {
+    return <TeamSkeleton />;
+  }
 
   return (
     <section className={s.teamSection}>
@@ -210,12 +226,28 @@ export default function Team() {
               <SwiperSlide key={member.id} className={s.swiperSlide}>
                 <div className={s.teamCard}>
                   <div className={s.teamCardImage}>
+                    {!imageLoadedStates[member.id] && (
+                      <Skeleton
+                        height="100%"
+                        width="100%"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          zIndex: 1,
+                        }}
+                      />
+                    )}
                     <Image
                       src={member.image}
                       alt={member.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 300px"
                       className={s.teamCardImageInner}
+                      onLoad={() => handleImageLoad(member.id)}
+                      style={{
+                        opacity: imageLoadedStates[member.id] ? 1 : 0,
+                        transition: "opacity 0.3s ease",
+                      }}
                     />
                     <div className={s.instagramHandle}>
                       <InstagramIcon />

@@ -92,8 +92,7 @@ const CourseCatalogContainer = ({ filteredProducts }: Props) => {
         {isError && (
           <div className={styles.error}>Не вдалося завантажити товари</div>
         )}
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {!isLoading && !isError && <ProductsGrid />}
+        <ProductsGrid />
         {sortedProducts.length > 12 && (
           <SliderNav
             activeIndex={activeIndex}

@@ -8,6 +8,9 @@ import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
+import TrainersShowcaseSkeleton from "./TrainersShowcaseSkeleton";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import "swiper/css";
 
 interface TrainersShowcaseProps {
@@ -33,6 +36,7 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [activeMobile, setActiveMobile] = useState(0);
   const mobileSwiperRef = useRef<SwiperClass | null>(null);
+  const [imageLoadedStates, setImageLoadedStates] = useState<Record<string | number, boolean>>({});
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -112,6 +116,20 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
     return null;
   }
 
+  const handleImageLoad = (coachId: number | string) => {
+    setImageLoadedStates((prev) => ({ ...prev, [coachId]: true }));
+  };
+
+  if (isLoading) {
+    return (
+      <TrainersShowcaseSkeleton
+        title={title}
+        subtitle={subtitle}
+        itemsPerPage={itemsPerPage}
+      />
+    );
+  }
+
   return (
     <section className={`${styles.trainersSection} ${className}`}>
       <div className={styles.container}>
@@ -125,9 +143,8 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
         {isError && (
           <div className={styles.state}>Не вдалося завантажити тренерів</div>
         )}
-        {isLoading && <div className={styles.state}>Завантаження…</div>}
 
-        {!isLoading && !isError && (
+        {!isError && (
           <>
             {isMobile ? (
               <div className={styles.mobileSliderWrap}>
@@ -156,12 +173,28 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
                     <SwiperSlide key={coach.id}>
                       <article className={styles.trainerCard}>
                         <div className={styles.imageContainer}>
+                          {!imageLoadedStates[coach.id] && (
+                            <Skeleton
+                              height="100%"
+                              width="100%"
+                              style={{
+                                position: "absolute",
+                                inset: 0,
+                                zIndex: 1,
+                              }}
+                            />
+                          )}
                           <Image
                             src={coach.image || "/placeholder.svg"}
                             alt={coach.name}
                             width={300}
                             height={400}
                             className={styles.trainerImage}
+                            onLoad={() => handleImageLoad(coach.id)}
+                            style={{
+                              opacity: imageLoadedStates[coach.id] ? 1 : 0,
+                              transition: "opacity 0.3s ease",
+                            }}
                           />
                           {coach.location && (
                             <div className={styles.instagramBadge}>
@@ -188,12 +221,28 @@ const TrainersShowcase: React.FC<TrainersShowcaseProps> = ({
                 {pagedItems.map((coach) => (
                   <article key={coach.id} className={styles.trainerCard}>
                     <div className={styles.imageContainer}>
+                      {!imageLoadedStates[coach.id] && (
+                        <Skeleton
+                          height="100%"
+                          width="100%"
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            zIndex: 1,
+                          }}
+                        />
+                      )}
                       <Image
                         src={coach.image || "/placeholder.svg"}
                         alt={coach.name}
                         width={300}
                         height={400}
                         className={styles.trainerImage}
+                        onLoad={() => handleImageLoad(coach.id)}
+                        style={{
+                          opacity: imageLoadedStates[coach.id] ? 1 : 0,
+                          transition: "opacity 0.3s ease",
+                        }}
                       />
                       {coach.location && (
                         <div className={styles.instagramBadge}>

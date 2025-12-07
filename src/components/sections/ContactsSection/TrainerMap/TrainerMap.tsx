@@ -11,6 +11,7 @@ import {
   WhatsappIcon,
 } from "@/components/Icons/Icons";
 import InstructingSlider from "../InstructingSlider/InstructingSlider";
+import ContactsTrainerMapSkeleton from "./TrainerMapSkeleton";
 
 declare global {
   interface Window {
@@ -79,6 +80,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [localMarkers, setLocalMarkers] = useState<MapMarker[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   type ThemeTrainerLike = {
     input_text_phone?: string;
     input_text_email?: string;
@@ -175,9 +177,15 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
   const { data: themeSettingsData } = useThemeSettingsQuery();
   useEffect(() => {
     const shouldLoad = !mapMarkers || mapMarkers.length === 0 || !trainer;
-    if (!shouldLoad) return;
+    if (!shouldLoad) {
+      setIsLoading(false);
+      return;
+    }
     const raw = themeSettingsData as unknown;
-    if (!raw) return;
+    if (!raw) {
+      setIsLoading(false);
+      return;
+    }
     type ThemeSettings = {
       map_markers?: Array<{ title?: string; coordinates?: [number, number][] }>;
       input_text_phone?: string;
@@ -189,7 +197,10 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
     const first: ThemeSettings | undefined = Array.isArray(raw)
       ? ((raw as ThemeSettings[])[0] as ThemeSettings)
       : (raw as ThemeSettings);
-    if (!first) return;
+    if (!first) {
+      setIsLoading(false);
+      return;
+    }
     const markers: MapMarker[] = Array.isArray(first?.map_markers)
       ? (
           first.map_markers as Array<{
@@ -221,6 +232,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
     };
     if (markers.length > 0) setLocalMarkers(markers);
     setLocalTrainer(trainerLike);
+    setIsLoading(false);
   }, [mapMarkers, trainer, themeSettingsData]);
 
   const effectiveTrainer = useMemo(() => {
@@ -344,6 +356,10 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
       }
     };
   }, [effectiveMarkers]);
+
+  if (isLoading) {
+    return <ContactsTrainerMapSkeleton />;
+  }
 
   return (
     <div id="locations" className={styles.container}>

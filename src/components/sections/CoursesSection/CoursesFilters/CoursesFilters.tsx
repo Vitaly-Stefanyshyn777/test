@@ -231,6 +231,7 @@ const CoursesFilters = ({
                 (trainingTypeOrder.get(b.name) ?? 99)
             )
             .map((c) => ({ key: c.name, label: c.name }))}
+          loading={loading}
         />
 
         <CertificationFilter
@@ -239,6 +240,7 @@ const CoursesFilters = ({
             handleFilterChange("certification", vals)
           }
           options={[]}
+          loading={loading}
         />
 
         <WorkoutTypeFilter
@@ -254,6 +256,7 @@ const CoursesFilters = ({
                 (pickTypeOrder.get(b.name) ?? 99)
             )
             .map((c) => c.name)}
+          loading={loading}
         />
       </div>
 

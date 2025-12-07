@@ -10,6 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
+import HeroSectionSkeleton from "./HeroSectionSkeleton";
 
 const HeroSection = () => {
   const [banners, setBanners] = useState<BannerPost[]>([]);
@@ -18,7 +19,7 @@ const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiper, setSwiper] = useState<SwiperClass | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  // local loading not used in UI
+  const [isLoading, setIsLoading] = useState(true);
 
   // Визначення мобільної версії
   useEffect(() => {
@@ -36,6 +37,7 @@ const HeroSection = () => {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
+      setIsLoading(true);
       try {
         const fetched = await fetchBanners();
         if (!mounted) return;
@@ -96,7 +98,7 @@ const HeroSection = () => {
         setBanners([]);
         setActiveBannerId(null);
       } finally {
-        // no-op
+        setIsLoading(false);
       }
     };
     load();
@@ -254,6 +256,11 @@ const HeroSection = () => {
     activeBanner?.acf?.description ||
     (activeBanner?.Description as string) ||
     "";
+
+  // Показуємо skeleton поки дані завантажуються
+  if (isLoading) {
+    return <HeroSectionSkeleton />;
+  }
 
   return (
     <section className={s.hero} data-hero-section>
