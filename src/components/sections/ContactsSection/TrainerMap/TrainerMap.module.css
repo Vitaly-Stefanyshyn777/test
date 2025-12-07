@@ -1,11 +1,13 @@
 .container {
   width: 100%;
   border-radius: 12px;
-  padding: 0px 20px 0px 20px;
+  padding: 0 20px 0 20px;
   display: flex;
   flex-direction: column;
   gap: 72px;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .title {
@@ -13,14 +15,7 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
-}
-
-.mapTitle {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
 .mapContainer {
@@ -28,14 +23,24 @@
   width: 100%;
   height: 880px;
   margin-bottom: 24px;
+  z-index: 1;
+  border-radius: 20px;
 }
 
 .map {
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   border: 1px solid #e0e0e0;
+}
+
+/* Стилі для маркера Leaflet */
+.map :global(.leaflet-marker-icon) {
+  width: 70px !important;
+  height: 70px !important;
+  margin-left: -20px !important;
+  margin-top: -40px !important;
 }
 
 .noData {
@@ -122,12 +127,6 @@
   color: #666;
 }
 
-.mapHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .locationCard {
   position: absolute;
   top: 50px;
@@ -145,8 +144,8 @@
   flex-direction: column;
 
   border-radius: 24px;
-  padding: 52px;
-  width: 468px;
+  padding: 40px;
+  width: 459px;
   height: 772px;
 }
 
@@ -178,21 +177,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.mapTitle {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 135%;
-  text-align: center;
-  color: #8426d7;
-}
-
 .locationCard h3 {
   font-family: var(--second-family);
   font-weight: 600;
   font-size: 56px;
   line-height: 115%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -238,16 +227,14 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: rgba(14, 14, 14, 0.4);
 }
 
 .value {
   font-family: var(--second-family);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 15px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -269,6 +256,7 @@
   padding: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--black);
 }
 
 .IconsBlock {
@@ -286,6 +274,7 @@
   border-radius: 16px;
   border: 2px solid rgba(14, 14, 14, 0.1);
   backdrop-filter: blur(20px);
+  color: var(--black);
 }
 
 .IconsBlock:hover {
@@ -301,127 +290,223 @@
   color: var(--white);
   border-color: var(--violet);
 }
+.socialIconsMobile {
+  display: none;
+}
+
+.contactsSection {
+  display: none;
+}
+
+.contactsTitle {
+  display: none;
+}
+.mapTitle {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 135%;
+  text-align: center;
+  color: var(--violet);
+}
 
 @media (max-width: 1000px) {
   .container {
-    padding: 0;
-    gap: mvw(24);
-    align-items: stretch;
+    padding: mvw(32) mvw(16) mvw(200) mvw(16);
+    gap: mvw(32);
+    margin-bottom: mvw(120);
+    position: relative;
+    z-index: 1;
+    min-height: auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
   }
-  .mapHeader {
-    padding: 0 mvw(16);
-    gap: mvw(8);
-    text-align: center;
-  }
+
   .mapTitle {
-    font-size: mvw(12);
-    font-weight: 500;
-    color: var(--violet);
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: mvw(14);
+    line-height: 140%;
     text-align: center;
+    color: var(--violet);
   }
+
   .title {
-    font-size: mvw(28);
     line-height: 120%;
     text-align: center;
+
+    font-family: var(--second-family);
+    font-weight: 700;
+    font-size: mvw(28);
+    line-height: 120%;
     color: var(--black);
   }
-  .mapContainer {
-    position: relative;
-    width: 100%;
-    height: auto;
-    margin-bottom: 0;
-    padding: 0 mvw(16);
+
+  .contactsSection {
     display: flex;
     flex-direction: column;
-  }
-  .map {
+
+    gap: mvw(16);
     width: 100%;
-    height: mvw(400);
-    border-radius: mvw(12);
-    border: 1px solid #60a5fa;
-    flex-shrink: 0;
   }
-  .locationCard {
+
+  .contactsTitle {
+    display: block;
+
+    text-align: left;
+    margin: 0;
+
+    font-family: var(--second-family);
+    font-weight: 600;
+    font-size: mvw(16);
+    line-height: 120%;
+    color: var(--black);
+  }
+
+  .socialIconsMobile {
+    display: flex;
+    justify-content: flex-start;
+    gap: mvw(12);
+  }
+
+  .socialIconsMobile .IconsBlock {
+    width: mvw(58);
+    height: mvw(58);
+    padding: mvw(10);
+    border-radius: mvw(16);
+    border: mvw(2) solid rgba(14, 14, 14, 0.1);
+    background: var(--white);
+  }
+
+  .socialIconsMobile .IconsBlock svg {
+    width: mvw(24);
+    height: mvw(24);
+    color: var(--black);
+  }
+
+  .mapContainer {
+    height: mvw(400);
+    margin-bottom: mvw(16);
+    padding: 0;
     position: relative;
-    top: 0;
-    left: 0;
+    z-index: 1;
+    overflow: visible;
+    border-radius: mvw(16);
+  }
+
+  .map {
+    border-radius: mvw(16);
+  }
+
+  .locationCard {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100%;
     height: auto;
     padding: mvw(20);
     border-radius: mvw(16);
-    background: var(--white);
-    box-shadow: none;
-    border: none;
     margin-top: mvw(16);
+    margin-bottom: mvw(120);
     gap: mvw(16);
+    box-shadow: none;
+
+    z-index: 1;
   }
+
   .locationImages {
-    display: flex;
-    gap: mvw(8);
+    gap: mvw(12);
     justify-content: flex-start;
   }
+
   .imageWrapper {
     border-radius: mvw(8);
   }
+
   .locationImage {
     width: mvw(100);
     height: mvw(100);
     border-radius: mvw(8);
   }
+
   .locationCard h3 {
     font-size: mvw(32);
     line-height: 120%;
     margin: 0;
-
     font-weight: 600;
   }
+
   .locationInfoCont {
     gap: mvw(16);
   }
+
   .locationInfo {
+    flex-direction: column;
     gap: mvw(16);
   }
+
   .infoRow {
     gap: mvw(12);
   }
+
   .infoItem {
     gap: mvw(4);
   }
+
   .infoItemCenter {
     gap: mvw(4);
   }
+
   .label {
     font-size: mvw(14);
-
     font-weight: 400;
+    color: rgba(14, 14, 14, 0.6);
   }
+
   .value {
     font-size: mvw(16);
     line-height: 140%;
-
     font-weight: 500;
+    color: var(--black);
   }
+
+  .map :global(.leaflet-marker-icon) {
+    width: mvw(30) !important;
+    height: mvw(30) !important;
+    margin-left: -20px !important;
+    margin-top: -40px !important;
+  }
+
   .locationSocial {
     gap: mvw(12);
     justify-content: flex-start;
   }
+
   .IconsBlock {
     width: mvw(58);
     height: mvw(58);
-    border-radius: mvw(12);
     padding: mvw(10);
-    background: var(--white);
+    border-radius: mvw(16);
+
     border: mvw(2) solid rgba(14, 14, 14, 0.1);
   }
+
   .IconsBlock svg {
-    width: mvw(20);
-    height: mvw(20);
-    color: var(--black);
+    width: mvw(24);
+    height: mvw(24);
   }
+
   .socialIcon {
     width: mvw(44);
     height: mvw(44);
-    border-radius: mvw(12);
     padding: mvw(10);
+    border-radius: mvw(12);
+  }
+
+  .socialIcon svg {
+    width: mvw(20);
+    height: mvw(20);
   }
 }

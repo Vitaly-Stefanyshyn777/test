@@ -1,15 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Check4Icon } from "@/components/Icons/Icons";
 import styles from "./TrainerProfile.module.css";
+import type { WorkExperienceEntry } from "./types";
+import SecondaryInput from "@/components/ui/FormFields/SecondaryInput";
+import DropdownField, {
+  DropdownOption,
+} from "@/components/ui/FormFields/DropdownField";
 
-export default function ExperienceForm() {
-  const [startMonth, setStartMonth] = useState("");
-  const [startYear, setStartYear] = useState("");
-  const [endMonth, setEndMonth] = useState("");
-  const [endYear, setEndYear] = useState("");
+type Props = {
+  value: WorkExperienceEntry;
+  onChange: (field: keyof WorkExperienceEntry, value: string) => void;
+};
 
+export default function ExperienceForm({ value, onChange }: Props) {
   const [isStartMonthOpen, setIsStartMonthOpen] = useState(false);
   const [isStartYearOpen, setIsStartYearOpen] = useState(false);
   const [isEndMonthOpen, setIsEndMonthOpen] = useState(false);
@@ -22,7 +26,7 @@ export default function ExperienceForm() {
     if (except !== "endYear") setIsEndYearOpen(false);
   };
 
-  const months = [
+  const months: DropdownOption[] = [
     { value: "01", label: "Січень" },
     { value: "02", label: "Лютий" },
     { value: "03", label: "Березень" },
@@ -42,206 +46,65 @@ export default function ExperienceForm() {
   const minYear = currentYear - 50; // 50 років назад
   const maxYear = currentYear + 5; // 5 років вперед (для майбутніх дат)
 
-  const years = Array.from({ length: maxYear - minYear + 1 }, (_, idx) => {
+  const years: DropdownOption[] = Array.from(
+    { length: maxYear - minYear + 1 },
+    (_, idx) => {
     const year = maxYear - idx; // Від майбутнього до минулого
     return { value: String(year), label: String(year) };
-  });
+    },
+  );
 
   return (
     <div className={styles.dateRow}>
       <div className={styles.dateGroup}>
         <label className={styles.dateLabel}>Назва залу</label>
-        <input type="text" placeholder="Назва залу" className={styles.input} />
+        <SecondaryInput
+          label="Назва залу"
+          value={value.gym}
+          onChange={(e) => onChange("gym", e.target.value)}
+        />
       </div>
       <div className={styles.dateGroup}>
         <label className={styles.dateLabel}>Дата початку</label>
         <div className={styles.dateInputs}>
-          <div className={styles.dateSelectContainer}>
-            <div
-              className={styles.inputWithIcons}
-              onClick={() => {
-                closeOthers("startMonth");
-                setIsStartMonthOpen(!isStartMonthOpen);
-              }}
-            >
-              <span
-                className={`${styles.inputText} ${
-                  startMonth ? styles.inputTextSelected : ""
-                }`}
-              >
-                {startMonth
-                  ? months.find((m) => m.value === startMonth)?.label
-                  : "Місяць"}
-              </span>
-              <span
-                className={`${styles.iconRight} ${
-                  isStartMonthOpen ? styles.rotated : ""
-                }`}
-              >
-                <Check4Icon />
-              </span>
-            </div>
-            {isStartMonthOpen && (
-              <div
-                className={`${styles.dropdownList} ${
-                  months.length > 3 ? styles.scrollable : ""
-                }`}
-              >
-                {months.map((m) => (
-                  <div
-                    key={m.value}
-                    className={styles.dropdownItem}
-                    onClick={() => {
-                      setStartMonth(m.value);
-                      setIsStartMonthOpen(false);
-                    }}
-                  >
-                    <span className={styles.dropdownText}>{m.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className={styles.dateSelectContainer}>
-            <div
-              className={styles.inputWithIcons}
-              onClick={() => {
-                closeOthers("startYear");
-                setIsStartYearOpen(!isStartYearOpen);
-              }}
-            >
-              <span
-                className={`${styles.inputText} ${
-                  startYear ? styles.inputTextSelected : ""
-                }`}
-              >
-                {startYear || "Рік"}
-              </span>
-              <span
-                className={`${styles.iconRight} ${
-                  isStartYearOpen ? styles.rotated : ""
-                }`}
-              >
-                <Check4Icon />
-              </span>
-            </div>
-            {isStartYearOpen && (
-              <div
-                className={`${styles.dropdownList} ${
-                  years.length > 3 ? styles.scrollable : ""
-                }`}
-              >
-                {years.map((y) => (
-                  <div
-                    key={y.value}
-                    className={styles.dropdownItem}
-                    onClick={() => {
-                      setStartYear(y.value);
-                      setIsStartYearOpen(false);
-                    }}
-                  >
-                    <span className={styles.dropdownText}>{y.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DropdownField
+            showLabel={false}
+            label="Місяць"
+            value={value.startMonth}
+            options={months}
+            placeholder="Місяць"
+            onChange={(v) => onChange("startMonth", v)}
+          />
+          <DropdownField
+            showLabel={false}
+            label="Рік"
+            value={value.startYear}
+            options={years}
+            placeholder="Рік"
+            onChange={(v) => onChange("startYear", v)}
+          />
         </div>
       </div>
 
       <div className={styles.dateGroup}>
         <label className={styles.dateLabel}>Дата завершення</label>
         <div className={styles.dateInputs}>
-          <div className={styles.dateSelectContainer}>
-            <div
-              className={styles.inputWithIcons}
-              onClick={() => {
-                closeOthers("endMonth");
-                setIsEndMonthOpen(!isEndMonthOpen);
-              }}
-            >
-              <span
-                className={`${styles.inputText} ${
-                  endMonth ? styles.inputTextSelected : ""
-                }`}
-              >
-                {endMonth
-                  ? months.find((m) => m.value === endMonth)?.label
-                  : "Місяць"}
-              </span>
-              <span
-                className={`${styles.iconRight} ${
-                  isEndMonthOpen ? styles.rotated : ""
-                }`}
-              >
-                <Check4Icon />
-              </span>
-            </div>
-            {isEndMonthOpen && (
-              <div
-                className={`${styles.dropdownList} ${
-                  months.length > 3 ? styles.scrollable : ""
-                }`}
-              >
-                {months.map((m) => (
-                  <div
-                    key={m.value}
-                    className={styles.dropdownItem}
-                    onClick={() => {
-                      setEndMonth(m.value);
-                      setIsEndMonthOpen(false);
-                    }}
-                  >
-                    <span className={styles.dropdownText}>{m.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className={styles.dateSelectContainer}>
-            <div
-              className={styles.inputWithIcons}
-              onClick={() => {
-                closeOthers("endYear");
-                setIsEndYearOpen(!isEndYearOpen);
-              }}
-            >
-              <span
-                className={`${styles.inputText} ${
-                  endYear ? styles.inputTextSelected : ""
-                }`}
-              >
-                {endYear || "Рік"}
-              </span>
-              <span
-                className={`${styles.iconRight} ${
-                  isEndYearOpen ? styles.rotated : ""
-                }`}
-              >
-                <Check4Icon />
-              </span>
-            </div>
-            {isEndYearOpen && (
-              <div
-                className={`${styles.dropdownList} ${
-                  years.length > 3 ? styles.scrollable : ""
-                }`}
-              >
-                {years.map((y) => (
-                  <div
-                    key={y.value}
-                    className={styles.dropdownItem}
-                    onClick={() => {
-                      setEndYear(y.value);
-                      setIsEndYearOpen(false);
-                    }}
-                  >
-                    <span className={styles.dropdownText}>{y.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DropdownField
+            showLabel={false}
+            label="Місяць"
+            value={value.endMonth}
+            options={months}
+            placeholder="Місяць"
+            onChange={(v) => onChange("endMonth", v)}
+          />
+          <DropdownField
+            showLabel={false}
+            label="Рік"
+            value={value.endYear}
+            options={years}
+            placeholder="Рік"
+            onChange={(v) => onChange("endYear", v)}
+          />
         </div>
       </div>
     </div>

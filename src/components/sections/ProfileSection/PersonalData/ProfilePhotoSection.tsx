@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./PersonalData.module.css";
 import { UserIcon, PlusIcon } from "@/components/Icons/Icons";
+import ProfilePhotoSectionSkeleton from "./ProfilePhotoSectionSkeleton";
 import { uploadCoachMedia } from "@/lib/bfbApi";
 import { useAuthStore } from "@/store/auth";
 
@@ -73,6 +74,10 @@ export default function ProfilePhotoSection({
       setUploading(false);
     }
   };
+
+  if (uploading) {
+    return <ProfilePhotoSectionSkeleton />;
+  }
 
   return (
     <div className={styles.section}>

@@ -47,6 +47,7 @@ const PhotoNineBlock: React.FC = () => {
                 src="/images/ScreenshotNine.png"
                 alt="Приклад"
                 fill
+                sizes="(max-width: 768px) 100vw, 800px"
                 className={s.photo}
               />
             </div>

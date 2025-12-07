@@ -1,6 +1,7 @@
 export type TrainerUser = {
   id: number;
   name?: string;
+  position?: string;
   locations?: string | string[];
   avatar?: string | string[];
   my_specialty?: string[] | string;
@@ -20,6 +21,9 @@ export type TrainerUser = {
     hl_input_text_schedule_five?: string;
     hl_input_text_schedule_two?: string;
     hl_input_text_address?: string;
+    hl_input_text_facebook?: string;
+    hl_input_text_instagram?: string;
+    hl_input_text_telegram?: string;
     hl_input_text_coord_lat?: string;
     hl_input_text_coord_ln?: string;
     coord_lat?: string;
@@ -28,6 +32,7 @@ export type TrainerUser = {
     longitude?: string | number;
     lat?: string | number;
     lng?: string | number;
+    hl_img_link_photo?: string[];
   }>;
   gallery?: string | string[];
   certificate?: string | string[];
@@ -48,6 +53,9 @@ export type TrainerUser = {
     hl_img_link_photo: string[];
   }>;
   social_phone?: string;
+  social_telegram?: string;
+  social_instagram?: string;
+  social_facebook?: string;
   location_city?: string;
   location_country?: string;
 };

@@ -50,14 +50,14 @@ const onlineResults = [
 
 export default function LearningFormats() {
   const [courses, setCourses] = useState<MainCoursePost[]>([]);
-  const [, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         const data = await fetchMainCourses();
         setCourses(data);
@@ -65,7 +65,7 @@ export default function LearningFormats() {
         console.error("[LearningFormats] Помилка завантаження:", error);
         setError("Не вдалося завантажити курси формату");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     })();
   }, []);

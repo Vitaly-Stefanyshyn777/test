@@ -8,7 +8,6 @@ interface CoursePageProps {
 
 export default async function CoursePageRoute({ params }: CoursePageProps) {
   const { slug } = await params;
-  // Передаємо slug як courseId
-  const courseId = parseInt(slug) || 169;
-  return <CoursePage courseId={courseId} />;
+  // Передаємо slug як є (як у продуктів) - логіка пошуку за ID або slug буде в courseQuery
+  return <CoursePage courseIdOrSlug={slug} />;
 }

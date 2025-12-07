@@ -10,6 +10,7 @@ import {
 import styles from "./CourseProgram.module.css";
 import { useCourseQuery } from "@/components/hooks/useWpQueries";
 import { CourseData } from "@/lib/bfbApi";
+import CourseProgramSkeleton from "./CourseProgramSkeleton";
 
 interface CourseModule {
   id: number;
@@ -20,7 +21,7 @@ interface CourseModule {
 }
 
 interface CourseProgramProps {
-  courseId?: number;
+  courseId?: string | number;
 }
 
 const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
@@ -67,13 +68,7 @@ const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
   };
 
   if (isLoading) {
-    return (
-      <section className={styles.program}>
-        <div className={styles.content}>
-          <div className={styles.loading}>Завантаження програми курсу...</div>
-        </div>
-      </section>
-    );
+    return <CourseProgramSkeleton />;
   }
 
   if (error || !course) {

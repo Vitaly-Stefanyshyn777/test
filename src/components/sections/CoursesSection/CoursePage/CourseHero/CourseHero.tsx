@@ -9,9 +9,10 @@ import {
 } from "@/components/Icons/Icons";
 import { useCourseQuery } from "@/components/hooks/useWpQueries";
 import { CourseData } from "@/lib/bfbApi";
+import CourseHeroSkeleton from "./CourseHeroSkeleton";
 
 interface CourseHeroProps {
-  courseId?: number;
+  courseId?: string | number;
 }
 
 const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
@@ -22,7 +23,11 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
   React.useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`/api/wc/v3/products/${courseId}`);
+        // Використовуємо ID для API запиту (якщо це slug, useCourseQuery вже отримав курс)
+        const courseIdForApi = typeof courseId === "number" ? courseId : 
+                                /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
+                                courseId;
+        const response = await fetch(`/api/wc/v3/products/${courseIdForApi}`);
         if (response.ok) {
           const data = await response.json();
           const categoryIds = data.categories?.map((cat: { id: number }) => cat.id) || [];
@@ -43,13 +48,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
   const hasOfflineFormat = categories.includes(68);
 
   if (isLoading) {
-    return (
-      <section className={styles.hero}>
-        <div className={styles.courseContentBlock}>
-          <div className={styles.loading}>Завантаження...</div>
-        </div>
-      </section>
-    );
+    return <CourseHeroSkeleton />;
   }
 
   if (error || !course) {
@@ -66,7 +65,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
       <div className={styles.courseContentBlock}>
         <div className={styles.tagsCodeBlock}>
           <div className={styles.tags}>
-            {course.course_data.Date_start && (
+            {course.course_data?.Date_start && (
               <div className={styles.tag}>
                 <div className={styles.tagIcon}>
                   <СalendarIcon />
@@ -76,7 +75,7 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
                 </p>
               </div>
             )}
-            {course.course_data.Duration && (
+            {course.course_data?.Duration && (
               <div className={styles.tag}>
                 <div className={styles.tagIcon}>
                   <СlockIcon />
@@ -117,16 +116,18 @@ const CourseHero: React.FC<CourseHeroProps> = ({ courseId = 169 }) => {
           </div>
         </div>
       </div>
-      <div className={styles.topicsSection}>
-        <h3>ЯКІ ТЕМИ ПОКРИВАЄ КУРС:</h3>
-        <div className={styles.topicsGrid}>
-          {course.course_data.Course_themes.map((theme, index) => (
-            <div key={index} className={styles.topicTag}>
-              <p className={styles.topicText}>{theme}</p>
-            </div>
-          ))}
+      {course.course_data?.Course_themes && course.course_data.Course_themes.length > 0 && (
+        <div className={styles.topicsSection}>
+          <h3>ЯКІ ТЕМИ ПОКРИВАЄ КУРС:</h3>
+          <div className={styles.topicsGrid}>
+            {course.course_data.Course_themes.map((theme, index) => (
+              <div key={index} className={styles.topicTag}>
+                <p className={styles.topicText}>{theme}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

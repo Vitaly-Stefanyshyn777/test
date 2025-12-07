@@ -1,8 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { NovaPoshtaIcon, ChevronUpIcon } from "@/components/Icons/Icons";
+import { NovaPoshtaIcon } from "@/components/Icons/Icons";
 import { FormData } from "./types";
 import s from "./CheckoutSection.module.css";
+import DropdownField, {
+  DropdownOption,
+} from "@/components/ui/FormFields/DropdownField";
+import BranchDropdownField, {
+  BranchDropdownOption,
+} from "@/components/ui/FormFields/BranchDropdownField";
+import SecondaryInput from "@/components/ui/FormFields/SecondaryInput";
+import secondaryInputStyles from "@/components/ui/FormFields/SecondaryInput.module.css";
 
 interface DeliveryFormProps {
   deliveryType: string;
@@ -10,6 +18,14 @@ interface DeliveryFormProps {
   setDeliveryType: (value: string) => void;
   setFormData: (data: FormData) => void;
   setIsMapOpen: (value: boolean) => void;
+  errors?: {
+    deliveryType?: string;
+    city?: string;
+    branch?: string;
+    house?: string;
+    building?: string;
+    apartment?: string;
+  };
 }
 
 export default function DeliveryForm({
@@ -18,27 +34,17 @@ export default function DeliveryForm({
   setDeliveryType,
   setFormData,
   setIsMapOpen,
+  errors = {},
 }: DeliveryFormProps) {
-  const [isDeliveryExpanded, setIsDeliveryExpanded] = useState(false);
-  const [isCityExpanded, setIsCityExpanded] = useState(false);
-  const [isBranchExpanded, setIsBranchExpanded] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  // Функція для закриття всіх інших dropdown
-  const closeOtherDropdowns = (currentDropdown: string) => {
-    if (currentDropdown !== "delivery") setIsDeliveryExpanded(false);
-    if (currentDropdown !== "city") setIsCityExpanded(false);
-    if (currentDropdown !== "branch") setIsBranchExpanded(false);
-  };
-
-  const deliveryOptions = [
+  const deliveryOptions: BranchDropdownOption[] = [
     { value: "branch", label: "На відділення" },
     { value: "cargo", label: "Грузове відділення" },
     { value: "courier", label: "Курʼєр" },
   ];
 
-  const [cities, setCities] = React.useState<
-    Array<{ value: string; label: string }>
-  >([]);
+  const [cities, setCities] = React.useState<DropdownOption[]>([]);
   const [loadingCities, setLoadingCities] = React.useState(false);
 
   // Завантаження міст з updated_data.json
@@ -77,9 +83,7 @@ export default function DeliveryForm({
     loadCities();
   }, []);
 
-  const [branches, setBranches] = React.useState<
-    Array<{ value: string; label: string }>
-  >([]);
+  const [branches, setBranches] = React.useState<DropdownOption[]>([]);
   const [loadingBranches, setLoadingBranches] = React.useState(false);
 
   // Завантаження відділень для обраного міста
@@ -116,7 +120,7 @@ export default function DeliveryForm({
           ...(selectedCity.warehouses || []),
         ];
 
-        const branchesList = allWarehouses
+        const branchesList: DropdownOption[] = allWarehouses
           .map((warehouse: { name: string }) => ({
             value: warehouse.name,
             label: warehouse.name
@@ -143,186 +147,106 @@ export default function DeliveryForm({
       <div className={s.deliveryGrid}>
         <div className={s.deliveryRow}>
           <div className={s.inputWrap}>
-            <div
-              className={s.inputWithIconsNova}
-              onClick={() => {
-                closeOtherDropdowns("delivery");
-                setIsDeliveryExpanded(!isDeliveryExpanded);
-              }}
-            >
-              <NovaPoshtaIcon />
-              <span className={s.inputText}>
-                {deliveryType
-                  ? deliveryOptions.find((opt) => opt.value === deliveryType)
-                      ?.label
-                  : "Обери спосіб доставки"}
-              </span>
-              <span className={s.iconLeft}></span>
-              <span
-                className={`${s.iconRight} ${
-                  isDeliveryExpanded ? s.rotated : ""
-                }`}
-              >
-                <ChevronUpIcon />
-              </span>
-            </div>
-            {isDeliveryExpanded && (
-              <div
-                className={`${s.dropdownList} ${
-                  deliveryOptions.length > 3 ? s.scrollable : ""
-                }`}
-              >
-                {deliveryOptions.map((option) => (
-                  <div
-                    key={option.value}
-                    className={s.dropdownItem}
-                    onClick={() => {
-                      setDeliveryType(option.value);
-                      setIsDeliveryExpanded(false);
-                    }}
-                  >
-                    <span className={s.iconLeft}>
-                      <NovaPoshtaIcon />
-                    </span>
-                    <span className={s.dropdownText}>{option.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <BranchDropdownField
+              label=""
+              value={deliveryType}
+              options={deliveryOptions}
+              placeholder="Обери спосіб доставки"
+              onChange={(value) => setDeliveryType(value)}
+              showLabel={false}
+              icon={<NovaPoshtaIcon />}
+              hasError={!!errors.deliveryType}
+              supportingText={errors.deliveryType || ""}
+              isOpen={openDropdown === "delivery"}
+              onOpenChange={(isOpen) =>
+                setOpenDropdown(isOpen ? "delivery" : null)
+              }
+            />
           </div>
           <div className={s.inputWrap}>
-            <div
-              className={s.inputWithIcons}
-              onClick={() => {
-                closeOtherDropdowns("city");
-                setIsCityExpanded(!isCityExpanded);
-              }}
-            >
-              <span className={s.inputText}>
-                {loadingCities
-                  ? "Завантаження міст..."
-                  : formData.city
-                  ? cities.find((city) => city.value === formData.city)?.label
-                  : "Місто"}
-              </span>
-              <span
-                className={`${s.iconRight} ${isCityExpanded ? s.rotated : ""}`}
-              >
-                <ChevronUpIcon />
-              </span>
-            </div>
-            {isCityExpanded && cities.length > 0 && (
-              <div
-                className={`${s.dropdownList} ${
-                  cities.length > 3 ? s.scrollable : ""
-                }`}
-              >
-                {cities.map((city) => (
-                  <div
-                    key={city.value}
-                    className={s.dropdownItem}
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        city: city.value,
-                        branch: "",
-                      }); // Очищуємо відділення при зміні міста
-                      setIsCityExpanded(false);
-                    }}
-                  >
-                    <span className={s.dropdownText}>{city.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            <DropdownField
+              label=""
+              value={formData.city}
+              options={cities}
+              placeholder={loadingCities ? "Завантаження міст..." : "Місто"}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  city: value,
+                  branch: "",
+                })
+              }
+              showLabel={false}
+              hasError={!!errors.city}
+              supportingText={errors.city || ""}
+              isOpen={openDropdown === "city"}
+              onOpenChange={(isOpen) => setOpenDropdown(isOpen ? "city" : null)}
+            />
           </div>
         </div>
 
         <div className={s.deliveryRow}>
           <div className={s.inputWrapBranch}>
-            <div
-              className={s.inputWithIcons}
-              onClick={() => {
-                if (!formData.city) {
-                  alert("Спочатку оберіть місто");
-                  return;
-                }
-                closeOtherDropdowns("branch");
-                setIsBranchExpanded(!isBranchExpanded);
-              }}
-            >
-              <span className={s.inputText}>
-                {loadingBranches
+            <DropdownField
+              label=""
+              value={formData.branch}
+              options={branches}
+              placeholder={
+                loadingBranches
                   ? "Завантаження..."
-                  : formData.branch
-                  ? branches.find((branch) => branch.value === formData.branch)
-                      ?.label
                   : !formData.city
                   ? "Спочатку оберіть місто"
-                  : "На відділення"}
-              </span>
-              <span
-                className={`${s.iconRight} ${
-                  isBranchExpanded ? s.rotated : ""
-                }`}
-              >
-                <ChevronUpIcon />
-              </span>
-            </div>
-            {isBranchExpanded && branches.length > 0 && (
-              <div
-                className={`${s.dropdownList} ${
-                  branches.length > 3 ? s.scrollable : ""
-                }`}
-              >
-                {branches.map((branch) => (
-                  <div
-                    key={branch.value}
-                    className={s.dropdownItem}
-                    onClick={() => {
-                      setFormData({ ...formData, branch: branch.value });
-                      setIsBranchExpanded(false);
-                    }}
-                  >
-                    <span className={s.dropdownText}>{branch.label}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+                  : "На відділення"
+              }
+              onChange={(value) => setFormData({ ...formData, branch: value })}
+              showLabel={false}
+              hasError={!!errors.branch}
+              supportingText={errors.branch || ""}
+              isOpen={openDropdown === "branch"}
+              onOpenChange={(isOpen) =>
+                setOpenDropdown(isOpen ? "branch" : null)
+              }
+            />
           </div>
           {deliveryType === "courier" && (
             <div className={s.addressFields}>
               <div className={`${s.inputWrap} ${s.inputWrapHouse}`}>
-                <input
-                  className={s.input}
+                <SecondaryInput
+                  label="Будинок"
                   type="text"
-                  placeholder="Будинок"
                   value={formData.house}
                   onChange={(e) =>
                     setFormData({ ...formData, house: e.target.value })
                   }
+                  inputClassName={secondaryInputStyles.inputWhite}
+                  hasError={!!errors.house}
+                  supportingText={errors.house || ""}
                 />
               </div>
               <div className={`${s.inputWrap} ${s.inputWrapBuilding}`}>
-                <input
-                  className={s.input}
+                <SecondaryInput
+                  label="Корпус"
                   type="text"
-                  placeholder="Корпус"
                   value={formData.building}
                   onChange={(e) =>
                     setFormData({ ...formData, building: e.target.value })
                   }
+                  inputClassName={secondaryInputStyles.inputWhite}
+                  hasError={!!errors.building}
+                  supportingText={errors.building || ""}
                 />
               </div>
               <div className={`${s.inputWrap} ${s.inputWrapApartment}`}>
-                <input
-                  className={s.input}
+                <SecondaryInput
+                  label="Квартира"
                   type="text"
-                  placeholder="Квартира"
                   value={formData.apartment}
                   onChange={(e) =>
                     setFormData({ ...formData, apartment: e.target.value })
                   }
+                  inputClassName={secondaryInputStyles.inputWhite}
+                  hasError={!!errors.apartment}
+                  supportingText={errors.apartment || ""}
                 />
               </div>
             </div>

@@ -7,6 +7,7 @@ import type { SwiperRef } from "swiper/react";
 import { useCoursesQuery } from "@/lib/coursesQueries";
 import CourseCard from "../CourseCard/CourseCard";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
+import CoursesShowcaseSkeleton from "./CoursesShowcaseSkeleton";
 import s from "./CoursesShowcase.module.css";
 
 import "swiper/css";
@@ -132,19 +133,7 @@ const CoursesShowcase: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <section className={s.section}>
-        <div className={s.container}>
-          <div className={s.header}>
-            <div className={s.headerLeft}>
-              <p className={s.eyebrow}>Початок навчання</p>
-              <h2 className={s.title}>Почни свій шлях з BFB тут</h2>
-            </div>
-          </div>
-          <div className={s.loading}>Завантаження курсів...</div>
-        </div>
-      </section>
-    );
+    return <CoursesShowcaseSkeleton />;
   }
 
   if (isError) {

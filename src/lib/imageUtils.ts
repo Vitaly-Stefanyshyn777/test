@@ -67,6 +67,10 @@ export function normalizeImageUrl(
 
     // Перевіряємо, чи це валідний URL
     if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) {
+      // Замінюємо порожній placeholder.png на placeholder.svg
+      if (trimmed === "/placeholder.png") {
+        return "/placeholder.svg";
+      }
       return trimmed;
     }
 
@@ -77,9 +81,15 @@ export function normalizeImageUrl(
   return "/placeholder.svg";
 }
 
-
-
-
+/**
+ * Перевіряє, чи зображення є локальним (з папки public)
+ * Локальні зображення потребують unoptimized prop на Vercel
+ */
+export function isLocalImage(src: string): boolean {
+  if (!src) return false;
+  // Локальні зображення починаються з / і не є повними URL
+  return src.startsWith("/") && !src.startsWith("//");
+}
 
 
 

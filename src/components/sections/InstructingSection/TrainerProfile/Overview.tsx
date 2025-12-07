@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./TrainerProfile.module.css";
 import { TrainerUser } from "./types";
-import { getAvatarUrl, getSpecialties } from "./utils";
+import { getAvatarUrl, getSpecialties, getFavouriteExercises } from "./utils";
 import {
   DumbbellsIcon,
   LocationIcon,
-  WeightIcon,
+  InstagramIcon,
+  TelegramIcon,
+  FacebookIcon,
+  WhatsappIcon,
 } from "@/components/Icons/Icons";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import { normalizeImageUrl } from "@/lib/imageUtils";
@@ -14,8 +17,18 @@ import { normalizeImageUrl } from "@/lib/imageUtils";
 export default function Overview({ trainer }: { trainer: TrainerUser }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Логування для діагностики
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[Overview] trainer дані:", {
+      gallery: trainer?.gallery,
+      hl_data_gallery: trainer?.hl_data_gallery,
+      certificate: trainer?.certificate,
+    });
+  }
+
   const avatar = getAvatarUrl(trainer?.avatar);
   const specialties = getSpecialties(trainer);
+  const favouriteExercises = getFavouriteExercises(trainer);
 
   const placeholderAvatar =
     "https://via.placeholder.com/300x300/f0f0f0/666?text=Тренер";
@@ -28,7 +41,50 @@ export default function Overview({ trainer }: { trainer: TrainerUser }) {
       : placeholderAvatar
   );
 
+  // Контакти тренера (телефон = також WhatsApp)
+  const rawPhone =
+    trainer.social_phone ||
+    trainer.input_text_phone ||
+    trainer.input_text_email;
+  const phoneDigits = rawPhone ? rawPhone.replace(/[^\d]/g, "") : "";
+  const whatsappLink = phoneDigits ? `https://wa.me/${phoneDigits}` : "";
+
+  const instagramHandle = trainer.social_instagram;
+  const instagramLink = instagramHandle
+    ? instagramHandle.startsWith("http")
+      ? instagramHandle
+      : `https://instagram.com/${instagramHandle.replace(/^[@/]+/, "")}`
+    : "";
+
+  const telegramHandle = trainer.social_telegram;
+  const telegramLink = telegramHandle
+    ? telegramHandle.startsWith("http")
+      ? telegramHandle
+      : `https://t.me/${telegramHandle.replace(/^[@/]+/, "")}`
+    : "";
+
+  const facebookHandle = trainer.social_facebook || "";
+  const facebookLink = facebookHandle
+    ? facebookHandle.startsWith("http")
+      ? facebookHandle
+      : `https://facebook.com/${facebookHandle.replace(/^[@/]+/, "")}`
+    : "";
+
+  const contactItems: {
+    type: "instagram" | "facebook" | "telegram" | "whatsapp";
+    href: string;
+  }[] = [];
+  if (instagramLink)
+    contactItems.push({ type: "instagram", href: instagramLink });
+  if (facebookLink) contactItems.push({ type: "facebook", href: facebookLink });
+  if (telegramLink) contactItems.push({ type: "telegram", href: telegramLink });
+  if (whatsappLink) contactItems.push({ type: "whatsapp", href: whatsappLink });
+
+  const hasContacts = contactItems.length > 0;
+
+  // Використовуємо тільки gallery (як було раніше)
   let galleryImages: string[] = [];
+
   if (trainer?.gallery) {
     if (typeof trainer.gallery === "string") {
       const normalized = normalizeImageUrl(trainer.gallery);
@@ -47,6 +103,10 @@ export default function Overview({ trainer }: { trainer: TrainerUser }) {
           (url): url is string => url !== null && url !== "/placeholder.svg"
         );
     }
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[Overview] galleryImages після обробки:", galleryImages);
   }
 
   const locationText =
@@ -100,46 +160,50 @@ export default function Overview({ trainer }: { trainer: TrainerUser }) {
           </div>
 
           <div className={styles.superPowerBlock}>
-            <div className={styles.superPower}>
-              <h3>Моя суперсила:</h3>
-              <p>{trainer.super_power || "Не вказано"}</p>
-            </div>
-            <div className={styles.favoriteExercise}>
-              <h3>Улюблена вправа:</h3>
-              <div className={styles.exerciseItem}>
-                <span className={styles.exerciseIcon}>
-                  <WeightIcon />
-                </span>
-                <span className={styles.exerciseText}>
-                  {trainer.favourite_exercise || "Не вказано"}
-                </span>
+            {trainer.super_power && trainer.super_power.trim() !== "" && (
+              <div className={styles.superPower}>
+                <h3>Моя суперсила:</h3>
+                <p>{trainer.super_power}</p>
               </div>
-            </div>
+            )}
+            {favouriteExercises.length > 0 && (
+              <div className={styles.favoriteExercise}>
+                <h3>Улюблена вправа:</h3>
+                <div className={styles.exerciseItem}>
+                  <span className={styles.exerciseIcon}></span>
+                  <div className={styles.exerciseText}>
+                    {favouriteExercises.map(
+                      (exercise: string, index: number) => (
+                        <span key={index} className={styles.exerciseTag}>
+                          {exercise}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className={styles.ContactsContainer}>
-            {trainer.hl_data_contact && trainer.hl_data_contact.length > 0 && (
+            {hasContacts && (
               <>
                 <p className={styles.ContactsText}>Контакти:</p>
                 <div className={styles.IconsContainer}>
-                  {trainer.hl_data_contact.map(
-                    (
-                      contact: {
-                        hl_input_text_link?: string;
-                        hl_img_svg_icon: string;
-                      },
-                      index: number
-                    ) => (
-                      <a
-                        key={index}
-                        href={contact.hl_input_text_link || "#"}
-                        className={styles.IconsBlock}
-                        dangerouslySetInnerHTML={{
-                          __html: contact.hl_img_svg_icon,
-                        }}
-                      />
-                    )
-                  )}
+                  {contactItems.map((item, index) => (
+                    <a
+                      key={`${item.type}-${index}`}
+                      href={item.href}
+                      className={styles.IconsBlock}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.type === "instagram" && <InstagramIcon />}
+                      {item.type === "facebook" && <FacebookIcon />}
+                      {item.type === "telegram" && <TelegramIcon />}
+                      {item.type === "whatsapp" && <WhatsappIcon />}
+                    </a>
+                  ))}
                 </div>
               </>
             )}
@@ -152,58 +216,61 @@ export default function Overview({ trainer }: { trainer: TrainerUser }) {
         <div className={styles.headerContainer}>
           <div className={styles.headerBlock}>
             <div className={styles.header}>
-              <h1 className={styles.title}>Тренер, Реабілітолог</h1>
+              <h1 className={styles.title}>
+                {trainer.position || "Тренер, Реабілітолог"}
+              </h1>
               <h2 className={styles.name}>{trainer.name}</h2>
             </div>
 
-            <div className={styles.info}>
-              <div className={styles.infoItem}>
-                <span className={styles.infoIcon}>
-                  <LocationIcon />
-                </span>
-                <span className={styles.infoText}>
-                  {locationText || "Місто не вказано"}
-                </span>
+            {(locationText || trainer.experience) && (
+              <div className={styles.info}>
+                {locationText && (
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoIcon}>
+                      <LocationIcon />
+                    </span>
+                    <span className={styles.infoText}>{locationText}</span>
+                  </div>
+                )}
+                {trainer.experience && (
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoIcon}>
+                      <DumbbellsIcon />
+                    </span>
+                    <span className={styles.infoText}>
+                      Досвід: {trainer.experience}
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoIcon}>
-                  <DumbbellsIcon />
-                </span>
-                <span className={styles.infoText}>
-                  Досвід: {trainer.experience || "Не вказано"}
-                </span>
-              </div>
-            </div>
+            )}
           </div>
 
-          <div className={styles.specializationsContainer}>
-            <div className={styles.specializations}>
-              <h3>Спеціалізації:</h3>
-              <div className={styles.tags}>
-                {specialties.length > 0 ? (
-                  specialties.map((spec: string, index: number) => (
+          {specialties.length > 0 && (
+            <div className={styles.specializationsContainer}>
+              <div className={styles.specializations}>
+                <h3>Спеціалізації:</h3>
+                <div className={styles.tags}>
+                  {specialties.map((spec: string, index: number) => (
                     <span key={index} className={styles.tag}>
                       {spec}
                     </span>
-                  ))
-                ) : (
-                  <span className={styles.tag}>Не вказано</span>
-                )}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <div className={styles.workExperienceContainer}>
-            <h3 className={styles.workExperienceTitle}>Досвід роботи:</h3>
-            <div className={styles.experienceEntry}>
-              <div className={styles.experienceEntryBlock}>
-                <div className={styles.workExperienceBlock}>
-                  <div className={styles.workExperience}>
-                    {trainer.my_experience &&
-                    trainer.my_experience.length > 0 ? (
-                      trainer.my_experience.map((exp, index) => (
+          {trainer.my_experience && trainer.my_experience.length > 0 && (
+            <div className={styles.workExperienceContainer}>
+              <h3 className={styles.workExperienceTitle}>Досвід роботи:</h3>
+              <div className={styles.experienceEntry}>
+                <div className={styles.experienceEntryBlock}>
+                  <div className={styles.workExperienceBlock}>
+                    <div className={styles.workExperience}>
+                      {trainer.my_experience.map((exp, index) => (
                         <div key={index} className={styles.experienceItem}>
-                          <div className={styles.experienceHeaderContainer}>
+                          <div className={styles.experienceRow}>
                             <div className={styles.experienceHeader}>
                               <span className={styles.company}>
                                 {exp.hl_input_text_gym}
@@ -213,31 +280,24 @@ export default function Overview({ trainer }: { trainer: TrainerUser }) {
                                 {exp.hl_input_date_date_end}
                               </span>
                             </div>
-                            <p className={styles.experienceDescription}>
-                              {exp.hl_textarea_ex_description}
-                            </p>
                           </div>
+
+                          <p className={styles.experienceDescription}>
+                            {exp.hl_textarea_ex_description || "—"}
+                          </p>
                         </div>
-                      ))
-                    ) : (
-                      <div className={styles.experienceItem}>
-                        <div className={styles.experienceHeader}>
-                          <span className={styles.company}>—</span>
-                          <span className={styles.period}>—</span>
-                        </div>
-                        <p>Інформація відсутня</p>
-                      </div>
-                    )}
+                      ))}
+                    </div>
                   </div>
+                  {trainer.my_experience.length > 2 && (
+                    <button className={styles.showMore} id="favorite-exercise">
+                      Показати ще
+                    </button>
+                  )}
                 </div>
-                {trainer.my_experience && trainer.my_experience.length > 2 && (
-                  <button className={styles.showMore} id="favorite-exercise">
-                    Показати ще
-                  </button>
-                )}
               </div>
             </div>
-          </div>
+          )}
 
           <div id="gallery" className={styles.gallerySection}>
             <h3 className={styles.galleryTitle}>Галерея</h3>

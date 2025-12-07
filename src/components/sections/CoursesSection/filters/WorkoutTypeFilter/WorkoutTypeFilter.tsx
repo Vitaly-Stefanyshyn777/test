@@ -4,11 +4,14 @@ import React, { useState } from "react";
 import styles from "./WorkoutTypeFilter.module.css";
 
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface WorkoutTypeFilterProps {
   value: string[];
   onChange: (value: string[]) => void;
   options?: string[];
+  loading?: boolean;
 }
 
 export const WorkoutTypeFilter = ({
@@ -20,6 +23,7 @@ export const WorkoutTypeFilter = ({
     "Тренування в залі",
     "Тренування вдома",
   ],
+  loading = false,
 }: WorkoutTypeFilterProps) => {
   const cities = options;
   const [isExpanded, setIsExpanded] = useState(true);
@@ -47,29 +51,43 @@ export const WorkoutTypeFilter = ({
 
       {isExpanded && (
         <div className={styles.sectionContent}>
-          <div className={styles.checkboxGroup}>
-            {cities.map((city) => {
-              const inputId = `workout-${city
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`;
-              return (
-                <label
-                  key={city}
-                  htmlFor={inputId}
-                  className={styles.checkboxLabel}
+          {loading ? (
+            <div className={styles.checkboxGroup}>
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
                 >
-                  <input
-                    type="checkbox"
-                    id={inputId}
-                    checked={isSelected(city)}
-                    onChange={() => toggle(city)}
-                    className={styles.checkboxInput}
-                  />
-                  <span className={styles.checkboxText}>{city}</span>
-                </label>
-              );
-            })}
-          </div>
+                  <Skeleton width={20} height={20} borderRadius={3} />
+                  <Skeleton width={180} height={16} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.checkboxGroup}>
+              {cities.map((city) => {
+                const inputId = `workout-${city
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")}`;
+                return (
+                  <label
+                    key={city}
+                    htmlFor={inputId}
+                    className={styles.checkboxLabel}
+                  >
+                    <input
+                      type="checkbox"
+                      id={inputId}
+                      checked={isSelected(city)}
+                      onChange={() => toggle(city)}
+                      className={styles.checkboxInput}
+                    />
+                    <span className={styles.checkboxText}>{city}</span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>

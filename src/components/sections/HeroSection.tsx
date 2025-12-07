@@ -46,7 +46,11 @@ const HeroSection = () => {
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
         const bannerWithVideo = normalized.find((b) => {
           // Нова структура: acf.video.url (якщо video є об'єктом)
-          if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+          if (
+            b.acf?.video &&
+            typeof b.acf.video === "object" &&
+            !Array.isArray(b.acf.video)
+          ) {
             if (b.acf.video.url) {
               return true;
             }
@@ -57,7 +61,9 @@ const HeroSection = () => {
             b.acf?.Aside_video ||
             b.video ||
             (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
-            (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
+            (Array.isArray(b.acf?.video) && b.acf.video.length > 0
+              ? b.acf.video[0]
+              : undefined) ||
             b.video_url ||
             b.acf?.video_url;
           return (
@@ -67,7 +73,11 @@ const HeroSection = () => {
         });
         const bannerWithPoster = normalized.find((b) => {
           // Нова структура: acf.video.preview (якщо video є об'єктом)
-          if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+          if (
+            b.acf?.video &&
+            typeof b.acf.video === "object" &&
+            !Array.isArray(b.acf.video)
+          ) {
             if (b.acf.video.preview) {
               return true;
             }
@@ -163,7 +173,11 @@ const HeroSection = () => {
     }
 
     // Нова структура: acf.video.url (якщо video є об'єктом)
-    if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+    if (
+      b.acf?.video &&
+      typeof b.acf.video === "object" &&
+      !Array.isArray(b.acf.video)
+    ) {
       if (b.acf.video.url) {
         return b.acf.video.url;
       }
@@ -175,7 +189,9 @@ const HeroSection = () => {
       b.acf?.Aside_video ||
       b.video ||
       (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
-      (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
+      (Array.isArray(b.acf?.video) && b.acf.video.length > 0
+        ? b.acf.video[0]
+        : undefined) ||
       b.video_url ||
       b.acf?.video_url;
 
@@ -195,7 +211,11 @@ const HeroSection = () => {
     if (!b) return "";
 
     // Нова структура: acf.video.preview (якщо video є об'єктом)
-    if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+    if (
+      b.acf?.video &&
+      typeof b.acf.video === "object" &&
+      !Array.isArray(b.acf.video)
+    ) {
       if (b.acf.video.preview) {
         return b.acf.video.preview;
       }

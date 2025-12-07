@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_BASE =
-  process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+const UPSTREAM_BASE = process.env.UPSTREAM_BASE as string;
 const WC_CONSUMER_KEY =
   process.env.WC_CONSUMER_KEY || "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71";
 const WC_CONSUMER_SECRET =
