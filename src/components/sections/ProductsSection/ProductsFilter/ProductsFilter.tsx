@@ -43,6 +43,7 @@ interface ProductsFilterProps {
   products: Product[];
   searchTerm: string;
   onApply?: (params: Record<string, unknown>) => void;
+  loading?: boolean;
 }
 
 const ProductsFilter = ({
@@ -51,6 +52,7 @@ const ProductsFilter = ({
   onReset,
   products,
   onApply,
+  loading = false,
 }: ProductsFilterProps) => {
   const handleFilterChange = (
     key: keyof FilterState,

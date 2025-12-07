@@ -15,7 +15,6 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -182,7 +181,6 @@
   font-weight: 600;
   font-size: 56px;
   line-height: 115%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -228,7 +226,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -237,7 +234,6 @@
   font-weight: 500;
   font-size: 15px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -259,6 +255,7 @@
   padding: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--black);
 }
 
 .IconsBlock {
@@ -276,6 +273,7 @@
   border-radius: 16px;
   border: 2px solid rgba(14, 14, 14, 0.1);
   backdrop-filter: blur(20px);
+  color: var(--black);
 }
 
 .IconsBlock:hover {
@@ -325,7 +323,6 @@
     font-weight: 700;
     font-size: mvw(28);
     line-height: 120%;
-    letter-spacing: -0.01em;
     color: var(--black);
   }
 
@@ -347,7 +344,6 @@
     font-weight: 600;
     font-size: mvw(16);
     line-height: 120%;
-    letter-spacing: 0.03em;
     color: var(--black);
   }
 

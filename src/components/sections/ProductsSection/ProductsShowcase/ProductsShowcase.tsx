@@ -7,6 +7,7 @@ import type { SwiperRef } from "swiper/react";
 import { useProductsByCategory } from "@/components/hooks/useFilteredProducts";
 import ProductCard from "../ProductCard/ProductCard";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
+import ProductsShowcaseSkeleton from "./ProductsShowcaseSkeleton";
 import s from "./ProductsShowcase.module.css";
 import { fetchWcCategories } from "@/lib/bfbApi";
 import { normalizeImageUrl } from "@/lib/imageUtils";
@@ -19,6 +20,21 @@ const ProductsShowcase: React.FC = () => {
   const [inventoryCategories, setInventoryCategories] = useState<
     Array<{ id: number; name: string; slug: string; image?: { src?: string } }>
   >([]);
+  const swiperRef = useRef<SwiperRef>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [fallbackProducts, setFallbackProducts] = useState<
+    Array<{
+      id: number | string;
+      name: string;
+      price?: number | string;
+      regularPrice?: number | string;
+      image?: string;
+      categories?: Array<{ id: number; name: string; slug: string }>;
+      dateCreated?: string;
+    }>
+  >([]);
+  
   useEffect(() => {
     (async () => {
       try {
@@ -44,34 +60,15 @@ const ProductsShowcase: React.FC = () => {
       }
     })();
   }, []);
+  
   // Отримуємо продукти категорії 30 ("Товари для спорту") напряму через WC v3
   const {
     data: courses = [],
     isLoading,
+    isFetching,
+    isPending,
     isError,
   } = useProductsByCategory("30");
-  const swiperRef = useRef<SwiperRef>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [fallbackProducts, setFallbackProducts] = useState<
-    Array<{
-      id: number | string;
-      name: string;
-      price?: number | string;
-      regularPrice?: number | string;
-      image?: string;
-      categories?: Array<{ id: number; name: string; slug: string }>;
-      dateCreated?: string;
-    }>
-  >([]);
-
-  const list = useMemo(
-    () => (Array.isArray(courses) ? courses : []),
-    [courses]
-  );
-  // Дані вже відфільтровані на етапі запиту; можна напряму відображати
-  const displayedCourses = list.length > 0 ? list : fallbackProducts;
-  const hasSlider = displayedCourses.length > 5;
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 1000px)");
@@ -84,6 +81,14 @@ const ProductsShowcase: React.FC = () => {
       else mql.removeListener(update);
     };
   }, []);
+  
+  const list = useMemo(
+    () => (Array.isArray(courses) ? courses : []),
+    [courses]
+  );
+  // Дані вже відфільтровані на етапі запиту; можна напряму відображати
+  const displayedCourses = list.length > 0 ? list : fallbackProducts;
+  const hasSlider = displayedCourses.length > 5;
 
   const useSlider = hasSlider && !isMobile;
 
@@ -154,6 +159,15 @@ const ProductsShowcase: React.FC = () => {
     // debug removed
   }, [displayedCourses.length]); // Залежить тільки від довжини масиву
 
+  // Показуємо скелетон якщо завантажується або дані ще не завантажені
+  // Перевіряємо всі можливі стани завантаження та наявність даних
+  const hasData = Array.isArray(courses) && courses.length > 0;
+  const shouldShowSkeleton = isPending || isLoading || (!hasData && isFetching);
+  
+  if (shouldShowSkeleton) {
+    return <ProductsShowcaseSkeleton />;
+  }
+
   const handlePrev = () => {
     if (swiperRef.current?.swiper) {
       swiperRef.current.swiper.slidePrev();
@@ -199,24 +213,6 @@ const ProductsShowcase: React.FC = () => {
       if (swiperEl && swiperEl.swiper) swiperEl.swiper.slideToLoop(index);
     }
   };
-
-  if (isLoading) {
-    return (
-      <section className={s.section}>
-        <div className={s.container}>
-          <div className={s.header}>
-            <div className={s.headerLeft}>
-              <p className={s.eyebrow}>Інвентар</p>
-              <Link href="/products" className={s.title}>
-                Товари для спорту{" "}
-              </Link>
-            </div>
-          </div>
-          <div className={s.loading}>Завантаження курсів...</div>
-        </div>
-      </section>
-    );
-  }
 
   if (isError) {
     return (

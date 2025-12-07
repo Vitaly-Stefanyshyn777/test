@@ -34,17 +34,15 @@ export async function POST(request: NextRequest) {
       shipping: body.shipping,
     });
 
-    const response = await fetch(
-      `${process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua"}/wp-json/wc/v3/orders`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authToken,
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const upstreamBase = process.env.UPSTREAM_BASE as string;
+    const response = await fetch(`${upstreamBase}/wp-json/wc/v3/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      body: JSON.stringify(body),
+    });
 
     const data = await response.json();
 

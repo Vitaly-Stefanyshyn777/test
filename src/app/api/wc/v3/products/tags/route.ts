@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const queryString = searchParams.toString();
 
-    const UPSTREAM_BASE = process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+    const UPSTREAM_BASE = process.env.UPSTREAM_BASE;
     const upstreamUrl = `${UPSTREAM_BASE}/wp-json/wc/v3/products/tags${
       queryString ? `?${queryString}` : ""
     }`;
@@ -34,22 +34,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

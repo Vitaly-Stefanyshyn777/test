@@ -68,9 +68,9 @@ export function useUserProfile() {
               ?.img_link_data_avatar,
           });
         }
-        const resolvedName =
-          data?.name ||
-          `${data?.first_name ?? ""} ${data?.last_name ?? ""}`.trim();
+        // SSOT: first_name + last_name має бути головним джерелом імені
+        const fullName = `${data?.first_name ?? ""} ${data?.last_name ?? ""}`.trim();
+        const resolvedName = fullName || data?.name || "";
         const resolvedEmail = data?.email || data?.user_email || "";
         const meta = (data?.meta as Record<string, unknown> | undefined) || {};
         const metaValues = Object.values(meta);
@@ -78,9 +78,25 @@ export function useUserProfile() {
           typeof v === "string" && v.includes("/wp-content/uploads/")
         ) as string | undefined;
 
-        const topLevelAvatar =
+        let topLevelAvatar =
           (data as unknown as { img_link_data_avatar?: string })
             ?.img_link_data_avatar;
+
+        // Якщо бекенд повернув JSON-рядок масиву типу ["https://..."]
+        // — витягуємо перший елемент
+        if (
+          typeof topLevelAvatar === "string" &&
+          topLevelAvatar.trim().startsWith("[")
+        ) {
+          try {
+            const parsed = JSON.parse(topLevelAvatar);
+            if (Array.isArray(parsed) && typeof parsed[0] === "string") {
+              topLevelAvatar = parsed[0];
+            }
+          } catch {
+            // Якщо парсинг не вдався — залишаємо як є
+          }
+        }
 
         const serverAvatarCandidate =
           topLevelAvatar ||

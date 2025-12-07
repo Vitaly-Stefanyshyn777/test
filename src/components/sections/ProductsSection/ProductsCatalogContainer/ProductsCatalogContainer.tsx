@@ -4,6 +4,7 @@ import styles from "./ProductsCatalogContainer.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import type SwiperType from "swiper";
 import ProductsGrid from "../ProductsGrid/ProductsGrid";
+import ProductsGridSkeleton from "../ProductsGrid/ProductsGridSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { productsWithFiltersQuery } from "@/lib/productsQueries";
 
@@ -15,19 +16,24 @@ interface Props {
   filteredProducts: unknown[];
   isNoCertificationFilter?: boolean;
   selectedCertificationFilter?: string; // Вибраний фільтр сертифікації (78, 79, або undefined)
+  isLoading?: boolean; // Стан завантаження з батьківського компонента
 }
 
 const ProductsCatalogContainer = ({
   filteredProducts,
   isNoCertificationFilter = false,
   selectedCertificationFilter,
+  isLoading: parentIsLoading,
 }: Props) => {
   // Якщо зовнішній фільтр не передано – отримуємо товари категорії "товари для спорту"
   const {
     data: sportsProducts = [],
-    isLoading,
+    isLoading: localIsLoading,
     isError,
   } = useQuery(productsWithFiltersQuery({ category: "tovary-dlya-sportu" }));
+  
+  // Використовуємо isLoading з батьківського компонента, якщо передано, інакше локальний
+  const isLoading = parentIsLoading !== undefined ? parentIsLoading : localIsLoading;
 
   // debug logs removed
 
@@ -172,8 +178,9 @@ const ProductsCatalogContainer = ({
         {isError && (
           <div className={styles.error}>Не вдалося завантажити товари</div>
         )}
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {!isLoading && !isError && (
+        {isLoading ? (
+          <ProductsGridSkeleton />
+        ) : (
           <ProductsGrid
             products={productsForGrid}
             isNoCertificationFilter={isNoCertificationFilter}

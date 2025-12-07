@@ -12,7 +12,6 @@
       font-style: normal;
       font-weight: 700;
       line-height: 1;
-      letter-spacing: -0.56px;
       color: var(--black);
     }
   }
@@ -34,6 +33,9 @@
         font-weight: 600;
         line-height: 140%; /* 33.6px */
         color: var(--black);
+        align-items: center;
+        display: flex;
+        justify-content: center;
       }
 
       .form {
@@ -156,7 +158,6 @@
             font-style: normal;
             font-weight: 600;
             line-height: 120%; /* 38.4px */
-            letter-spacing: -0.32px;
 
             color: var(--black);
           }
@@ -190,7 +191,6 @@
           font-style: normal;
           font-weight: 700;
           line-height: 120%; /* 72px */
-          letter-spacing: -0.6px;
         }
       }
     }
@@ -207,7 +207,6 @@
       h2 {
         font-size: mvw(28);
         line-height: 120%;
-        letter-spacing: -0.01em;
       }
     }
 
@@ -316,7 +315,6 @@
             }
             p {
               font-size: mvw(24);
-              letter-spacing: -0.01em;
             }
           }
 
@@ -339,7 +337,6 @@
             p {
               color: var(--white);
               font-size: mvw(28);
-              letter-spacing: -0.01em;
             }
           }
         }
@@ -354,7 +351,6 @@
           }
           p {
             font-size: mvw(28);
-            letter-spacing: -0.01em;
           }
         }
       }

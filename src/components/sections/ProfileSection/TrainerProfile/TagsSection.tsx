@@ -3,6 +3,7 @@
 import React from "react";
 import styles from "./TrainerProfile.module.css";
 import { DaggerIcon } from "@/components/Icons/Icons";
+import SecondaryInput from "@/components/ui/FormFields/SecondaryInput";
 
 type Props = {
   title: string;
@@ -41,13 +42,11 @@ export default function TagsSection({
       </div>
 
       <div className={styles.addInputContainer}>
-        <input
-          type="text"
-          placeholder={placeholder}
+        <SecondaryInput
+          label={placeholder}
           value={newValue}
           onChange={(e) => onNewValueChange(e.target.value)}
-          className={styles.addInput}
-          onKeyPress={(e) => e.key === "Enter" && onAdd()}
+          onKeyDown={(e) => e.key === "Enter" && onAdd()}
         />
       </div>
     </div>

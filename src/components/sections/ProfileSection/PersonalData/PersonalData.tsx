@@ -6,10 +6,8 @@ import ProfilePhotoSection from "./ProfilePhotoSection";
 import ContactsSection from "./ContactsSection";
 import UsernameSection from "./UsernameSection";
 import { adminRequest } from "@/lib/api";
-import {
-  useUserProfileQuery,
-  useUpdateUserProfile,
-} from "@/components/hooks/useUserProfileQuery";
+import { useUserProfileQuery } from "@/components/hooks/useUserProfileQuery";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth";
 
 interface PersonalDataForm {
@@ -35,8 +33,9 @@ const PersonalData: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
   // TanStack Query: завантаження та оновлення профілю
-  const { data: profile } = useUserProfileQuery();
-  const updateProfile = useUpdateUserProfile();
+  const { data: profile, isLoading: isLoadingProfile, error: profileError } = useUserProfileQuery();
+  const queryClient = useQueryClient();
+
 
   const handleInputChange = (field: keyof PersonalDataForm, value: string) => {
     setFormData((prev) => ({
@@ -69,43 +68,136 @@ const PersonalData: React.FC = () => {
     fetch("/api/profile/avatar", { method: "DELETE" })
       .then(async (res) => {
         if (!res.ok) throw new Error(await res.text());
-        if (process.env.NODE_ENV !== "production") {
-          console.log("[PersonalData] remove avatar → success");
-        }
         setProfileImage(null);
       })
       .catch((e) => {
-        if (process.env.NODE_ENV !== "production") {
-          console.error("[PersonalData] remove avatar → failed", e);
-        }
+        console.error("[PersonalData] remove avatar → failed", e);
       });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const numericOrServerId = (profile as unknown as { id?: number | string })
       ?.id;
     const targetId = String(numericOrServerId ?? user?.id ?? "");
     if (!targetId) return;
-    updateProfile.mutate({
-      id: targetId,
-      body: {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        meta: {
-          input_text_social_phone: formData.phone,
-          input_text_social_telegram: formData.telegram,
-          input_text_social_instagram: formData.instagram,
-        },
-      },
-    });
+
+    let freshAcf: Record<string, unknown> = {};
+    let freshMeta: Record<string, unknown> = {};
+    try {
+      const freshProfileRes = await fetch(
+        `/api/proxy?path=${encodeURIComponent(
+          `/wp-json/wp/v2/users/${targetId}?context=edit`
+        )}`,
+        {
+          method: "GET",
+          headers: {
+            "x-internal-admin": "1",
+          },
+        }
+      );
+      if (freshProfileRes.ok) {
+        const freshProfile = await freshProfileRes.json();
+        freshAcf = (freshProfile?.acf as Record<string, unknown>) || {};
+        freshMeta = (freshProfile?.meta as Record<string, unknown>) || {};
+      }
+    } catch (error) {
+      console.error("[PersonalData] Помилка отримання свіжих даних:", error);
+    }
+
+    const acfToSave: Record<string, unknown> = {
+      ...freshAcf,
+      phone: formData.phone,
+      telegram: formData.telegram,
+      instagram: formData.instagram,
+    };
+
+    const metaToSave: Record<string, unknown> = {
+      ...(freshMeta.input_text_position !== undefined
+        ? { input_text_position: freshMeta.input_text_position }
+        : {}),
+      ...(freshMeta.hl_data_my_wlocation !== undefined
+        ? { hl_data_my_wlocation: freshMeta.hl_data_my_wlocation }
+        : {}),
+    };
+
+    const numericId = targetId ? parseInt(targetId, 10) : null;
+    if (!numericId || isNaN(numericId)) {
+      console.error("[PersonalData] Невірний ID користувача:", targetId);
+      return;
+    }
+
+    const payload: {
+      id?: number;
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      acf?: Record<string, unknown>;
+      meta?: Record<string, unknown>;
+    } = {
+      id: numericId,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      acf: acfToSave,
+    };
+    
+    if (Object.keys(metaToSave).length > 0) {
+      payload.meta = metaToSave;
+    }
+    try {
+      const res = await fetch(
+        `/api/proxy?path=${encodeURIComponent(
+          `/wp-json/wp/v2/users/${targetId}`
+        )}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-admin": "1",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("[PersonalData] Помилка збереження:", {
+          status: res.status,
+          statusText: res.statusText,
+          error: errorText,
+        });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["user-profile", "me"] });
+        queryClient.invalidateQueries({ queryKey: ["trainer-profile-full"] });
+      }
+    } catch (error) {
+      console.error("[PersonalData] Помилка збереження:", error);
+    }
   };
+
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+  const token = useAuthStore((s) => s.token);
+
+  useEffect(() => {
+    if (!isLoggedIn && !token) {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        telegram: "",
+        email: "",
+        instagram: "",
+      });
+      setProfileImage(null);
+    }
+  }, [isLoggedIn, token]);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         if (!profile) return;
+
         const data = profile as unknown as {
           first_name?: string;
           last_name?: string;
@@ -118,6 +210,7 @@ const PersonalData: React.FC = () => {
           avatar?: string;
           avatar_urls?: Record<string, string>;
           img_link_data_avatar?: string;
+          acf?: Record<string, unknown>; // РЕДАГУВАННЯ: додаємо acf для отримання контактних даних
         };
         const normalize = (s: string) =>
           String(s || "")
@@ -130,56 +223,76 @@ const PersonalData: React.FC = () => {
           lastName = "";
         }
         const email = data?.email || data?.user_email || "";
+        const acf = (data as { acf?: Record<string, unknown> })?.acf || {};
         const meta = (data?.meta || {}) as Record<string, string>;
-        setFormData((prev) => ({
-          ...prev,
-          firstName,
-          lastName,
-          email,
-          phone:
-            meta.input_text_social_phone ||
-            meta.phone ||
-            data?.social_phone ||
-            "",
-          telegram:
-            meta.input_text_social_telegram ||
-            meta.social_telegram ||
-            data?.social_telegram ||
-            "",
-          instagram:
-            meta.input_text_social_instagram ||
-            meta.social_instagram ||
-            data?.social_instagram ||
-            "",
-        }));
+        
+        const newPhone = (acf.phone as string) ||
+          meta.input_text_social_phone ||
+          meta.phone ||
+          data?.social_phone ||
+          "";
+        const newTelegram = (acf.telegram as string) ||
+          meta.input_text_social_telegram ||
+          meta.social_telegram ||
+          data?.social_telegram ||
+          "";
+        const newInstagram = (acf.instagram as string) ||
+          meta.input_text_social_instagram ||
+          meta.social_instagram ||
+          data?.social_instagram ||
+          "";
+        setFormData((prev) => {
+          if (
+            prev.firstName === firstName &&
+            prev.lastName === lastName &&
+            prev.email === email &&
+            prev.phone === newPhone &&
+            prev.telegram === newTelegram &&
+            prev.instagram === newInstagram
+          ) {
+            return prev;
+          }
+          
+          return {
+            firstName,
+            lastName,
+            email,
+            phone: newPhone,
+            telegram: newTelegram,
+            instagram: newInstagram,
+          };
+        });
 
         // Синхронізуємо превʼю аватарки з бекенду
         const firstUploadUrl = Object.values(meta || {}).find(
           (v) => typeof v === "string" && v.includes("/wp-content/uploads/")
         ) as string | undefined;
-        // Пріоритет: спочатку стандартне поле avatar, потім мета
-        if (process.env.NODE_ENV !== "production") {
-          console.log("[PersonalData] profile avatar candidates", {
-            avatar: data?.avatar,
-            metaAvatar: (data?.meta as { img_link_data_avatar?: string })
-              ?.img_link_data_avatar,
-            topLevelAvatar: data?.img_link_data_avatar,
-            firstUploadUrl,
-            avatarUrls: data?.avatar_urls,
-          });
+
+        // Парсимо topLevelAvatar, якщо він є JSON рядком (як в useUserProfile)
+        let topLevelAvatar: string | undefined = data?.img_link_data_avatar;
+        if (
+          typeof topLevelAvatar === "string" &&
+          topLevelAvatar.startsWith("[")
+        ) {
+          try {
+            const parsed = JSON.parse(topLevelAvatar) as string[];
+            topLevelAvatar =
+              Array.isArray(parsed) && parsed.length > 0
+                ? parsed[0]
+                : undefined;
+          } catch {
+            // Якщо не вдалося розпарсити, залишаємо як є
+          }
         }
 
-        const avatar96 = data?.avatar_urls?.["96"]; //
+        const avatar96 = data?.avatar_urls?.["96"];
         const backendAvatar =
-          data?.img_link_data_avatar ||
+          topLevelAvatar ||
           (meta as { img_link_data_avatar?: string })?.img_link_data_avatar ||
           data?.avatar ||
           firstUploadUrl ||
           avatar96 ||
           null;
-        if (process.env.NODE_ENV !== "production") {
-          console.log("[PersonalData] resolved backendAvatar", backendAvatar);
-        }
         if (backendAvatar) {
           setProfileImage(backendAvatar);
         }

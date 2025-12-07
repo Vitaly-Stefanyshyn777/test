@@ -129,6 +129,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
                     src={image}
                     alt={`Мініатюра ${index + 1}`}
                     fill
+                    sizes="100px"
                     className={styles.thumbnailImage}
                   />
                 </div>

@@ -10,88 +10,32 @@
 !.yarn/releases
 !.yarn/versions
 
-# pnpm
-.pnpm-store/
-.pnpm-debug.log*
-
 # testing
 /coverage
-*.lcov
-.nyc_output
 
 # next.js
 /.next/
 /out/
-.next
 
 # production
 /build
-/dist
 
 # misc
 .DS_Store
 *.pem
-.AppleDouble
-.LSOverride
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
+.pnpm-debug.log*
 
-# env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
+# env files (can opt-in for committing if needed)
+.env*
 
 # vercel
 .vercel
-.vercel.json
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-.history/
-
-# OS
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-._*
-.Spotlight-V100
-.Trashes
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-*.cache
-
-# Build logs
-build.log
-*.tgz
-
-# Lock files from other package managers
-package-lock.json
-yarn.lock
-
-# Keep pnpm lock
-!pnpm-lock.yaml

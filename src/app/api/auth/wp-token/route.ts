@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_BASE =
-  process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+const UPSTREAM_BASE = process.env.UPSTREAM_BASE;
 
 // Silent login: fetch JWT from WP and set httpOnly cookie
 export async function GET(_req: NextRequest) {
@@ -55,7 +54,3 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: "auth error" }, { status: 500 });
   }
 }
-
-
-
-

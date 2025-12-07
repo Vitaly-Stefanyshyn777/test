@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import styles from "./VideoPlayer.module.css";
 import { CloseButtonIcon } from "@/components/Icons/Icons";
+import VideoPlayerSkeleton from "./VideoPlayerSkeleton";
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -58,12 +59,23 @@ export default function VideoPlayer({
 
     const handleLoadedData = () => {
       setIsLoading(false);
+
+      // Сповіщаємо глобально, що відео успішно завантажилось (для PageLoader на головній)
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("hero-video-ready"));
+      }
     };
 
     const handleError = () => {
       setIsLoading(false);
       const errorMsg = video.error?.message || "Не вдалося завантажити відео";
       setError(errorMsg);
+
+      // Сповіщаємо глобально про помилку відео, щоб PageLoader не висів вічно
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("hero-video-error"));
+      }
+
       if (process.env.NODE_ENV !== "production") {
         console.error("[VideoPlayer] Error loading video:", {
           url: videoUrl,
@@ -167,6 +179,7 @@ export default function VideoPlayer({
               src={poster}
               alt="Video preview"
               fill
+              sizes="(max-width: 768px) 100vw, 600px"
               className={styles.previewImage}
             />
           ) : null}
@@ -181,13 +194,8 @@ export default function VideoPlayer({
           </span>
         </button>
       )}
-      {isLoading && (
-        <div className={styles.loaderOverlay}>
-          <div className="text-center">
-            <div className={styles.loaderSpinner}></div>
-            <p className={styles.loaderText}>Завантаження відео...</p>
-          </div>
-        </div>
+      {isLoading && !showPreview && (
+        <VideoPlayerSkeleton showCloseButton={showCloseButton} asOverlay={true} />
       )}
 
       <video
@@ -200,8 +208,10 @@ export default function VideoPlayer({
         poster={poster}
         preload="metadata"
         src={videoUrl}
+        style={{
+          opacity: isLoading && !showPreview ? 0 : 1,
+        }}
       >
-        <source src={videoUrl} type="video/quicktime" />
         <source src={videoUrl} type="video/mp4" />
         Ваш браузер не підтримує відео тег.
       </video>

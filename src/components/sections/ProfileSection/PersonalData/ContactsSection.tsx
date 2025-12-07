@@ -9,6 +9,7 @@ import {
   EmailIcon,
   InstagramIcon,
 } from "@/components/Icons/Icons";
+import InputField from "@/components/ui/FormFields/InputField";
 
 type Props = {
   phone: string;
@@ -33,57 +34,37 @@ export default function ContactsSection({
       <h3 className={styles.sectionTitle}>Контактні дані</h3>
       <div className={styles.inputGroup}>
         <div className={styles.wrapperBlock}>
-          <div className={styles.inputContainer}>
-            <div className={styles.inputIconWrapper}>
-              <NumberIcon className={styles.inputIcon} />
-            </div>
-            <input
+          <InputField
+            icon={<NumberIcon />}
+            label="Ваш номер телефону"
+            id="profile-contacts-phone-field"
               type="tel"
-              placeholder="Ваш номер телефону"
               value={phone}
               onChange={(e) => onChange("phone", e.target.value)}
-              className={styles.input}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <div className={styles.inputIconWrapper}>
-              <TelegramIcon className={styles.inputIcon} />
-            </div>
-            <input
-              type="text"
-              placeholder="Нікнейм Telegram"
+          <InputField
+            icon={<TelegramIcon />}
+            label="Нікнейм Telegram"
+            id="profile-contacts-telegram-field"
               value={telegram}
               onChange={(e) => onChange("telegram", e.target.value)}
-              className={styles.input}
             />
-          </div>
         </div>
-
         <div className={styles.wrapperBlock}>
-          <div className={styles.inputContainer}>
-            <div className={styles.inputIconWrapper}>
-              <EmailIcon className={styles.inputIcon} />
-            </div>
-            <input
+          <InputField
+            icon={<EmailIcon />}
+            label="Ваша пошта"
+            id="profile-contacts-email-field"
               type="email"
-              placeholder="Ваша пошта"
               value={email}
               onChange={(e) => onChange("email", e.target.value)}
-              className={styles.input}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <div className={styles.inputIconWrapper}>
-              <InstagramIcon className={styles.inputIcon} />
-            </div>
-            <input
-              type="text"
-              placeholder="Нікнейм Instagram"
+          <InputField
+            icon={<InstagramIcon />}
+            label="Нікнейм Instagram"
               value={instagram}
               onChange={(e) => onChange("instagram", e.target.value)}
-              className={styles.input}
             />
-          </div>
         </div>
       </div>
     </div>

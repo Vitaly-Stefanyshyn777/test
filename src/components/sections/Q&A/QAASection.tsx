@@ -4,6 +4,7 @@ import { СhevronIcon } from "../../Icons/Icons";
 import styles from "./QAASection.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFAQByCategoryWithLogging, type FaqItem } from "@/lib/bfbApi";
+import QAASectionSkeleton from "./QAASectionSkeleton";
 
 interface QAAItem {
   id: number;
@@ -70,23 +71,27 @@ const QAASection: React.FC<QAASectionProps> = ({
 
   const effectiveCategoryName = getCategoryName();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["qaa", effectiveCategoryId, categoryType],
     queryFn: () => fetchFAQByCategoryWithLogging(effectiveCategoryId),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    enabled: effectiveCategoryId !== undefined, // Не виконуємо запит, якщо категорія не визначена
   });
 
   useEffect(() => {
     if (!data) return;
     if (Array.isArray(data) && data.length > 0) {
       const mapped: QAAItem[] = (data as FaqItem[]).map((it) => {
-        const answer = it.Answer || it.content?.rendered || "";
+        // Використовуємо нові поля: acf.question та acf.answer
+        const answer = it.acf?.answer || it.content?.rendered || "";
         const cleanAnswer = answer.replace(/<[^>]*>/g, "");
+
+        const question = it.acf?.question || it.title?.rendered || "";
 
         return {
           id: it.id,
-          question: it.Question || it.title?.rendered || "",
+          question,
           answer: cleanAnswer,
         };
       });
@@ -103,6 +108,10 @@ const QAASection: React.FC<QAASectionProps> = ({
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
+
+  if (isLoading) {
+    return <QAASectionSkeleton />;
+  }
 
   return (
     <section className={styles.faqSection}>

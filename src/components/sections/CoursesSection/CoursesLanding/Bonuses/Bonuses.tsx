@@ -206,6 +206,7 @@ const Bonuses: React.FC = () => {
                   src={src}
                   alt={`Avatar ${i + 1}`}
                   fill
+                  sizes="40px"
                   className={s.avatarImg}
                 />
               </div>
