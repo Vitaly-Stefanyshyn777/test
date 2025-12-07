@@ -107,14 +107,11 @@ export default function Team() {
     setIsLoading(true);
     (async () => {
       try {
-        const res = await fetch(
-          `/api/proxy?path=${encodeURIComponent("/wp-json/wp/v2/instructors")}`,
-          {
-            signal: controller.signal,
-            cache: "no-store",
-            credentials: "include", // Важливо для передачі cookie з JWT токеном
-          }
-        );
+        const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+        const res = await fetch(`${baseUrl}/wp-json/wp/v2/instructors`, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = (await res.json()) as InstructorApi[];
         const mapped: TeamMemberUi[] = (Array.isArray(data) ? data : []).map(
