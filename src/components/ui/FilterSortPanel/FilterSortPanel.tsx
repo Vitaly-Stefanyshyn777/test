@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./FilterSortPanel.module.css";
 import { SortArrowIcon, FilterMobileIcon } from "@/components/Icons/Icons";
 import FilterModal from "@/components/ui/FilterModal/FilterModal";
-import SortDropdown, { type SortOption } from "./SortDropdown";
 
 interface FilterState {
   priceMin: number;
@@ -29,34 +28,13 @@ interface Product {
   stockStatus: string;
 }
 
-export type SortType = "popular" | "new" | "sale" | "price_desc" | "price_asc";
-
-export interface FilterSortPanelProps {
+interface FilterSortPanelProps {
   filters?: FilterState;
   onFiltersChange?: (filters: FilterState) => void;
   onReset?: () => void;
   products?: Product[];
   onApply?: () => void;
-  // Нові пропси для сортування та пагінації
-  sortBy?: SortType;
-  onSortChange?: (sort: SortType) => void;
-  itemsPerPage?: number;
-  onItemsPerPageChange?: (perPage: number) => void;
 }
-
-export const SORT_OPTIONS: SortOption[] = [
-  { value: "popular", label: "Популярне" },
-  { value: "new", label: "Новинки" },
-  { value: "sale", label: "Акційні товари" },
-  { value: "price_desc", label: "Ціна за зменшенням" },
-  { value: "price_asc", label: "Ціна за зростанням" },
-];
-
-export const ITEMS_PER_PAGE_OPTIONS: SortOption[] = [
-  { value: "12", label: "12" },
-  { value: "24", label: "24" },
-  { value: "36", label: "36" },
-];
 
 const FilterSortPanel: React.FC<FilterSortPanelProps> = ({
   filters = {
@@ -70,10 +48,6 @@ const FilterSortPanel: React.FC<FilterSortPanelProps> = ({
   onReset = () => {},
   products = [],
   onApply = () => {},
-  sortBy = "popular",
-  onSortChange = () => {},
-  itemsPerPage = 12,
-  onItemsPerPageChange = () => {},
 }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -104,14 +78,10 @@ const FilterSortPanel: React.FC<FilterSortPanelProps> = ({
                 <span className={styles.filterMobileLabel}>Фільтр</span>
               </button>
               <div className={styles.sortSection}>
-                <SortDropdown
-                  label="Сортування"
-                  value={sortBy}
-                  options={SORT_OPTIONS}
-                  onChange={(value) => {
-                    onSortChange(value as SortType);
-                  }}
-                />
+                <div className={styles.sortOptionWrapper}>
+                  <span className={styles.sortOptionLabel}>Сортування</span>
+                  <SortArrowIcon className={styles.sortIcon} />
+                </div>
               </div>
             </>
           ) : (
@@ -120,22 +90,14 @@ const FilterSortPanel: React.FC<FilterSortPanelProps> = ({
                 <span className={styles.label}>Фільтр</span>
               </div>
               <div className={styles.sortSection}>
-                <SortDropdown
-                  label="Показувати по"
-                  value={String(itemsPerPage)}
-                  options={ITEMS_PER_PAGE_OPTIONS}
-                  onChange={(value) => {
-                    onItemsPerPageChange(Number(value));
-                  }}
-                />
-                <SortDropdown
-                  label="Сортування"
-                  value={sortBy}
-                  options={SORT_OPTIONS}
-                  onChange={(value) => {
-                    onSortChange(value as SortType);
-                  }}
-                />
+                <div className={styles.sortOptionWrapper}>
+                  <span className={styles.sortOptionLabel}>Показати по</span>
+                  <SortArrowIcon className={styles.sortIcon} />
+                </div>
+                <div className={styles.sortOptionWrapper}>
+                  <span className={styles.sortOptionLabel}>Сортування</span>
+                  <SortArrowIcon className={styles.sortIcon} />
+                </div>
               </div>
             </>
           )}

@@ -82,6 +82,7 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 140%;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -91,22 +92,9 @@
   font-weight: 800;
   font-size: 72px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--white);
-}
-
-.heroSkeletonTitleMain {
-  width: 40vw;
-  height: 5vw;
-  max-width: 720px;
-  max-height: 72px;
-}
-
-.heroSkeletonTitleSub {
-  width: 34vw;
-  height: 4vw;
-  max-width: 612px;
-  max-height: 64px;
 }
 
 .heroDescription {
@@ -114,6 +102,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -430,6 +419,7 @@
     font-weight: 600;
     font-size: mvw(13);
     line-height: 140%;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--violet);
   }
@@ -439,6 +429,7 @@
     font-weight: 800;
     font-size: mvw(28);
     line-height: 120%;
+    letter-spacing: -0.01em;
     text-transform: uppercase;
     color: var(--black);
   }

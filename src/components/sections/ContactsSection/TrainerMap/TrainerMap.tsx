@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
 import { ThemeSettingsPost } from "@/lib/bfbApi";
-import { getContactData, convertSvgAttributesToCamelCase } from "@/lib/themeSettingsUtils";
 import Image from "next/image";
 import styles from "./TrainerMap.module.css";
 import { TrainerUser } from "@/components/sections/types";
@@ -133,11 +132,7 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
     )
       ? (themeSettingsData[0] as ThemeSettingsPost)
       : (themeSettingsData as ThemeSettingsPost | undefined);
-    // Перевіряємо hl_data_gallery на верхньому рівні або в acf
     const themeGallery =
-      (themeFirst?.hl_data_gallery as
-        | Array<{ hl_img_link_photo?: string[] }>
-        | undefined) ||
       (themeFirst?.acf?.hl_data_gallery as
         | Array<{ hl_img_link_photo?: string[] }>
         | undefined) ||
@@ -180,8 +175,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
 
   // Load theme_settings when props not provided
   const { data: themeSettingsData } = useThemeSettingsQuery();
-  const contactData = useMemo(() => getContactData(themeSettingsData), [themeSettingsData]);
-  
   useEffect(() => {
     const shouldLoad = !mapMarkers || mapMarkers.length === 0 || !trainer;
     if (!shouldLoad) {
@@ -200,14 +193,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
       input_text_address?: string;
       hl_data_contact?: unknown[];
       hl_data_gallery?: unknown[];
-      acf?: {
-        map_markers?: Array<{ title?: string; coordinates?: [number, number][] }>;
-        input_text_phone?: string;
-        input_text_email?: string;
-        input_text_address?: string;
-        hl_data_contact?: unknown[];
-        hl_data_gallery?: unknown[];
-      };
     };
     const first: ThemeSettings | undefined = Array.isArray(raw)
       ? ((raw as ThemeSettings[])[0] as ThemeSettings)
@@ -216,11 +201,9 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
       setIsLoading(false);
       return;
     }
-    // Перевіряємо map_markers на верхньому рівні або в acf
-    const mapMarkersData = first?.map_markers || first?.acf?.map_markers;
-    const markers: MapMarker[] = Array.isArray(mapMarkersData)
+    const markers: MapMarker[] = Array.isArray(first?.map_markers)
       ? (
-          mapMarkersData as Array<{
+          first.map_markers as Array<{
             title?: string;
             coordinates?: [number, number][];
           }>
@@ -232,18 +215,14 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
         }))
       : [];
     const trainerLike: ThemeTrainerLike = {
-      input_text_phone: first?.input_text_phone || first?.acf?.input_text_phone,
-      input_text_email: first?.input_text_email || first?.acf?.input_text_email,
-      input_text_address: first?.input_text_address || first?.acf?.input_text_address,
+      input_text_phone: first?.input_text_phone,
+      input_text_email: first?.input_text_email,
+      input_text_address: first?.input_text_address,
       hl_data_contact: Array.isArray(first?.hl_data_contact)
         ? (first.hl_data_contact as ContactItem[])
-        : Array.isArray(first?.acf?.hl_data_contact)
-        ? (first.acf.hl_data_contact as ContactItem[])
         : [],
       hl_data_gallery: Array.isArray(first?.hl_data_gallery)
         ? (first.hl_data_gallery as GalleryItem[])
-        : Array.isArray(first?.acf?.hl_data_gallery)
-        ? (first.acf.hl_data_gallery as GalleryItem[])
         : [],
       location_city: undefined,
       location_country: undefined,
@@ -464,7 +443,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                         effectiveTrainer.my_wlocation?.[0]
                           ?.hl_input_text_phone ||
                         effectiveTrainer.social_phone ||
-                        contactData.phone ||
                         "Номер телефону поки що не доступний"}
                     </span>
                   </div>
@@ -474,7 +452,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                       {effectiveTrainer.input_text_email ||
                         effectiveTrainer.my_wlocation?.[0]
                           ?.hl_input_text_email ||
-                        contactData.email ||
                         "Email поки що не додано"}
                     </span>
                   </div>
@@ -485,7 +462,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                     <span className={styles.value}>
                       {effectiveTrainer.my_wlocation?.[0]
                         ?.hl_input_text_schedule_two ||
-                        contactData.weekends ||
                         "Графік у вихідні не додано"}
                     </span>
                   </div>
@@ -494,7 +470,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                     <span className={styles.value}>
                       {effectiveTrainer.my_wlocation?.[0]
                         ?.hl_input_text_schedule_five ||
-                        contactData.weekdays ||
                         "Графік у будні не додано"}
                     </span>
                   </div>
@@ -506,7 +481,6 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                 <span className={styles.value}>
                   {effectiveTrainer.input_text_address ||
                     effectiveTrainer.my_wlocation?.[0]?.hl_input_text_address ||
-                    contactData.address ||
                     "Адресу поки що не додано"}
                 </span>
               </div>
@@ -522,22 +496,11 @@ export default function TrainerMap({ mapMarkers, trainer }: TrainerMapProps) {
                       href={contact.hl_input_text_link || "#"}
                       className={styles.socialIcon}
                       dangerouslySetInnerHTML={{
-                        __html: convertSvgAttributesToCamelCase(contact.hl_img_svg_icon),
+                        __html: contact.hl_img_svg_icon,
                       }}
                     />
                   )
                 )
-              ) : contactData.socialLinks.length > 0 ? (
-                contactData.socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.link || "#"}
-                    className={styles.socialIcon}
-                    dangerouslySetInnerHTML={{
-                      __html: social.icon || "",
-                    }}
-                  />
-                ))
               ) : (
                 <>
                   <div className={styles.IconsBlock}>

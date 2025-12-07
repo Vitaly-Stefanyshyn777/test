@@ -34,7 +34,7 @@ export function ProductsShowcase({
   };
 
   const [categories, setCategories] = useState<InventoryCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // Вже встановлено в true
+  const [isLoading, setIsLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [hasNewInCategory, setHasNewInCategory] = useState<
     Record<number, boolean>
@@ -44,7 +44,7 @@ export function ProductsShowcase({
   useEffect(() => {
     (async () => {
       try {
-        // isLoading вже true з початкового стану, не потрібно встановлювати знову
+        setIsLoading(true);
         const cats = (await fetchWcCategories({
           parent: 85, // Інвентар
           per_page: 50,

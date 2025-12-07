@@ -1,14 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./TrainerProfile.module.css";
-import { CloudUploadIcon, DumpUploadIcon } from "@/components/Icons/Icons";
+import { CloudUploadIcon } from "@/components/Icons/Icons";
 
 type Props = {
   onChange?: (files: File[]) => void;
   initialCertificates?: string[]; // URL сертифікатів з профілю
-  onGetCertificatesUrls?: (getUrls: () => string[]) => void; // Callback для отримання поточного стану сертифікатів
-  onGetCertificatesFiles?: (getFiles: () => File[]) => void; // Callback для отримання локальних файлів для завантаження
 };
 import { uploadCoachMedia } from "@/lib/bfbApi";
 import { useAuthStore } from "@/store/auth";
@@ -16,8 +14,6 @@ import { useAuthStore } from "@/store/auth";
 export default function CertificatesSection({
   onChange,
   initialCertificates = [],
-  onGetCertificatesUrls,
-  onGetCertificatesFiles,
 }: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,46 +32,10 @@ export default function CertificatesSection({
   
   const token = useAuthStore((s) => s.token);
 
-  // Використовуємо ref для зберігання функцій, щоб уникнути нескінченного циклу
-  const getCertificatesUrlsRef = useRef<() => string[]>(() => serverCertificates);
-  const getCertificatesFilesRef = useRef<() => File[]>(() => files);
-
-  // Оновлюємо ref при зміні стану
-  useEffect(() => {
-    getCertificatesUrlsRef.current = () => serverCertificates;
-    getCertificatesFilesRef.current = () => files;
-  }, [serverCertificates, files]);
-
-  // Надаємо функції для отримання поточного стану сертифікатів та файлів батьківському компоненту
-  useEffect(() => {
-    if (onGetCertificatesUrls) {
-      onGetCertificatesUrls(() => getCertificatesUrlsRef.current());
-    }
-    if (onGetCertificatesFiles) {
-      onGetCertificatesFiles(() => getCertificatesFilesRef.current());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onGetCertificatesUrls, onGetCertificatesFiles]);
-
   // Оновлюємо сертифікати з профілю, коли вони змінюються
   useEffect(() => {
-    if (initialCertificates === undefined) {
-      // Якщо initialCertificates undefined, нічого не робимо
-      return;
-    }
-    
-    if (Array.isArray(initialCertificates)) {
-      if (initialCertificates.length > 0) {
-        setServerCertificates(initialCertificates);
-      } else {
-        // Якщо initialCertificates порожній масив, не очищаємо serverCertificates
-        // щоб не втратити дані після завантаження
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            "[CertificatesSection] initialCertificates порожній масив, зберігаємо поточні serverCertificates"
-          );
-        }
-      }
+    if (initialCertificates && Array.isArray(initialCertificates)) {
+      setServerCertificates(initialCertificates);
     }
   }, [initialCertificates]);
 
@@ -123,41 +83,32 @@ export default function CertificatesSection({
     const selected = inputEl.files;
     if (!selected || selected.length === 0) return;
 
-    // Перевірка розміру файлів перед завантаженням (ліміт 10 МБ)
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 МБ в байтах
-    const oversizedFiles: string[] = [];
-
-    for (const file of Array.from(selected)) {
-      if (file.size > MAX_FILE_SIZE) {
-        oversizedFiles.push(file.name);
-      }
-    }
-
-    if (oversizedFiles.length > 0) {
-      setError(
-        `Файл${
-          oversizedFiles.length > 1 ? "и" : ""
-        } перевищують ліміт 10 МБ: ${oversizedFiles.join(", ")}`
-      );
-      if (inputEl) inputEl.value = "";
-      return;
-    }
-
     try {
+      setUploading(true);
       setError(null);
-      // Додаємо файли тільки локально, завантаження на сервер відбудеться при збереженні
-      const filesArray = Array.from(selected);
-      const next = [...files, ...filesArray];
+
+      // Миттєвий аплоад у кастомний ендпоїнт для сертифікатів
+      if (token) {
+        try {
+          const resp = await uploadCoachMedia({
+            token,
+            fieldType: "img_link_data_certificate_",
+            files: Array.from(selected),
+          });
+          if (!resp?.success) {
+            throw new Error("uploadCoachMedia failed");
+          }
+        } catch (error) {
+          if (process.env.NODE_ENV !== "production") {
+            console.error(error);
+          }
+          // навіть якщо бекенд впаде, локальне прев'ю залишимо
+        }
+      }
+
+      const next = [...files, ...Array.from(selected)];
       setFiles(next);
       onChange?.(next);
-
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[CertificatesSection] Файли додано локально:", {
-          filesCount: filesArray.length,
-          totalFiles: next.length,
-          fileNames: filesArray.map((f) => f.name),
-        });
-      }
 
       if (inputEl) inputEl.value = "";
     } catch (error) {
@@ -165,45 +116,8 @@ export default function CertificatesSection({
       if (process.env.NODE_ENV !== "production") {
         console.error(error);
       }
-    }
-  };
-
-  const handleDelete = (index: number) => {
-    if (process.env.NODE_ENV !== "production") {
-      console.log("[CertificatesSection] Видалення за індексом:", {
-        index,
-        serverCertificatesLength: serverCertificates.length,
-        filesLength: files.length,
-        previewsLength: previews.length,
-      });
-    }
-    
-    // Просто видаляємо за індексом з previews
-    // Якщо індекс в межах serverCertificates - видаляємо з serverCertificates
-    // Інакше - з files
-    if (index < serverCertificates.length) {
-      // Видаляємо з серверних сертифікатів
-      const newServerCertificates = serverCertificates.filter((_, i) => i !== index);
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[CertificatesSection] Видалення з serverCertificates:", {
-          before: serverCertificates.length,
-          after: newServerCertificates.length,
-        });
-      }
-      setServerCertificates(newServerCertificates);
-    } else {
-      // Видаляємо з локальних файлів
-      const fileIndex = index - serverCertificates.length;
-      const newFiles = files.filter((_, i) => i !== fileIndex);
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[CertificatesSection] Видалення з files:", {
-          fileIndex,
-          before: files.length,
-          after: newFiles.length,
-        });
-      }
-      setFiles(newFiles);
-      onChange?.(newFiles);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -229,14 +143,6 @@ export default function CertificatesSection({
                     }}
                   />
                 </div>
-                <button
-                  className={styles.deletePhotoBtn}
-                  onClick={() => handleDelete(i)}
-                  type="button"
-                  aria-label="Видалити сертифікат"
-                >
-                  <DumpUploadIcon className={styles.deleteIcon} />
-                </button>
               </div>
             ))}
           </div>
@@ -249,6 +155,7 @@ export default function CertificatesSection({
           multiple
           className={styles.fileInput}
           onChange={handleFileUpload}
+          disabled={uploading}
         />
 
         {isMobile ? (
@@ -256,37 +163,43 @@ export default function CertificatesSection({
             <label
               htmlFor={uploadInputId}
               className={styles.uploadArea}
+              style={{ opacity: uploading ? 0.6 : 1 }}
             >
               <div className={styles.uploadIcon}>
                 <CloudUploadIcon />
               </div>
               <p className={styles.uploadTextMobile}>
-                Загрузіть ваш сертифікат
+                {uploading ? "Завантаження..." : "Загрузіть ваш сертифікат"}
               </p>
               {error ? (
                 <div className={styles.errorMessage}>{error}</div>
               ) : null}
             </label>
             <p className={styles.uploadFormatsOutside}>
-              .pdf .doc .jpg .png до 10 МБ
+              .pdf .doc .jpg .png до 5 МБ
             </p>
           </div>
         ) : (
           <label
             htmlFor={uploadInputId}
             className={styles.uploadArea}
+            style={{ opacity: uploading ? 0.6 : 1 }}
           >
             <div className={styles.uploadIcon}>
               <CloudUploadIcon />
             </div>
             <p className={styles.uploadText}>
-              <span className={styles.uploadLink}>Загрузіть</span>
-              <span className={styles.uploadHint}>
-                {" "}
-                або перетащіть сюди файл
+              <span className={styles.uploadLink}>
+                {uploading ? "Завантаження..." : "Загрузіть"}
               </span>
+              {!uploading && (
+                <span className={styles.uploadHint}>
+                  {" "}
+                  або перетащіть сюди файл
+                </span>
+              )}
             </p>
-            <p className={styles.uploadFormats}>.pdf .doc .jpg .png до 10 МБ</p>
+            <p className={styles.uploadFormats}>.pdf .doc .jpg .png до 5 МБ</p>
             {error ? <div className={styles.errorMessage}>{error}</div> : null}
           </label>
         )}

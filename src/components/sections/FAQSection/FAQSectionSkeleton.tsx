@@ -26,14 +26,11 @@ const FAQSectionSkeleton: React.FC = () => {
             <div className={styles.leftColumn}>
               <div className={styles.imageContainer}>
                 <Skeleton
-                  width={893}
-                  height={542}
+                  width="100%"
+                  height="100%"
                   borderRadius={16}
                   className={styles.heroImage}
-                  style={{
-                    maxWidth: "100%",
-                    objectFit: "cover",
-                  }}
+                  style={{ maxWidth: 859, maxHeight: 555 }}
                 />
               </div>
             </div>
@@ -47,22 +44,17 @@ const FAQSectionSkeleton: React.FC = () => {
                       style={{
                         pointerEvents: "none",
                         cursor: "default",
-                        width: 907,
-                        maxWidth: "100%",
-                        height: 102,
+                        width: "100%",
                       }}
                     >
                       <Skeleton
-                        width={550}
-                        height={18}
-                        style={{
-                          flex: 1,
-                          marginRight: "12px",
-                        }}
+                        width={`${70 + Math.random() * 20}%`}
+                        height={24}
+                        style={{ flex: 1, marginRight: "12px" }}
                       />
                       <Skeleton
-                        width={54}
-                        height={54}
+                        width={60}
+                        height={60}
                         borderRadius="50%"
                         style={{ flexShrink: 0 }}
                       />

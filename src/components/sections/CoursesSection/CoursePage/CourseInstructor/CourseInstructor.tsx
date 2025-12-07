@@ -13,7 +13,7 @@ import { useCourseQuery } from "@/components/hooks/useWpQueries";
 import CourseInstructorSkeleton from "./CourseInstructorSkeleton";
 
 interface CourseInstructorProps {
-  courseId?: string | number;
+  courseId?: number;
 }
 
 const CourseInstructor: React.FC<CourseInstructorProps> = ({
@@ -166,7 +166,7 @@ const CourseInstructor: React.FC<CourseInstructorProps> = ({
                 </div>
                 <div className={styles.statContent}>
                   <span className={styles.statNumber}>
-                    {coach.input_text_count_training || "100+"}
+                    {coach.input_text_count_training || "1000+"}
                   </span>
                   <span className={styles.statLabel}>Проведено тренувань</span>
                 </div>

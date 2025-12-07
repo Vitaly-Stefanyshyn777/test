@@ -10,9 +10,6 @@ export interface ProductFilters {
   on_sale?: boolean;
   featured?: boolean;
   search?: string;
-  orderby?: "date" | "price" | "popularity" | "rating" | "title";
-  order?: "asc" | "desc";
-  per_page?: number;
 }
 
 export function useFilteredProducts(filters: ProductFilters = {}) {

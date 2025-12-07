@@ -305,11 +305,11 @@ export default function InstructorAdvantages() {
                                     <div className={s.advInfoBlock}>
                                       <div className={s.advInfoBlockText}>
                                         <h3 className={s.cardTitle}>
-                                          Навчання й інвентар
+                                          Доступ до інвентарю
                                         </h3>
                                         <p className={s.cardText}>
-                                          Доступ до інвентарю, воркшопів та
-                                          повторних навчань
+                                          Можливість придбати борд та супутній
+                                          інвентар після сертифікації
                                         </p>
                                       </div>
                                     </div>

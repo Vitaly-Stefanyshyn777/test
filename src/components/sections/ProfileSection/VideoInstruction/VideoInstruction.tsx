@@ -39,7 +39,7 @@ interface VideoInstructionProps {
 
 const VideoInstruction: React.FC<VideoInstructionProps> = ({
   title = "Як заповнювати онлайн-кабінет",
-  description = "Перегляньте коротку відеоінструкцію, щоб дізнатися, як правильно заповнити свій онлайн-кабінет.",
+  description = "Перегляньте коротке відеоінструкцію, щоб дізнатися, як правильно заповнити свій онлайн-кабінет.",
   videoThumbnail = "/images/Frame-13213187831.jpg",
   videoUrl,
   isWatched = false,
@@ -74,7 +74,9 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
           setRealVideoUrl(url);
           console.log("[VideoInstruction] Video URL set successfully");
         } else {
-          console.log("[VideoInstruction] No video URL received");
+          console.log(
+            "[VideoInstruction] No video URL received"
+          );
           setRealVideoUrl(null);
         }
       } catch (error) {
@@ -130,10 +132,7 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
         <VideoInstructionSkeleton />
       ) : isMobile ? (
         <div className={styles.videoWithButtonBlock}>
-          <div
-            className={styles.videoContainer}
-            onClick={hasVideo ? handleWatchVideo : undefined}
-          >
+          <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
             {hasVideo ? (
               <div className={styles.videoPlayerContainer}>
                 <VideoPlayer
@@ -151,8 +150,7 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
               <div className={styles.videoThumbnail}>
                 <div className={styles.loadingContainer}>
                   <p className={styles.loadingText}>
-                    Відео інструкція тимчасово недоступна. Будь ласка,
-                    зверніться до підтримки.
+                    Відео інструкція тимчасово недоступна. Будь ласка, зверніться до підтримки.
                   </p>
                 </div>
               </div>
@@ -166,10 +164,7 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
           )}
         </div>
       ) : (
-        <div
-          className={styles.videoContainer}
-          onClick={hasVideo ? handleWatchVideo : undefined}
-        >
+        <div className={styles.videoContainer} onClick={hasVideo ? handleWatchVideo : undefined}>
           {hasVideo ? (
             <div className={styles.videoPlayerContainer}>
               <VideoPlayer
@@ -187,8 +182,7 @@ const VideoInstruction: React.FC<VideoInstructionProps> = ({
             <div className={styles.videoThumbnail}>
               <div className={styles.loadingContainer}>
                 <p className={styles.loadingText}>
-                  Відео інструкція тимчасово недоступна. Будь ласка, зверніться
-                  до підтримки.
+                  Відео інструкція тимчасово недоступна. Будь ласка, зверніться до підтримки.
                 </p>
               </div>
             </div>

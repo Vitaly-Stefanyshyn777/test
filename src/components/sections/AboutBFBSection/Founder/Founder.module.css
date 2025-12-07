@@ -75,6 +75,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
+  letter-spacing: -0.03em;
   color: var(--white);
 }
 
@@ -83,6 +84,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: rgba(255, 254, 252, 0.8);
 }
 
@@ -150,6 +152,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
+  letter-spacing: -0.03em;
   color: var(--white);
 }
 
@@ -158,6 +161,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: rgba(255, 254, 252, 0.8);
 }
 .founderCard {
@@ -243,6 +247,7 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 100%;
+  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -273,6 +278,7 @@
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 1px;
   opacity: 0.9;
 }
 
@@ -335,6 +341,7 @@
   font-weight: 600;
   font-size: 40px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -344,6 +351,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
@@ -471,6 +479,7 @@
   .missionText {
     font-size: mvw(28);
     line-height: 100%;
+    letter-spacing: -0.01em;
     text-align: left;
 
     font-weight: 700;
@@ -521,6 +530,7 @@
     font-weight: 500;
     font-size: mvw(14);
     line-height: 140%;
+    letter-spacing: -0.03em;
     color: var(--black);
     margin-right: mvw(3);
     display: inline;

@@ -14,6 +14,7 @@ import {
   BulbIcon,
 } from "@/components/Icons/Icons";
 import { normalizeImageUrl } from "@/lib/imageUtils";
+import FounderSkeleton from "./FounderSkeleton";
 
 interface Instructor {
   title: string;
@@ -122,6 +123,11 @@ export default function Founder() {
         "Сертифікувала сотні тренерів по всій Україні та за її межами",
     },
   ];
+
+  // Показуємо skeleton поки дані завантажуються
+  if (isLoading) {
+    return <FounderSkeleton />;
+  }
 
   if (isError) {
     return (

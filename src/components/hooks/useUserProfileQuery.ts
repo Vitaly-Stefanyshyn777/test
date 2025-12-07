@@ -23,9 +23,7 @@ export function useUserProfileQuery() {
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
 
   return useQuery({
-    // Додаємо token та isLoggedIn до queryKey щоб оновлювати при зміні стану авторизації
-    // Не додаємо userId, щоб уникнути безкінечних циклів (userId може змінюватися після завантаження профілю)
-    queryKey: ["user-profile", "me", token, isLoggedIn],
+    queryKey: ["user-profile", "me", token], // Додаємо token до queryKey щоб оновлювати при зміні токена
     queryFn: async () => {
       // Передаємо токен з authStore в getMyProfile
       // getMyProfile також перевірить localStorage як fallback

@@ -183,6 +183,7 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 120%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -265,6 +266,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -285,6 +287,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -301,6 +304,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -332,6 +336,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -344,6 +349,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -353,6 +359,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -397,6 +404,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 .IconsBlock {
@@ -435,6 +443,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -499,6 +508,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--black);
   margin-top: 20px; /* відступ між заголовком і описом */
 }
@@ -520,6 +530,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
@@ -768,6 +779,7 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
+  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -1147,6 +1159,7 @@
     font-weight: 500;
     font-size: mvw(14);
     line-height: 140%;
+    letter-spacing: -0.01em;
     color: rgba(14, 14, 14, 0.6);
   }
 

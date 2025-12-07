@@ -25,9 +25,8 @@ const QAASectionSkeleton: React.FC = () => {
                   <div key={i} className={styles.faqItem}>
                     <div className={styles.faqButton} style={{ pointerEvents: "none", cursor: "default" }}>
                       <Skeleton 
-                        width={408}
-                        height={24}
-                        className={styles.question}
+                        width={`${70 + Math.random() * 20}%`} 
+                        height={24} 
                         style={{ flex: 1, marginRight: "12px" }}
                       />
                       <Skeleton 

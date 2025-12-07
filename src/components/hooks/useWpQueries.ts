@@ -151,11 +151,10 @@ export const useFaqCategoriesQuery = () =>
     gcTime: 20 * 60 * 1000,
   });
 
-export const useCourseQuery = (courseIdOrSlug?: number | string) =>
+export const useCourseQuery = (courseId?: number) =>
   useQuery({
-    queryKey: ["course", courseIdOrSlug],
-    queryFn: () => fetchCourse(courseIdOrSlug),
+    queryKey: ["course", courseId],
+    queryFn: () => fetchCourse(courseId),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    enabled: !!courseIdOrSlug, // Не виконуємо запит, якщо немає ID або slug
   });

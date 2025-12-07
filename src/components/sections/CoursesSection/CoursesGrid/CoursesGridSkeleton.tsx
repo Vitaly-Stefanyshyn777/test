@@ -9,60 +9,37 @@ const CoursesGridSkeleton: React.FC = () => {
   const renderCourseCardSkeleton = () => (
     <div className={courseCardStyles.productCard}>
       <div className={courseCardStyles.cardImage}>
-        <Skeleton height={251} width="100%" />
-        {/* Бейджі як у справжній картці */}
-        <div
-          className={courseCardStyles.badges}
-          style={{
-            position: "absolute",
-            top: "12px",
-            left: "12px",
-            gap: "6px",
-          }}
-        >
-          <Skeleton width={75} height={36} borderRadius={10} />
-          <Skeleton width={55} height={36} borderRadius={10} />
-          <Skeleton width={55} height={36} borderRadius={10} />
-        </div>
-        {/* Кнопка обраного */}
-        <Skeleton
-          circle
-          width={48}
-          height={48}
-          className={courseCardStyles.favoriteBtn}
-          style={{ position: "absolute", top: "25px", right: "25px" }}
-        />
+        <Skeleton height="100%" width="100%" />
       </div>
       <div className={courseCardStyles.cardContent}>
         <div className={courseCardStyles.productInfo}>
           <div className={courseCardStyles.productInfoName}>
             <Skeleton
-              width="90%"
-              height={40}
+              width="80%"
+              height={24}
+              style={{ marginBottom: "12px" }}
               className={courseCardStyles.productName}
+            />
+            <Skeleton
+              width="100%"
+              height={16}
+              count={2}
+              style={{ marginBottom: "12px" }}
+              className={courseCardStyles.description}
             />
           </div>
           <div className={courseCardStyles.rating}>
-            <Skeleton
-              width={120}
-              height={16}
-              style={{ marginBottom: "60px" }}
-            />
+            <Skeleton width={100} height={16} />
           </div>
         </div>
         <div className={courseCardStyles.subscriptionPriceBlock}>
           <div className={courseCardStyles.subscriptionBlock}>
-            <Skeleton width={115} height={20} />
+            <Skeleton width={150} height={20} style={{ marginBottom: "12px" }} />
             <div className={courseCardStyles.pricing}>
-              <Skeleton width={154} height={28} />
+              <Skeleton width={120} height={28} />
             </div>
           </div>
-          <Skeleton
-            width={56}
-            height={56}
-            borderRadius={12}
-            className={courseCardStyles.cartBtn}
-          />
+          <Skeleton width="100%" height={48} borderRadius={12} />
         </div>
       </div>
     </div>
@@ -80,3 +57,4 @@ const CoursesGridSkeleton: React.FC = () => {
 };
 
 export default CoursesGridSkeleton;
+
