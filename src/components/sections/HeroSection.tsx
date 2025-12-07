@@ -38,10 +38,14 @@ const HeroSection = () => {
     const load = async () => {
       setIsLoading(true);
       try {
+        console.log("🎨 [HeroSection] → Завантажую банери...");
         const fetched = await fetchBanners();
+        console.log("🎨 [HeroSection] → Отримано дані:", fetched);
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
+        console.log("🎨 [HeroSection] → Нормалізовано банерів:", normalized.length);
+        console.log("🎨 [HeroSection] → Структура першого банера:", normalized[0]);
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -88,12 +92,19 @@ const HeroSection = () => {
         });
         const initial =
           bannerWithVideo ?? bannerWithPoster ?? normalized[0] ?? null;
+        console.log("🎨 [HeroSection] → Банер з відео:", bannerWithVideo?.id);
+        console.log("🎨 [HeroSection] → Банер з постером:", bannerWithPoster?.id);
+        console.log("🎨 [HeroSection] → Активний банер:", initial?.id);
         setActiveBannerId(initial ? initial.id : null);
         if (initial) {
           const idx = normalized.findIndex((b) => b.id === initial.id);
           setActiveIndex(idx >= 0 ? idx : 0);
+          console.log("🎨 [HeroSection] → Індекс активного банера:", idx);
+        } else {
+          console.warn("🎨 [HeroSection] ⚠️ Активний банер не знайдено!");
         }
-      } catch {
+      } catch (error) {
+        console.error("🎨 [HeroSection] ❌ Помилка завантаження банерів:", error);
         setBanners([]);
         setActiveBannerId(null);
       } finally {
