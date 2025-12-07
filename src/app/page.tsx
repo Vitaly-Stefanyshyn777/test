@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import HeroSection from "@/components/sections/HeroSection";
 import AchievmentsSection from "@/components/sections/AchievmentsSection/AchievmentsSection";
 import TargetAuditorySection from "@/components/sections/TargetAuditorySection/TargetAuditorySection";
@@ -36,14 +35,15 @@ type YoastHeadJson = {
 
 async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
   try {
-    // Для server-side запитів використовуємо headers() для отримання host
-    const headersList = await headers();
-    const host = headersList.get("host") || "localhost:3000";
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-    const baseUrl = `${protocol}://${host}`;
+    // Використовуємо UPSTREAM_BASE для прямого запиту до WordPress
+    const upstreamBase = process.env.UPSTREAM_BASE;
+    if (!upstreamBase) {
+      console.warn("[generateMetadata] UPSTREAM_BASE not configured");
+      return null;
+    }
     
-    const res = await fetch(`${baseUrl}/api/banners`, {
-      cache: "no-store",
+    const res = await fetch(`${upstreamBase}/wp-json/wp/v2/banners`, {
+      next: { revalidate: 60 }, // Кешуємо на 1 хвилину
     });
     if (!res.ok) {
       console.error("[generateMetadata] Failed to fetch banners:", res.status);
