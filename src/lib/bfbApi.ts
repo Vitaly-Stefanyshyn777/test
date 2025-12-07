@@ -437,14 +437,25 @@ export type BannerPost = {
 };
 
 export async function fetchBanners(): Promise<BannerPost[]> {
-  const res = await fetch("/api/banners", {
-    cache: "no-store",
-    credentials: "include",
-  });
-  if (!res.ok) {
-    throw new Error(`Request failed ${res.status}: ${await res.text()}`);
+  console.log("🎨 [fetchBanners] → Запит до /api/banners...");
+  try {
+    const res = await fetch("/api/banners", {
+      cache: "no-store",
+      credentials: "include",
+    });
+    console.log("🎨 [fetchBanners] → Відповідь:", res.status, res.statusText);
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("🎨 [fetchBanners] ❌ Помилка:", res.status, errorText);
+      throw new Error(`Request failed ${res.status}: ${errorText}`);
+    }
+    const data = (await res.json()) as BannerPost[];
+    console.log("🎨 [fetchBanners] ✅ Отримано банерів:", data.length);
+    return data;
+  } catch (error) {
+    console.error("🎨 [fetchBanners] ❌ Критична помилка:", error);
+    throw error;
   }
-  return (await res.json()) as BannerPost[];
 }
 
 // Видаляємо неіснуючі ендпоінти
