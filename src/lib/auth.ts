@@ -90,12 +90,6 @@ export const register = async (
     first_name: credentials.first_name,
     last_name: credentials.last_name,
     roles: credentials.roles || ["bfb_coach"],
-    // Додаємо acf для збереження phone (для консистентності з PersonalData)
-    acf: {
-      phone: credentials.phone,
-      telegram: "",
-      instagram: "",
-    },
     meta: {
       phone: credentials.phone,
       input_text_position: "Фітнес тренер",
@@ -146,28 +140,23 @@ type WPUserMe = {
   meta?: Record<string, unknown>;
 };
 
-export const getMyProfile = async (token?: string | null): Promise<WPUserMe | null> => {
+export const getMyProfile = async (): Promise<WPUserMe | null> => {
   try {
-    // Спочатку пробуємо використати токен з параметра, потім з localStorage
-    let authToken: string | null = token || null;
-    
-    if (!authToken && typeof window !== "undefined") {
-      try {
-        authToken = localStorage.getItem("bfb_token");
-      } catch {}
-    }
+    // Не вимагаємо токен з localStorage. Якщо він є у сторах – добре;
+    // інакше проксі додасть Authorization з httpOnly cookie.
+    const token: string | null = null;
 
     const response = await api.get("/api/proxy", {
       params: { path: "/wp-json/wp/v2/users/me?context=edit" },
-      headers: authToken
+      headers: token
         ? {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
           }
         : undefined,
     });
     if (process.env.NODE_ENV !== "production") {
       console.debug("[auth.getMyProfile] OK", {
-        hasToken: !!authToken,
+        hasToken: !!token,
         status: response.status,
       });
     }

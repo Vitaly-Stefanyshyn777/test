@@ -6,9 +6,7 @@ import SectionDivider from "../SectionDivider/SectionDivider";
 import { useForm } from "react-hook-form";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
-import PasswordField from "@/components/ui/FormFields/PasswordField";
-import { PasswordsIcon } from "@/components/Icons/Icons";
-import SubmitButton from "@/components/ui/SubmitButton/SubmitButton";
+import PasswordField from "./PasswordField";
 
 const ChangePassword: React.FC = () => {
   const user = useAuthStore((s) => s.user);
@@ -19,7 +17,7 @@ const ChangePassword: React.FC = () => {
     newPassword: string;
     confirmPassword: string;
   };
-  const { register, handleSubmit, reset, watch } = useForm<FormValues>({
+  const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -31,13 +29,6 @@ const ChangePassword: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  const formValues = watch();
-  const isFormFilled = !!(
-    formValues.currentPassword &&
-    formValues.newPassword &&
-    formValues.confirmPassword
-  );
 
   const onSubmit = handleSubmit(async (values) => {
     setError(null);
@@ -92,52 +83,40 @@ const ChangePassword: React.FC = () => {
       <SectionDivider />
 
       <form className={styles.form} onSubmit={onSubmit} noValidate>
-        <div className={styles.inputGroup}>
-          <PasswordField
-            icon={<PasswordsIcon />}
-            label="Поточний пароль"
-            hasError={!!error}
-            supportingText={error || "Введіть поточний пароль"}
-            {...register("currentPassword", { required: true })}
-            autoComplete="current-password"
-          />
-        </div>
+        <PasswordField
+          placeholder="Поточний пароль"
+          inputProps={{
+            ...register("currentPassword", { required: true }),
+            autoComplete: "current-password",
+          }}
+        />
 
-        <div className={styles.inputGroup}>
-          <PasswordField
-            icon={<PasswordsIcon />}
-            label="Введіть новий пароль"
-            hasError={!!error}
-            supportingText={
-              error ||
-              "Новий пароль має містити щонайменше 8 символів та відрізнятися від поточного"
-            }
-            {...register("newPassword", { required: true, minLength: 8 })}
-            autoComplete="new-password"
-          />
-        </div>
+        <PasswordField
+          placeholder="Введіть новий пароль"
+          inputProps={{
+            ...register("newPassword", { required: true, minLength: 8 }),
+            autoComplete: "new-password",
+          }}
+        />
 
-        <div className={styles.inputGroup}>
-          <PasswordField
-            icon={<PasswordsIcon />}
-            label="Підтвердіть новий пароль"
-            hasError={!!error}
-            supportingText={error || "Повторіть новий пароль без помилок"}
-            {...register("confirmPassword", { required: true, minLength: 8 })}
-            autoComplete="new-password"
-          />
-        </div>
+        <PasswordField
+          placeholder="Підтвердіть новий пароль"
+          inputProps={{
+            ...register("confirmPassword", { required: true, minLength: 8 }),
+            autoComplete: "new-password",
+          }}
+        />
 
         {error && <div className={styles.error}>{error}</div>}
         {success && <div className={styles.success}>{success}</div>}
 
-        <SubmitButton
+        <button
           className={styles.submitBtn}
-          isSubmitting={submitting}
-          isFormFilled={isFormFilled}
+          type="submit"
+          disabled={submitting}
         >
-          Змінити пароль
-        </SubmitButton>
+          {submitting ? "Збереження..." : "Змінити пароль"}
+        </button>
       </form>
     </div>
   );

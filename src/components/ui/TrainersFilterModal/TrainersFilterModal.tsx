@@ -27,7 +27,7 @@ interface TrainersFilterModalProps {
   trainers: Array<{ location?: string }>;
   searchTerm: string;
   onApply: () => void;
-  onTrainersChange?: (trainers: unknown[] | undefined) => void;
+  onTrainersChange?: (trainers: unknown[]) => void;
 }
 
 const TrainersFilterModal: React.FC<TrainersFilterModalProps> = ({
@@ -106,10 +106,6 @@ const TrainersFilterModal: React.FC<TrainersFilterModalProps> = ({
 
   const handleReset = () => {
     onReset();
-    // Скидаємо відфільтровані тренери, щоб показати всіх тренерів
-    if (onTrainersChange) {
-      onTrainersChange(undefined);
-    }
   };
 
   return (

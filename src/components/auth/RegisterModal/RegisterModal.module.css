@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
+  z-index: 1000;
   padding: 20px;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .modal {
-  background: var(--white);
+  background: var(--bg-color);
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -69,6 +69,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 110%;
+  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -77,6 +78,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
+  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -90,8 +92,8 @@
   font-size: 24px;
   color: #999;
   cursor: pointer;
-  width: 46px;
-  height: 46px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,24 +101,17 @@
   background-color: var(--bg-light);
   border-radius: 10px;
   fill: #f2f2f2;
-  border-radius: 10px;
-  fill: #f2f2f2;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
 }
 
 .close:hover {
-  background: var(--violet);
-  color: var(--white);
+  background: #f5f5f5;
+  color: #666;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .row {
@@ -235,13 +230,11 @@
   font-weight: 800;
   line-height: 135%;
   color: var(--white);
-  box-shadow: none;
 }
 
 .submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: none;
-  background: var(--black);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 .submit:disabled {
@@ -383,7 +376,7 @@
   }
 
   .form {
-    gap: mvw(16);
+    gap: mvw(8);
     flex: 1;
     min-height: 0;
     display: flex;
@@ -392,7 +385,7 @@
 
   .row {
     grid-template-columns: 1fr;
-    gap: mvw(14);
+    gap: mvw(8);
   }
 
   .rowSingle {
@@ -452,12 +445,6 @@
     font-size: mvw(16);
     line-height: 135%;
     width: 100%;
-    box-shadow: none;
-  }
-
-  .submit:hover:not(:disabled) {
-    box-shadow: none;
-    background: var(--black);
   }
 
   .error {

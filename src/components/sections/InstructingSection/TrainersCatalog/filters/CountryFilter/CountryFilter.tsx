@@ -3,8 +3,6 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./CountryFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 interface CountryFilterProps {
   value: string;
@@ -79,14 +77,7 @@ export const CountryFilter = ({ value, onChange }: CountryFilterProps) => {
         }`}
       >
         {loading ? (
-          <div className={styles.radioGroup}>
-            {[...Array(5)].map((_, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <Skeleton width={20} height={20} borderRadius={10} />
-                <Skeleton width={120} height={16} />
-              </div>
-            ))}
-          </div>
+          <div className={styles.loadingText}>Завантаження...</div>
         ) : (
           <div className={styles.radioGroup}>
             {countries.map((country) => {

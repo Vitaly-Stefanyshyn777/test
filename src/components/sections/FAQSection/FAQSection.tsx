@@ -6,26 +6,14 @@ import { СhevronIcon } from "../../Icons/Icons";
 import styles from "./FAQSection.module.css";
 import { fetchFAQByCategoryWithLogging, FaqItem } from "@/lib/bfbApi";
 import { useQuery } from "@tanstack/react-query";
-import FAQSectionSkeleton from "./FAQSectionSkeleton";
 
-interface FAQSectionProps {
-  /** ID категорії FAQ. Якщо не вказано, визначається автоматично на основі pathname */
-  categoryId?: number;
-}
-
-const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) => {
+const FAQSection = () => {
   const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
   const [faqData, setFaqData] = useState<FaqItem[]>([]);
 
-  // Визначаємо категорію FAQ на основі поточної сторінки або переданого пропса
+  // Визначаємо категорію FAQ на основі поточної сторінки
   const getFaqCategoryId = (): number => {
-    // Якщо категорія передана як пропс, використовуємо її
-    if (propCategoryId !== undefined) {
-      return propCategoryId;
-    }
-
-    // Інакше визначаємо на основі pathname
     if (pathname?.includes("/products")) {
       return 70; // Борди
     }
@@ -90,10 +78,6 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
     );
   };
 
-  if (isLoading) {
-    return <FAQSectionSkeleton />;
-  }
-
   return (
     <section className={styles.faqSection}>
       <div className={styles.container}>
@@ -126,6 +110,12 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
 
             <div className={styles.rightColumn}>
               <div className={styles.faqList}>
+                {isLoading && (
+                  <div className={styles.loading}>
+                    <p>Завантаження FAQ...</p>
+                  </div>
+                )}
+
                 {isError && (
                   <div className={styles.error}>
                     <p>Не вдалося завантажити FAQ</p>
@@ -139,12 +129,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
                 )}
 
                 {faqData.map((item) => {
-                  // Використовуємо нові поля: acf.answer та acf.question
                   const answerContent =
-                    item.acf?.answer || item.content?.rendered || "";
-
-                  const questionText =
-                    item.acf?.question || item.title?.rendered || "Питання";
+                    item.Answer || item.content?.rendered || "";
 
                   return (
                     <div
@@ -159,7 +145,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) =
                         aria-expanded={expandedItems.includes(item.id)}
                       >
                         <span className={styles.question}>
-                          {questionText}
+                          {item.Question || item.title?.rendered || "Питання"}
                         </span>
                         <span
                           className={`${styles.chevron} ${

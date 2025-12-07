@@ -2,7 +2,6 @@
 
 import React from "react";
 import styles from "./TrainerProfile.module.css";
-import Multiline from "@/components/ui/FormFields/Multiline";
 
 type Props = {
   value: string;
@@ -14,10 +13,11 @@ export default function SuperpowerSection({ value, onChange }: Props) {
     <div className={styles.section}>
       <h3 className={styles.sectionTitle}>Моя суперсила:</h3>
       <div className={styles.textareaContainer}>
-        <Multiline
-          label="Опис"
+        <textarea
+          placeholder="Опис"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          className={styles.textarea}
           rows={4}
         />
       </div>

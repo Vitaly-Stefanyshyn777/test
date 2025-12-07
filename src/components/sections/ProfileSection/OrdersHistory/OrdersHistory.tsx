@@ -47,23 +47,8 @@ const OrdersHistory: React.FC = () => {
     queryKey: ["orders", user?.id],
     enabled: Boolean(user?.id),
     queryFn: async () => {
-      // WooCommerce API очікує числовий customer_id, а не slug
-      // Перевіряємо, чи user?.id є числом, якщо ні - отримуємо числовий ID з профілю
-      let customerId = user?.id;
-      if (customerId && isNaN(Number(customerId))) {
-        // Якщо ID не число (наприклад, slug "trainer_123"), отримуємо числовий ID
-        try {
-          const { getMyProfile } = await import("@/lib/auth");
-          const profile = await getMyProfile();
-          if (profile?.id) {
-            customerId = String(profile.id);
-          }
-        } catch (e) {
-          console.warn("[OrdersHistory] Failed to get numeric user ID:", e);
-        }
-      }
       const path = `/wp-json/wc/v3/orders?customer=${encodeURIComponent(
-        String(customerId || user?.id || "")
+        String(user?.id)
       )}`;
       const { data } = await adminRequest({
         method: "GET",
@@ -229,10 +214,10 @@ const OrdersHistory: React.FC = () => {
               )}
             </React.Fragment>
           ))}
-        {/* {isLoading && <div style={{ padding: 12 }}>Завантаження...</div>}
+        {isLoading && <div style={{ padding: 12 }}>Завантаження...</div>}
         {!isLoading && !orders.length && !isError && (
           <div style={{ padding: 12 }}>Замовлень ще немає</div>
-        )} */}
+        )}
         {!isLoading && isError && (
           <div className={styles.error}>Не вдалося завантажити замовлення</div>
         )}

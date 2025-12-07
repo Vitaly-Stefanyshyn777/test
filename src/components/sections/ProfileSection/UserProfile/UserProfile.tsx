@@ -2,7 +2,6 @@
 import React from "react";
 import { useUserProfile } from "./useUserProfile";
 import UserProfileHeader from "./UserProfileHeader";
-import UserProfileSkeleton from "./UserProfileSkeleton";
 
 interface UserProfileProps {
   name?: string;
@@ -13,7 +12,7 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = () => {
   const { isHydrated, isReady, displayName, email, avatar } = useUserProfile();
-  if (!isHydrated || !isReady) return <UserProfileSkeleton />;
+  if (!isHydrated || !isReady) return null;
   return (
     <UserProfileHeader
       displayName={displayName}

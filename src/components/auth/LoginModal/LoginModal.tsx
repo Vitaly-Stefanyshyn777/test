@@ -18,7 +18,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setError,
   } = useForm<LoginFormValues>();
 
   const loginMutation = useLogin();
@@ -33,17 +32,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         password: values.password,
       });
       onClose();
-    } catch (error) {
-      // Встановлюємо помилки валідації для обох полів
-      setError("username", {
-        type: "manual",
-        message: "Невірний логін або пароль",
-      });
-      setError("password", {
-        type: "manual",
-        message: "Невірний логін або пароль",
-      });
-    }
+    } catch {}
   };
 
   return (
