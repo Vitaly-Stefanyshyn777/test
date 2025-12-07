@@ -103,7 +103,7 @@
 @media (max-width: 1000px) {
   .navigationMenu {
     border-radius: mvw(12);
-    padding: mvw(12);
+    padding: mvw(0);
   }
 
   .menuList {
@@ -131,7 +131,7 @@
 
     gap: mvw(8);
     border-radius: mvw(8);
-    padding: mvw(14) mvw(10);
+    padding: mvw(14) mvw(10) mvw(14) mvw(16);
   }
 
   .menuIcon {

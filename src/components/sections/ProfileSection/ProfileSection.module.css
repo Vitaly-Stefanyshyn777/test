@@ -11,6 +11,11 @@
   gap: 16px;
 }
 
+.trainerContainer {
+  background: var(--white);
+  border-radius: 16px;
+}
+
 .sidebar {
   width: 100%;
   max-width: 476px;
@@ -33,18 +38,32 @@
   background-color: var(--white);
 }
 
+.backBtn {
+  display: none;
+}
+
+.backBtnIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 1000px) {
   .portfolioSection {
-    padding: mvw(70) 0 mvw(40) 0;
+    padding: mvw(70) mvw(0) mvw(70) mvw(0);
     overflow-x: visible;
   }
 
   .container {
     flex-direction: column;
-    gap: mvw(16);
+    gap: mvw(24);
     padding: 0 mvw(16);
     overflow-x: visible;
+  }
+
+  .trainerContainer {
     background: var(--white);
+    border-radius: mvw(16);
   }
 
   .sidebar {
@@ -65,5 +84,39 @@
     max-width: 100%;
     border-radius: mvw(16);
     overflow: visible;
+    gap: mvw(80);
+  }
+
+  .backBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: mvw(7);
+    background: var(--white);
+
+    border-radius: mvw(17);
+
+    font-family: var(--second-family);
+    font-weight: 600;
+    font-size: mvw(14);
+    line-height: 120%;
+    color: var(--black);
+
+    align-self: flex-start;
+  }
+  /* .backBtn {
+    gap: mvw(8);
+    border-radius: mvw(12);
+    padding: mvw(12) mvw(16);
+    height: auto;
+    font-size: mvw(14);
+    display: none;
+  } */
+  .backBtnIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .hideFirstDividerOnMobile {
+    display: none !important;
   }
 }

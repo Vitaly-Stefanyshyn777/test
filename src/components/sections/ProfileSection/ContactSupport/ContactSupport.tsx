@@ -57,13 +57,16 @@ const defaultWorkingHours: WorkingHours = {
   weekends: "10:00 - 20:00",
 };
 
+const DEFAULT_MAP_URL =
+  "https://www.google.com/maps/place/%D0%92%D1%83%D0%BB%D0%B8%D1%86%D1%8F+%D0%9E%D0%BB%D0%B5%D0%BA%D1%81%D0%B0%D0%BD%D0%B4%D1%80%D0%B0+%D0%94%D1%83%D1%85%D0%BD%D0%BE%D0%B2%D0%B8%D1%87%D0%B0,+40,+%D0%9C%D1%83%D0%BA%D0%B0%D1%87%D0%B5%D0%B2%D0%BE,+%D0%97%D0%B0%D0%BA%D0%B0%D1%80%D0%BF%D0%B0%D1%82%D1%81%D1%8C%D0%BA%D0%B0+%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C,+89600";
+
 const ContactSupport: React.FC<ContactSupportProps> = ({
   title = "Контакти і підтримка",
   contactInfo = defaultContactInfo,
   socialLinks = defaultSocialLinks,
   workingHours = defaultWorkingHours,
   address = "Мукачево, вул. Духновича 40",
-  mapUrl = "#",
+  mapUrl = DEFAULT_MAP_URL,
 }) => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -83,12 +86,6 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
     }
   };
 
-  const handleMapClick = () => {
-    if (mapUrl !== "#") {
-      window.open(mapUrl, "_blank");
-    }
-  };
-
   if (isMobile) {
     return (
       <div className={styles.contactSupport}>
@@ -99,7 +96,7 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
               phone={contactInfo.phone}
               email={contactInfo.email}
             />
-            <MapBlock onClick={handleMapClick} />
+            <MapBlock mapUrl={mapUrl} />
           </div>
           <WorkingHoursBlock
             weekdays={workingHours.weekdays}
@@ -129,7 +126,7 @@ const ContactSupport: React.FC<ContactSupportProps> = ({
           weekends={workingHours.weekends}
           address={address}
         />
-        <MapBlock onClick={handleMapClick} />
+        <MapBlock mapUrl={mapUrl} />
       </div>
     </div>
   );

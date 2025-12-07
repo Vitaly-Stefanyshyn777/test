@@ -83,14 +83,14 @@ const QAASection: React.FC<QAASectionProps> = ({
       const mapped: QAAItem[] = (data as FaqItem[]).map((it) => {
         const answer = it.Answer || it.content?.rendered || "";
         const cleanAnswer = answer.replace(/<[^>]*>/g, "");
-        
+
         return {
           id: it.id,
           question: it.Question || it.title?.rendered || "",
           answer: cleanAnswer,
         };
       });
-      
+
       setQaItems(mapped);
     } else {
       // Якщо немає даних - показуємо порожній список
@@ -109,11 +109,7 @@ const QAASection: React.FC<QAASectionProps> = ({
       <div className={styles.container}>
         <div className={styles.contentBlock}>
           <div className={styles.contentTextBlock}>
-            <h2 className={styles.title}>
-              {effectiveCategoryName
-                ? `Часті питання: ${effectiveCategoryName}`
-                : "Часті питання та відповіді"}
-            </h2>
+            <h2 className={styles.title}>Часті питання та відповіді</h2>
           </div>
 
           <div className={styles.content}>

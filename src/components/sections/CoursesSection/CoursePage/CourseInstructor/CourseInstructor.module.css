@@ -6,7 +6,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 30px;
 }
 
 .content {
@@ -226,11 +226,17 @@
 
   backdrop-filter: blur(15px);
   background: rgba(255, 254, 252, 0.15);
+  transition: all 0.3s;
 }
 
 .instagramIcon svg {
   width: 22px;
   height: 22px;
+  color: var(--white);
+}
+
+.instagramCard:hover {
+  background: var(--violet);
 }
 
 .instagramContent {

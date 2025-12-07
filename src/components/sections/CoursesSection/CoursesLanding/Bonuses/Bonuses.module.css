@@ -31,7 +31,7 @@
 
 .title {
   font-family: var(--second-family);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 56px;
   line-height: 120%;
   letter-spacing: -0.01em;
@@ -403,7 +403,7 @@
   letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.4;
-  width: mvw(165);
+  width: 285px;
 }
 .cardText3 {
   font-family: var(--font-family);

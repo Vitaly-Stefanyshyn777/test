@@ -94,6 +94,10 @@
   padding: 16px 20px;
 }
 
+.instagramBadge:hover {
+  background: var(--violet);
+}
+
 .instagramIcon {
   font-size: 14px;
 }
@@ -235,6 +239,10 @@
     padding: mvw(8) mvw(12);
     border-radius: mvw(20);
     gap: mvw(6);
+    transition: all 0.3s;
+  }
+  .instagramBadge:hover {
+    background: var(--violet);
   }
   .instagramIcon {
     font-size: mvw(14);

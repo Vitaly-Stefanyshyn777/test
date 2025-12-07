@@ -184,6 +184,10 @@
   border-radius: 65px;
   fill: #f9f9f9;
   backdrop-filter: blur(20px);
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 .featureContent {
   width: 100%;

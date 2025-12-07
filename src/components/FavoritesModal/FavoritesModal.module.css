@@ -121,16 +121,34 @@
   color: var(--white);
   background: var(--violet);
   cursor: pointer;
-
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 135%;
   border-radius: 16px;
   padding: 22px 56px;
+  transition: all 0.3s ease;
+}
+.secondary:hover {
+  color: var(--white);
+  background: var(--black);
+  border: 2px solid var(--black);
 }
 .remove {
   color: var(--violet);
   cursor: pointer;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 135%;
   border: 2px solid var(--violet);
   border-radius: 16px;
   padding: 22px 80px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.remove:hover {
+  color: var(--white);
+  background: var(--black);
+  border: 2px solid var(--black);
 }
 .empty {
   padding: 24px;

@@ -3,7 +3,7 @@
 import React from "react";
 import styles from "./TrainerProfile.module.css";
 import {
-  Weight2Icon,
+  DumbbellIcon,
   ExamTaskIcon,
   LocationIcon,
   WalkingIcon,
@@ -27,7 +27,7 @@ export default function PersonalDataSection({ formData, onChange }: Props) {
       <div className={styles.inputGroup}>
         <div className={styles.inputContainer}>
           <div className={styles.inputIconWrapper}>
-            <Weight2Icon className={styles.inputIcon} />
+            <DumbbellIcon className={styles.inputIcon} />
           </div>
           <input
             type="text"

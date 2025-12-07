@@ -100,30 +100,8 @@ export default function TrainingLocationModal({
 
         <div className={styles.modalContent}>
           <div className={styles.contactBlock}>
-            <div className={styles.locationInputSection}>
-              <div className={styles.inputContainer}>
-                <input
-                  type="text"
-                  placeholder="Місця проведення тренувань"
-                  className={styles.locationInput}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-                {address && (
-                  <button
-                    className={styles.clearLocationBtn}
-                    onClick={() => setAddress("")}
-                  >
-                    <CloseButtonIcon />
-                  </button>
-                )}
-              </div>
-            </div>
-
             <div className={styles.contactSection}>
-              <h4 className={styles.sectionLabel}>
-                Контакта інформація залу:
-              </h4>
+              <h4 className={styles.sectionLabel}>Контакта інформація залу:</h4>
 
               <div className={styles.inputGroupBlock}>
                 <div className={styles.inputGroup}>
@@ -334,15 +312,20 @@ export default function TrainingLocationModal({
                   }
                 }}
               />
-              <div className={styles.uploadIcon}>
-                <CloudUploadIcon />
+              <div className={styles.uploadAreaContent}>
+                <div className={styles.uploadIcon}>
+                  <CloudUploadIcon />
+                </div>
+                <p className={styles.uploadText}>
+                  <span className={styles.uploadLink}>
+                    {uploadingGym ? "Завантаження..." : "Загрузіть файл"}
+                  </span>
+                </p>
               </div>
-              <p className={styles.uploadText}>
-                <span className={styles.uploadLink}>
-                  {uploadingGym ? "Завантаження..." : "Загрузіть файл"}
-                </span>
+
+              <p className={styles.uploadFormats}>
+                .pdf .doc .jpg .png до 5 МБ
               </p>
-              <p className={styles.uploadFormats}>.pdf .doc .jpg .png до 5 МБ</p>
             </label>
           </div>
         </div>

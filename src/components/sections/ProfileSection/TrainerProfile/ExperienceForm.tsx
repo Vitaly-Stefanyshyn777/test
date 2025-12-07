@@ -37,9 +37,14 @@ export default function ExperienceForm() {
     { value: "12", label: "Грудень" },
   ];
 
-  const years = Array.from({ length: 30 }).map((_, idx) => {
-    const y = 2024 - idx;
-    return { value: String(y), label: String(y) };
+  // Автоматична генерація років на основі поточного року (оновлюється автоматично)
+  const currentYear = new Date().getFullYear();
+  const minYear = currentYear - 50; // 50 років назад
+  const maxYear = currentYear + 5; // 5 років вперед (для майбутніх дат)
+
+  const years = Array.from({ length: maxYear - minYear + 1 }, (_, idx) => {
+    const year = maxYear - idx; // Від майбутнього до минулого
+    return { value: String(year), label: String(year) };
   });
 
   return (

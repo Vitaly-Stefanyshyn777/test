@@ -44,7 +44,7 @@ const BoardSection: React.FC = () => {
 
             <div className={`${s.card} ${s.card2}`}>
               <p className={s.cardDesc2}>
-                Для кращого зчеплення з поверхнею під час інтенсивних вправ.
+                Спеціальне антиковзке покриття для кращого зчеплення з поверхнею
               </p>
               <div className={s.assetWrap}>
                 <div className={s.asset}>
@@ -76,8 +76,7 @@ const BoardSection: React.FC = () => {
 
             <div className={`${s.card} ${s.card4}`}>
               <p className={s.cardDesc4}>
-                Розширює кількість вправ та варіацій навантажень для більш
-                ефективного тренування.
+                Функціональність завдяки еспандерам у комплекті
               </p>
               <div className={s.asset}>
                 <Image

@@ -295,7 +295,7 @@ const TrainerProfile: React.FC = () => {
       </div>
 
       {/* <SectionDivider /> */}
-      <div className={styles.divider}></div>
+      <div className={styles.divider1}></div>
 
       <div className={styles.form}>
         <PersonalDataSection

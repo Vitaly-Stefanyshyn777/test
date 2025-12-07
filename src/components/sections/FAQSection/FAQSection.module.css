@@ -78,14 +78,17 @@
   position: relative;
   width: 100%;
   max-width: 893px;
+  aspect-ratio: 893 / 542;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   border-radius: 16px;
   object-fit: cover;
-  height: 542px;
+  display: block;
 }
 
 .rightColumn {

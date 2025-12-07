@@ -159,7 +159,7 @@ export default function CertificatesSection({ onChange }: Props) {
         />
 
         {isMobile ? (
-          <>
+          <div className={styles.uploadAreaOutside}>
             <label
               htmlFor={uploadInputId}
               className={styles.uploadArea}
@@ -178,7 +178,7 @@ export default function CertificatesSection({ onChange }: Props) {
             <p className={styles.uploadFormatsOutside}>
               .pdf .doc .jpg .png до 5 МБ
             </p>
-          </>
+          </div>
         ) : (
           <label
             htmlFor={uploadInputId}

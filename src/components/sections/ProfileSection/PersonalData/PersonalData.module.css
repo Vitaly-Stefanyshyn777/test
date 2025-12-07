@@ -310,13 +310,13 @@
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 16px;
-  transition: all 0.2s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 
   height: 66px;
 }
 
 .saveBtn:hover {
-  background: #7c3aed;
+  background: var(--black);
   transform: translateY(-1px);
 }
 
@@ -333,13 +333,26 @@
 
   .header {
     gap: mvw(8);
-
     border-radius: mvw(12);
     padding: mvw(16);
-
     height: mvw(160);
     background: var(--bg-color);
     display: none;
+  }
+
+  .backBtn {
+    gap: mvw(8);
+    border-radius: mvw(12);
+    padding: mvw(12) mvw(16);
+    height: auto;
+    font-size: mvw(14);
+    margin-bottom: mvw(8);
+    display: flex;
+  }
+
+  .backBtn svg {
+    width: mvw(16);
+    height: mvw(16);
   }
 
   .title {
@@ -476,6 +489,7 @@
 
   .divider {
     height: 1px;
+    display: none;
   }
 
   .saveSection {

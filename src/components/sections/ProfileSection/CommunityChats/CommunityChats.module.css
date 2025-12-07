@@ -30,6 +30,7 @@
   align-items: center;
   text-align: center;
   gap: 16px;
+  justify-content: center;
   border-radius: 24px;
   padding: 32px;
 }
@@ -44,6 +45,10 @@
   border-radius: 12px;
   background-color: rgba(132, 38, 215, 0.1);
   color: var(--violet);
+  svg {
+    width: 37px;
+    height: 24px;
+  }
 }
 
 .iconEmoji {
@@ -62,6 +67,7 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
+  align-items: center;
 }
 
 .chatTitle {
@@ -85,7 +91,7 @@
 @media (max-width: 1000px) {
   .communityChats {
     border-radius: mvw(12);
-    gap: mvw(20);
+    gap: mvw(16);
     font-weight: 600;
     background: var(--bg-color);
   }
@@ -105,12 +111,17 @@
     gap: mvw(16);
     border-radius: mvw(16);
     background: white;
+    aspect-ratio: 1;
   }
 
   .chatIcon {
     width: mvw(50);
     height: mvw(50);
     border-radius: mvw(10);
+    svg {
+      width: mvw(24);
+      height: mvw(24);
+    }
   }
 
   .telegramIcon {

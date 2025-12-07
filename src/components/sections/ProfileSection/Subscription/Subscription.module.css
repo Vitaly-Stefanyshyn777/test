@@ -37,7 +37,7 @@
 .backBtn {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 13px;
   background: none;
   border: none;
   cursor: pointer;
@@ -525,9 +525,19 @@
   box-shadow: 0 4px 12px rgba(132, 38, 215, 0.3);
 }
 
+.mobileTitleDivider {
+  display: none;
+  width: 100%;
+  height: 1px;
+  background: var(--grey);
+}
+
 @media (max-width: 1000px) {
   .subscriptionContainer {
-    gap: mvw(24);
+    gap: mvw(0);
+    background: var(--white);
+    padding: mvw(24) mvw(16);
+    border-radius: mvw(16);
   }
 
   .header {
@@ -542,6 +552,7 @@
     padding: mvw(12) mvw(16);
     height: auto;
     font-size: mvw(14);
+    display: none;
   }
 
   .backBtn svg {
@@ -553,30 +564,29 @@
     font-size: mvw(24);
     line-height: 120%;
     width: 100%;
-    text-align: center;
   }
 
   .content {
-    gap: mvw(24);
+    /* gap: mvw(24); */
   }
 
   .sectionTitle {
-    font-size: mvw(18);
+    font-size: mvw(20);
     line-height: 120%;
   }
 
-  .currentPlan {
-    gap: mvw(16);
-    width: 100%;
+  .mobileTitleDivider {
+    margin: mvw(24) 0;
+    display: block;
   }
 
   .currentPlanCard {
     width: 100%;
     max-width: 100%;
-    border-radius: mvw(12);
-    padding: mvw(20);
+    border-radius: mvw(16);
+    padding: mvw(24);
     gap: mvw(24);
-    background: #f9f9f9;
+    background: var(--bg-color);
   }
 
   .planPrice {
@@ -604,6 +614,7 @@
 
   .feature {
     gap: mvw(8);
+    align-items: flex-start;
   }
 
   .checkIconBlock {
@@ -635,6 +646,8 @@
     font-size: mvw(14);
     line-height: 135%;
     border-width: mvw(1);
+    border: mvw(2) solid var(--grey);
+    height: mvw(56);
   }
 
   .availablePlans {
@@ -652,7 +665,7 @@
 
   .plansGrid {
     flex-direction: column;
-    gap: mvw(16);
+    gap: mvw(30);
     width: 100%;
   }
 
@@ -663,6 +676,7 @@
     padding: mvw(24);
     gap: mvw(24);
     border-width: mvw(2);
+    border: mvw(2) solid #f9f9f9;
   }
 
   .popularPlan {
@@ -716,7 +730,7 @@
   }
 
   .singlePlan {
-    margin-top: mvw(24);
+    margin-top: mvw(30);
   }
 
   .singlePlan .planCard {

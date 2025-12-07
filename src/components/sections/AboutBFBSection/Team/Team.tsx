@@ -165,7 +165,7 @@ export default function Team() {
                       src={member.image}
                       alt={member.name}
                       fill
-                      style={{ objectFit: "cover" }}
+                      className={s.teamCardImageInner}
                     />
                     <div className={s.instagramHandle}>
                       <InstagramIcon />

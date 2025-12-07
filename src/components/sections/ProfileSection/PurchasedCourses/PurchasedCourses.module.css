@@ -232,6 +232,7 @@
 
   .divider {
     height: 1px;
+    display: none;
   }
 
   .coursesList {

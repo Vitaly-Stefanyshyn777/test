@@ -72,7 +72,7 @@ const PersonalData: React.FC = () => {
         if (process.env.NODE_ENV !== "production") {
           console.log("[PersonalData] remove avatar → success");
         }
-    setProfileImage(null);
+        setProfileImage(null);
       })
       .catch((e) => {
         if (process.env.NODE_ENV !== "production") {

@@ -110,9 +110,9 @@
 }
 
 .allCoursesBtn:hover {
-  background: #6d47e5;
+  background: var(--black);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(122, 90, 248, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .loading,

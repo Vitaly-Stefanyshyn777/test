@@ -12,5 +12,6 @@
 @media (max-width: 1000px) {
   .divider {
     padding: mvw(24) 0;
+    display: none;
   }
 }

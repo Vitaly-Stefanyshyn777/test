@@ -96,12 +96,14 @@ export default function DeliveryForm({
         const data = await response.json();
 
         // Знаходимо місто
-        const selectedCity = (data as Array<{
-          name?: string;
-          branches?: Array<{ name: string }>;
-          postomats?: Array<{ name: string }>;
-          warehouses?: Array<{ name: string }>;
-        }>).find((city) => city.name === formData.city);
+        const selectedCity = (
+          data as Array<{
+            name?: string;
+            branches?: Array<{ name: string }>;
+            postomats?: Array<{ name: string }>;
+            warehouses?: Array<{ name: string }>;
+          }>
+        ).find((city) => city.name === formData.city);
         if (!selectedCity) {
           setBranches([]);
           return;
@@ -148,15 +150,14 @@ export default function DeliveryForm({
                 setIsDeliveryExpanded(!isDeliveryExpanded);
               }}
             >
+              <NovaPoshtaIcon />
               <span className={s.inputText}>
                 {deliveryType
                   ? deliveryOptions.find((opt) => opt.value === deliveryType)
                       ?.label
                   : "Обери спосіб доставки"}
               </span>
-              <span className={s.iconLeft}>
-                <NovaPoshtaIcon />
-              </span>
+              <span className={s.iconLeft}></span>
               <span
                 className={`${s.iconRight} ${
                   isDeliveryExpanded ? s.rotated : ""

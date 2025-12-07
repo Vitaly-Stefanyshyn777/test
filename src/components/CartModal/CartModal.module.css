@@ -277,6 +277,13 @@
   font-size: 16px;
   line-height: 135%;
   color: #8426d7;
+  transition: all 0.3s ease;
+}
+
+.secondary:hover {
+  color: var(--white);
+  background: var(--black);
+  border-color: var(--black);
 }
 
 .recommendations {
@@ -651,6 +658,11 @@
   font-size: 16px;
   line-height: 135%;
   color: var(--white);
+  transition: background 0.3s ease;
+}
+
+.primary:hover {
+  background: var(--black);
 }
 
 @media (max-width: 1000px) {
