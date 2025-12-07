@@ -44,7 +44,7 @@ async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
                         : "http://localhost:3000");
     
     const res = await fetch(`${baseUrl}/api/banners`, {
-      next: { revalidate: 3600 }, // Кешуємо на 1 годину для ISR
+      cache: "no-store",
     });
     if (!res.ok) {
       console.error("[generateMetadata] Failed to fetch banners:", res.status);

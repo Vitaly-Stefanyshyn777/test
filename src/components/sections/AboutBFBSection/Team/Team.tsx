@@ -107,7 +107,8 @@ export default function Team() {
     setIsLoading(true);
     (async () => {
       try {
-        const res = await fetch(`/api/proxy?path=${encodeURIComponent("/wp-json/wp/v2/instructors")}`, {
+        const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+        const res = await fetch(`${baseUrl}/wp-json/wp/v2/instructors`, {
           signal: controller.signal,
           cache: "no-store",
         });
