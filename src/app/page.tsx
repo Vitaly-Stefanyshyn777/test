@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import HeroSection from "@/components/sections/HeroSection";
 import AchievmentsSection from "@/components/sections/AchievmentsSection/AchievmentsSection";
 import TargetAuditorySection from "@/components/sections/TargetAuditorySection/TargetAuditorySection";
@@ -35,13 +36,11 @@ type YoastHeadJson = {
 
 async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
   try {
-    // Використовуємо змінну середовища або fallback для статичної генерації
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                    (process.env.VERCEL_URL 
-                      ? `https://${process.env.VERCEL_URL}`
-                      : process.env.NODE_ENV === "production"
-                        ? "https://bfb.com.ua"
-                        : "http://localhost:3000");
+    // Для server-side запитів використовуємо headers() для отримання host
+    const headersList = await headers();
+    const host = headersList.get("host") || "localhost:3000";
+    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    const baseUrl = `${protocol}://${host}`;
     
     const res = await fetch(`${baseUrl}/api/banners`, {
       cache: "no-store",

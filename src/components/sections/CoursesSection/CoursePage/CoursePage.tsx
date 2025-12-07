@@ -25,7 +25,7 @@ const CoursePage: React.FC<CoursePageProps> = ({ courseIdOrSlug = 169 }) => {
             <CourseProcess />
             <CourseInstructor courseId={courseIdOrSlug} />
             <QAASection categoryType="training" />
-            <CourseReviews courseId={courseIdOrSlug} />
+            <CourseReviews />
           </div>
           <div className={styles.rightColumn}>
             <CourseSidebar courseId={courseIdOrSlug} />

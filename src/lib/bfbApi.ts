@@ -35,11 +35,7 @@ export type EventPost = {
     city?: string;
     location?: string;
     description?: string;
-    // image може бути рядком, масивом або об'єктом з desctop/mobile
-    image?: string | string[] | {
-      desctop?: string;
-      mobile?: string;
-    };
+    image?: string | string[];
     photo?: string | string[];
     banner?: string | string[];
     img_link_data_banner?: string | string[]; // Поле для зображення (може бути JSON рядок або масив)
@@ -47,20 +43,16 @@ export type EventPost = {
     input_text_city?: string;
     input_text_location?: string;
     textarea_description?: string;
-    // hl_data_result - може бути масив або JSON-рядок (нова структура)
+    // hl_data_result - тільки масив (нова структура)
     hl_data_result?: Array<{
       title?: string;
       svg_code?: string;
-      hl_input_text_text?: string;
-      hl_img_svg_icon?: string;
-    }> | string;
-    // hl_data_schedule - може бути масив або JSON-рядок (нова структура)
+    }>;
+    // hl_data_schedule - тільки масив (нова структура)
     hl_data_schedule?: Array<{
       date?: string;
       time?: string;
-      hl_input_date_date?: string;
-      hl_input_time_time?: string;
-    }> | string;
+    }>;
   };
 };
 
@@ -438,33 +430,13 @@ export async function fetchBanners(): Promise<BannerPost[]> {
 // Видаляємо неіснуючі ендпоінти
 
 export type ThemeSettingsPost = {
-  id?: number;
-  // Поля на верхньому рівні (згідно з API)
-  input_text_phone?: string;
-  input_text_schedule?: string;
-  input_text_email?: string;
-  input_text_address?: string;
-  theme_video_url?: string;
-  hl_data_contact?: Array<{
-    hl_input_text_name?: string;
-    hl_input_text_link?: string;
-    hl_img_svg_icon?: string;
-  }>;
-  hl_data_gallery?: Array<{
-    hl_img_link_photo?: string[];
-  }>;
-  map_markers?: Array<{
-    title?: string;
-    coordinates?: number[][];
-  }>;
-  user_city?: string[];
-  user_country?: string[];
-  // Fallback для старого формату (якщо дані в acf)
+  id: number;
   acf?: {
     input_text_phone?: string;
     input_text_schedule?: string;
     input_text_email?: string;
     input_text_address?: string;
+    // URL відео для інструкції в профілі (беремо з ACF)
     theme_video_url?: string;
     hl_data_contact?: Array<{
       hl_input_text_name?: string;
@@ -484,23 +456,13 @@ export type ThemeSettingsPost = {
 };
 
 export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
-  // Використовуємо проксі на клієнті, прямий запит на сервері
-  const isClient = typeof window !== "undefined";
-  const path = `/wp-json/wp/v2/theme_settings?hl_data_gallery=1`;
-  
-  let url: string;
-  let options: RequestInit = {};
-  
-  if (isClient) {
-    // На клієнті використовуємо проксі
-    url = `/api/proxy?path=${encodeURIComponent(path)}`;
-  } else {
-    // На сервері використовуємо прямий запит
-    url = `${BASE_URL}${path}`;
-    options = { next: { revalidate: 60 } };
-  }
+  // Використовуємо прямий запит до бекенду з параметром hl_data_gallery
+  const url = new URL(`${BASE_URL}/wp-json/wp/v2/theme_settings`);
+  url.searchParams.set("hl_data_gallery", "1");
 
-  const res = await fetch(url, options);
+  const res = await fetch(url.toString(), {
+    next: { revalidate: 60 },
+  });
   if (!res.ok) {
     throw new Error(`Request failed ${res.status}: ${await res.text()}`);
   }
@@ -515,10 +477,7 @@ export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
 export async function fetchThemeVideoUrl(): Promise<string | null> {
   try {
     const settings = await fetchThemeSettings();
-    const firstSetting = settings[0];
-    
-    // Перевіряємо спочатку в корені об'єкта, потім в acf (для fallback)
-    const videoUrl = (firstSetting?.theme_video_url || firstSetting?.acf?.theme_video_url) as string | undefined;
+    const videoUrl = settings[0]?.acf?.theme_video_url as string | undefined;
 
     if (!videoUrl) {
       return null;
@@ -1440,29 +1399,18 @@ export async function uploadCoachMedia(params: {
     method: "POST",
     body: form,
   });
-  
-  let data: {
+  const data: {
     success?: boolean;
     field_type?: string;
     processed_count?: number;
     files?: Array<{ id: string | number; url: string; filename?: string }>;
     current_field_value?: string;
     message?: string;
-    error?: string;
-  };
-  
-  try {
-    data = await res.json();
-  } catch {
-    // Якщо не вдалося розпарсити JSON, спробуємо отримати текст
-    const text = await res.text();
-    throw new Error(text || `uploadCoachMedia failed with status ${res.status}`);
-  }
-  
+  } = await res.json();
   if (!res.ok) {
-    // Пріоритет: error > message > загальне повідомлення
-    const errorMessage = data?.error || data?.message || `uploadCoachMedia failed with status ${res.status}`;
-    throw new Error(errorMessage);
+    throw new Error(
+      data?.message || `uploadCoachMedia failed with status ${res.status}`
+    );
   }
   return data as {
     success: boolean;
@@ -1641,12 +1589,10 @@ export async function updateTrainerProfile(
 // WooCommerce product reviews
 export interface WcReview {
   id: number;
-  product_id: number | string;
+  product_id: number;
   review: string;
   reviewer_name?: string;
-  reviewer?: string;
   date_created?: string;
-  date_created_gmt?: string;
   rating?: number;
 }
 

@@ -4,7 +4,7 @@ import {
   FieldErrors,
   UseFormHandleSubmit,
 } from "react-hook-form";
-import { NumberIcon, UserIcon, QuestionIcon, EmailIcon } from "@/components/Icons/Icons";
+import { NumberIcon, UserIcon, QuestionIcon } from "@/components/Icons/Icons";
 import InputField from "@/components/ui/FormFields/InputField";
 import PasswordField from "@/components/ui/FormFields/PasswordField";
 import s from "./ReviewModal.module.css";
@@ -16,7 +16,6 @@ export interface LoginFormValues {
   phone: string;
   question?: string;
   rating: number;
-  email?: string; // Додаємо email для WooCommerce відгуків
 }
 
 interface StarIconProps {
@@ -90,34 +89,12 @@ export default function LoginForm({
             }
             {...register("phone", { required: true })}
           />
-          <InputField
-            icon={<EmailIcon />}
-            label="Ваш email"
-            type="email"
-            hasError={!!errors.email}
-            supportingText={
-              (errors.email?.message as string) ||
-              "Будь ласка, вкажіть email"
-            }
-            {...register("email", { 
-              required: true,
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Невірний формат email"
-              }
-            })}
-          />
           <div className={s.rowSingle}>
             <TextareaField
               icon={<QuestionIcon />}
               label="Ваш коментар"
               rows={4}
-              hasError={!!errors.question}
-              supportingText={
-                (errors.question?.message as string) ||
-                "Будь ласка, залиште коментар"
-              }
-              {...register("question", { required: "Коментар обов'язковий" })}
+              {...register("question")}
             />
           </div>
         </div>

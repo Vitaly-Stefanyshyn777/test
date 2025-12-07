@@ -19,18 +19,18 @@ export const metadata: Metadata = {
 const golosText = Golos_Text({
   subsets: ["latin"],
   display: "swap",
-  preload: false, // Preload тільки якщо використовується одразу
+  preload: true,
 });
 const interTight = Inter_Tight({
   subsets: ["latin"],
   variable: "--font-inter-tight",
   display: "swap",
-  preload: true, // Основний шрифт - preload
+  preload: true,
 });
 const manrope = Manrope({
   subsets: ["cyrillic"],
   display: "swap",
-  preload: false, // Preload тільки якщо використовується одразу
+  preload: true,
 });
 
 export default function RootLayout({

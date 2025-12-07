@@ -206,7 +206,7 @@
 }
 
 .error {
-  color: var(--black);
+  color: #dc2626;
 }
 
 .empty {

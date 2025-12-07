@@ -129,7 +129,6 @@
   text-decoration: none;
   opacity: 0.9;
   transition: opacity 0.25s ease, color 0.25s ease;
-  margin-bottom: 24px;
   color: #ffffff;
 }
 
@@ -141,7 +140,6 @@
   font-size: 36px;
   line-height: 110%;
   color: var(--white);
-  margin-bottom: 24px;
 }
 
 .mailLink {

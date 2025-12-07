@@ -9,7 +9,7 @@ export default function LoginModalHeader({ onClose }: LoginModalHeaderProps) {
   return (
     <div className={s.headerBlock}>
       <div className={s.header}>
-        <h2 className={s.headerText}>Залишити відгук</h2>
+        <h2 className={s.headerText}>Вхід до кабінету</h2>
         <button className={s.close} onClick={onClose}>
           <CloseButtonIcon />
         </button>

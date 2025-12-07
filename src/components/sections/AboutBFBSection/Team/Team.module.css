@@ -80,10 +80,6 @@
   padding: 16px 20px;
 }
 
-.instagramHandle:hover {
-  background: var(--violet);
-}
-
 .teamCardContent {
   padding: 24px 32px 32px;
   display: flex;

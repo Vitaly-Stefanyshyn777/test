@@ -26,8 +26,6 @@ import { useFavoriteStore } from "@/store/favorites";
 import CartModal from "../../CartModal/CartModal";
 import FavoritesModal from "../../FavoritesModal/FavoritesModal";
 import { mainNavigation, burgerMenuNavigation } from "@/lib/navigation";
-import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
-import { getContactData } from "@/lib/themeSettingsUtils";
 
 export default function Header() {
   const [headerClass, setHeaderClass] = useState("");
@@ -66,13 +64,6 @@ export default function Header() {
     [cartItems]
   );
   const favoriteCount = useMemo(() => favoriteItems.length, [favoriteItems]);
-
-  // Отримуємо контактні дані з theme_settings
-  const { data: themeSettings } = useThemeSettingsQuery();
-  const contactData = useMemo(
-    () => getContactData(themeSettings),
-    [themeSettings]
-  );
 
   const getHeaderColorByPath = useCallback(() => {
     if (pathname.startsWith("/trainers/")) return s.headerTrainerProfile;
@@ -525,15 +516,11 @@ export default function Header() {
                 <div className={s.contactRow}>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Телефон</h5>
-                    <p className={s.contactValue}>
-                      {contactData.phone || "+380 95 437 25 75"}
-                    </p>
+                    <p className={s.contactValue}>+380 95 437 25 75</p>
                   </div>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Час роботи у вихідні:</h5>
-                    <p className={s.contactValue}>
-                      {contactData.weekends || "10:00 - 20:00"}
-                    </p>
+                    <p className={s.contactValue}>10:00 - 20:00</p>
                   </div>
                 </div>
 
@@ -541,14 +528,12 @@ export default function Header() {
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Email</h5>
                     <p className={s.contactValue}>
-                      {contactData.email || "bfb.board.ukraine@gmail.com"}
+                      bfb.board.ukraine@gmail.com
                     </p>
                   </div>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Час роботи у будні:</h5>
-                    <p className={s.contactValue}>
-                      {contactData.weekdays || "10:00 - 20:00"}
-                    </p>
+                    <p className={s.contactValue}>10:00 - 20:00</p>
                   </div>
                 </div>
               </div>
@@ -556,54 +541,28 @@ export default function Header() {
               <div className={s.addressSection}>
                 <h5 className={s.contactLabel}>Адреса головного залу:</h5>
                 <p className={s.contactValue}>
-                  {contactData.address || "м. Київ, Хрещатик, будинок 23/A"}
+                  м. Київ, Хрещатик, будинок 23/A
                 </p>
               </div>
 
               <div className={s.socialSection}>
-                {contactData.socialLinks.length > 0 ? (
-                  contactData.socialLinks.map((social, index) => {
-                    const iconMap: Record<string, React.ComponentType> = {
-                      Instagram: InstagramIcon,
-                      Facebook: FacebookIcon,
-                      Telegram: TelegramIcon,
-                      WhatsApp: WhatsappIcon,
-                    };
-                    const Icon = iconMap[social.name] || null;
-                    if (!Icon) return null;
-                    return (
-                      <a
-                        key={index}
-                        href={social.link || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={s.socialIcon}
-                      >
-                        <Icon />
-                      </a>
-                    );
-                  })
-                ) : (
-                  <>
-                    <a
-                      href="https://www.instagram.com/bfb.official_ukraine?igsh=enFybWFmZGE3NG8z"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={s.socialIcon}
-                    >
-                      <InstagramIcon />
-                    </a>
-                    <div className={s.socialIcon}>
-                      <FacebookIcon />
-                    </div>
-                    <div className={s.socialIcon}>
-                      <TelegramIcon />
-                    </div>
-                    <div className={s.socialIcon}>
-                      <WhatsappIcon />
-                    </div>
-                  </>
-                )}
+                <a
+                  href="https://www.instagram.com/bfb.official_ukraine?igsh=enFybWFmZGE3NG8z"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={s.socialIcon}
+                >
+                  <InstagramIcon />
+                </a>
+                <div className={s.socialIcon}>
+                  <FacebookIcon />
+                </div>
+                <div className={s.socialIcon}>
+                  <TelegramIcon />
+                </div>
+                <div className={s.socialIcon}>
+                  <WhatsappIcon />
+                </div>
               </div>
             </div>
           </div>

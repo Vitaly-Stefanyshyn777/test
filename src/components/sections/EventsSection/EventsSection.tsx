@@ -49,15 +49,19 @@ const monthNames = [
   "Грудень",
 ];
 
+// Функція для форматування дати українською
+// Підтримує формати: YYYY-MM-DD та DD/MM/YYYY
 const formatDateUkrainian = (dateString: string): string => {
+  // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
   let normalizedDate = dateString;
-  if (dateString.includes("/")) {
-    const parts = dateString.split("/");
+  if (dateString.includes('/')) {
+    // DD/MM/YYYY -> YYYY-MM-DD
+    const parts = dateString.split('/');
     if (parts.length === 3) {
       normalizedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
   }
-
+  
   const date = new Date(normalizedDate);
   const months = [
     "Січня",
@@ -76,8 +80,9 @@ const formatDateUkrainian = (dateString: string): string => {
   return `${date.getDate()} ${months[date.getMonth()]}`;
 };
 
+// Функція для форматування діапазону дат (тільки нова структура)
 const formatDateRange = (
-  schedule: Array<{
+  schedule: Array<{ 
     date?: string;
   }>
 ): string => {
@@ -87,8 +92,10 @@ const formatDateRange = (
     .map((s) => {
       const dateValue = s.date;
       if (!dateValue) return null;
-      if (dateValue.includes("/")) {
-        const parts = dateValue.split("/");
+      // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
+      if (dateValue.includes('/')) {
+        // DD/MM/YYYY -> YYYY-MM-DD
+        const parts = dateValue.split('/');
         if (parts.length === 3) {
           return `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
@@ -148,84 +155,69 @@ const formatDateRange = (
   } ${firstDate.getFullYear()}`;
 };
 
+// Функція для отримання schedule з eventPost (тільки нова структура)
 const getScheduleFromEventPost = (
   eventPost: EventPost
-): Array<{
+): Array<{ 
   date?: string;
   time?: string;
 }> => {
   const acf = eventPost.acf || {};
-  let scheduleData = acf.hl_data_schedule;
-
-  if (typeof scheduleData === "string") {
-    try {
-      scheduleData = JSON.parse(scheduleData);
-    } catch {
-      return [];
-    }
+  
+  if (acf.hl_data_schedule && Array.isArray(acf.hl_data_schedule)) {
+    return acf.hl_data_schedule;
   }
-
-  if (scheduleData && Array.isArray(scheduleData)) {
-    return scheduleData.map((item: any) => ({
-      date: item.hl_input_date_date || "",
-      time: item.hl_input_time_time || "",
-    }));
-  }
-
+  
   return [];
 };
 
-const mapEventPostToEvent = (
-  eventPost: EventPost,
-  isMobile: boolean = false
-): Event => {
+// Функція маппінгу EventPost -> Event (тільки нові поля)
+const mapEventPostToEvent = (eventPost: EventPost): Event => {
   const acf = eventPost.acf || {};
+  
+  // Отримуємо schedule (тільки нова структура)
   const schedule = getScheduleFromEventPost(eventPost);
   const firstSchedule = schedule[0];
+
+  // Витягуємо дату та час з першого елемента Schedule (тільки нова структура)
   const eventDate = firstSchedule?.date || "";
   const eventTime = firstSchedule?.time || "12:00";
+
+  // Форматуємо дату для списку
   const formattedDate = eventDate ? formatDateUkrainian(eventDate) : "";
+
+  // Форматуємо діапазон дат
   const dateRange = formatDateRange(schedule);
 
+  // Парсимо results (тільки нова структура як масив)
   let results: Array<{ icon: string; text: string }> = [];
-  let resultData = acf.hl_data_result;
-
-  if (typeof resultData === "string") {
-    try {
-      resultData = JSON.parse(resultData);
-    } catch {
-      resultData = undefined;
-    }
-  }
-
-  if (resultData && Array.isArray(resultData)) {
-    results = resultData.map((result: any) => ({
-      icon: result.hl_img_svg_icon || "",
-      text: result.hl_input_text_text || "",
+  
+  if (acf.hl_data_result && Array.isArray(acf.hl_data_result)) {
+    results = acf.hl_data_result.map((result) => ({
+      icon: result.svg_code || "",
+      text: result.title || "",
     }));
   }
 
-  let bannerSource: string | undefined = undefined;
-
-  if (
-    acf.img_link_data_banner &&
-    typeof acf.img_link_data_banner === "string" &&
-    !acf.img_link_data_banner.trim().startsWith("[")
-  ) {
-    bannerSource = acf.img_link_data_banner;
-  }
-
-  const bannerUrl = normalizeImageUrl(bannerSource);
+  // Парсимо banner (розширений пошук всіх можливих полів)
+  const bannerSource = 
+    acf.image || 
+    acf.photo || 
+    acf.banner || 
+    acf.img_link_data_banner;
+  
+  const normalizedBanner = normalizeImageUrl(bannerSource);
+  const bannerUrl = normalizedBanner;
 
   return {
     id: String(eventPost.id),
     date: formattedDate,
     time: eventTime,
     title: eventPost.title?.rendered || "",
-    description: acf.textarea_description || "",
+    description: acf.description || acf.textarea_description || "",
     image: bannerUrl,
-    location: acf.input_text_city || "",
-    venue: acf.input_text_location || "",
+    location: acf.city || acf.input_text_city || "",
+    venue: acf.location || acf.input_text_location || "",
     dateRange,
     results,
   };
@@ -237,7 +229,28 @@ const EventsSection: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Завантажуємо події з API
   const { data: eventsData = [], isLoading, isError } = useEventsQuery();
+
+  // Логування для перевірки, що дані приходять з бекенду
+  React.useEffect(() => {
+    if (eventsData && eventsData.length > 0) {
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[EventsSection] Дані отримані з бекенду:", {
+          count: eventsData.length,
+          firstEvent: {
+            id: eventsData[0]?.id,
+            title: eventsData[0]?.title?.rendered,
+            hasAcf: !!eventsData[0]?.acf,
+            acfKeys: eventsData[0]?.acf ? Object.keys(eventsData[0].acf) : [],
+            banner: eventsData[0]?.acf?.img_link_data_banner,
+            city: eventsData[0]?.acf?.input_text_city,
+            location: eventsData[0]?.acf?.input_text_location,
+          },
+        });
+      }
+    }
+  }, [eventsData]);
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -255,13 +268,13 @@ const EventsSection: React.FC = () => {
     };
   }, []);
 
+  // Трансформуємо дані з API у формат компонента
   const events: Event[] = useMemo(() => {
     if (!eventsData || eventsData.length === 0) return [];
-    return eventsData.map((eventPost) =>
-      mapEventPostToEvent(eventPost, isMobile)
-    );
-  }, [eventsData, isMobile]);
+    return eventsData.map(mapEventPostToEvent);
+  }, [eventsData]);
 
+  // Створюємо Map для зв'язку дати з подією
   const eventsByDate = useMemo(() => {
     const map = new Map<string, EventPost>();
 
@@ -270,8 +283,12 @@ const EventsSection: React.FC = () => {
         const schedule = getScheduleFromEventPost(eventPost);
         schedule.forEach((scheduleItem) => {
           const dateValue = scheduleItem.date;
-          if (dateValue && !map.has(dateValue)) {
-            map.set(dateValue, eventPost);
+          if (dateValue) {
+            const dateKey = dateValue; // YYYY-MM-DD або DD/MM/YYYY
+            // Якщо для цієї дати ще немає події, додаємо
+            if (!map.has(dateKey)) {
+              map.set(dateKey, eventPost);
+            }
           }
         });
       });
@@ -294,18 +311,21 @@ const EventsSection: React.FC = () => {
     const daysInMonth = lastDay.getDate();
 
     const calendarDays = [];
-    const eventDates = new Set<number>();
 
+    // Створюємо Set дат, коли є події (з усіх дат в Schedule)
+    const eventDates = new Set<number>();
     if (eventsData && eventsData.length > 0) {
       eventsData.forEach((eventPost) => {
         const schedule = getScheduleFromEventPost(eventPost);
         schedule.forEach((scheduleItem) => {
           const dateValue = scheduleItem.date;
           if (dateValue) {
-            const normalizedDate = dateValue.includes("/")
-              ? dateValue.split("/").reverse().join("-")
+            // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
+            const normalizedDate = dateValue.includes('/') 
+              ? dateValue.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
               : dateValue;
             const eventDate = new Date(normalizedDate);
+            // Перевіряємо чи подія в цьому місяці
             if (
               eventDate.getMonth() === month &&
               eventDate.getFullYear() === year
@@ -317,7 +337,10 @@ const EventsSection: React.FC = () => {
       });
     }
 
-    const hasEventOnDay = (day: number) => eventDates.has(day);
+    // Перевіряємо чи є подія на конкретний день
+    const hasEventOnDay = (day: number) => {
+      return eventDates.has(day);
+    };
 
     for (let day = 1; day <= daysInMonth; day++) {
       const isToday =
@@ -337,7 +360,7 @@ const EventsSection: React.FC = () => {
         day,
         isCurrentMonth: false,
         isToday: false,
-        hasEvent: false,
+        hasEvent: false, // В інших місяцях не показуємо події
       });
     }
 
@@ -349,6 +372,8 @@ const EventsSection: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
+  // Додаємо/видаляємо клас на body, коли модалка відкрита на мобільних
+  // Використовуємо useLayoutEffect для синхронного додавання класу перед рендером
   React.useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -383,6 +408,7 @@ const EventsSection: React.FC = () => {
     }
 
     return () => {
+      // Відновлюємо позицію прокрутки з data-атрибута при cleanup
       const savedScrollY = document.body.getAttribute("data-scroll-y");
       document.body.style.overflow = "unset";
       document.documentElement.style.overflow = "unset";
@@ -419,8 +445,8 @@ const EventsSection: React.FC = () => {
         const firstScheduleDate = schedule[0]?.date;
         if (firstScheduleDate) {
           // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-          const normalizedDate = firstScheduleDate.includes("/")
-            ? firstScheduleDate.split("/").reverse().join("-") // DD/MM/YYYY -> YYYY-MM-DD
+          const normalizedDate = firstScheduleDate.includes('/') 
+            ? firstScheduleDate.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
             : firstScheduleDate;
           const eventDay = new Date(normalizedDate).getDate();
           setSelectedDay(eventDay);
@@ -604,17 +630,13 @@ const EventsSection: React.FC = () => {
                       const eventPost = eventsData.find(
                         (e) => String(e.id) === event.id
                       );
-                      const schedule = eventPost
-                        ? getScheduleFromEventPost(eventPost)
-                        : [];
+                      const schedule = eventPost ? getScheduleFromEventPost(eventPost) : [];
                       const firstScheduleDate = schedule[0]?.date;
                       const eventDay = firstScheduleDate
                         ? (() => {
                             // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-                            const normalizedDate = firstScheduleDate.includes(
-                              "/"
-                            )
-                              ? firstScheduleDate.split("/").reverse().join("-") // DD/MM/YYYY -> YYYY-MM-DD
+                            const normalizedDate = firstScheduleDate.includes('/') 
+                              ? firstScheduleDate.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
                               : firstScheduleDate;
                             return new Date(normalizedDate).getDate();
                           })()
