@@ -35,16 +35,16 @@ type YoastHeadJson = {
 
 async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
   try {
-    // Використовуємо змінну середовища або fallback для статичної генерації
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                    (process.env.VERCEL_URL 
-                      ? `https://${process.env.VERCEL_URL}`
-                      : process.env.NODE_ENV === "production"
-                        ? "https://bfb.com.ua"
-                        : "http://localhost:3000");
+    // Використовуємо прямий запит до WordPress для SSR
+    const wpBase = process.env.UPSTREAM_BASE || process.env.NEXT_PUBLIC_UPSTREAM_BASE;
     
-    const res = await fetch(`${baseUrl}/api/banners`, {
-      cache: "no-store",
+    if (!wpBase) {
+      console.error("[generateMetadata] UPSTREAM_BASE not configured");
+      return null;
+    }
+    
+    const res = await fetch(`${wpBase}/wp-json/wp/v2/banner`, {
+      next: { revalidate: 3600 }, // Кешуємо на 1 годину
     });
     if (!res.ok) {
       console.error("[generateMetadata] Failed to fetch banners:", res.status);
