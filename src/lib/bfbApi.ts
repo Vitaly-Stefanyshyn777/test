@@ -364,7 +364,7 @@ export async function fetchCourse(courseIdOrSlug?: number | string): Promise<Cou
 }
 
 export async function fetchEvents(): Promise<EventPost[]> {
-  return safeFetch<EventPost[]>(`/wp-json/wp/v2/events`);
+  return safeFetch<EventPost[]>(`/api/proxy?path=${encodeURIComponent("/wp-json/wp/v2/events")}`);
 }
 
 export async function fetchMainCourses(): Promise<MainCoursePost[]> {
@@ -648,7 +648,7 @@ export type InstructorPost = {
 };
 
 export async function fetchInstructor(id: number): Promise<InstructorPost> {
-  return safeFetch<InstructorPost>(`/wp-json/wp/v2/instructors/${id}`);
+  return safeFetch<InstructorPost>(`/api/proxy?path=${encodeURIComponent(`/wp-json/wp/v2/instructors/${id}`)}`);
 }
 
 export type CasePost = {
@@ -852,7 +852,7 @@ export async function fetchInstructorAdvantages(): Promise<
   InstructorAdvantagePost[]
 > {
   try {
-    const fullUrl = `${BASE_URL}/wp-json/wp/v2/instructor_advantages`;
+    const fullUrl = `/api/proxy?path=${encodeURIComponent("/wp-json/wp/v2/instructor_advantages")}`;
     const res = await fetch(fullUrl, { next: { revalidate: 60 } });
     
     // Якщо ендпоінт не існує (404), повертаємо порожній масив без помилки

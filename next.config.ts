@@ -48,8 +48,7 @@ const nextConfig: NextConfig = {
         hostname: "gravatar.com",
       },
     ],
-    // Дозволяємо локальні зображення з public папки
-    unoptimized: false,
+    // Дозволяємо SVG, але обмежуємо безпечними заголовками
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
