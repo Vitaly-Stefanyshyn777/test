@@ -31,6 +31,7 @@ export default function Header() {
   const [headerClass, setHeaderClass] = useState("");
   const pathname = usePathname();
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
@@ -39,9 +40,6 @@ export default function Header() {
   const [isUserHovered, setIsUserHovered] = useState(false);
   const { isLoggedIn } = useAuthStore();
   const isHydrated = useAuthStore((s) => s.isHydrated);
-  const isLoginModalOpen = useAuthStore((s) => s.isLoginModalOpen);
-  const openLoginModal = useAuthStore((s) => s.openLoginModal);
-  const closeLoginModal = useAuthStore((s) => s.closeLoginModal);
   const openCart = useCartStore((s) => s.open);
   const openFav = useFavoriteStore((s) => s.open);
   const toggleCart = useCartStore((s) => s.toggle);
@@ -138,12 +136,12 @@ export default function Header() {
     if (isLoggedIn) {
       window.location.href = "/profile";
     } else {
-      openLoginModal();
+      setIsLoginOpen(true);
     }
   };
 
   const handleLoginSuccess = async () => {
-    closeLoginModal();
+    setIsLoginOpen(false);
   };
 
   const toggleMenu = () => {
@@ -458,8 +456,8 @@ export default function Header() {
         onClose={() => setIsRegisterOpen(false)}
       />
       <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={closeLoginModal}
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
         onSubmit={handleLoginSuccess}
       />
       <CartModal />
@@ -527,9 +525,7 @@ export default function Header() {
                 <div className={s.contactRow}>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Email</h5>
-                    <p className={s.contactValue}>
-                      bfb.board.ukraine@gmail.com
-                    </p>
+                    <p className={s.contactValue}>bfb.board.ukraine@gmail.com</p>
                   </div>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Час роботи у будні:</h5>

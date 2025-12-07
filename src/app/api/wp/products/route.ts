@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_BASE = process.env.UPSTREAM_BASE as string;
+const UPSTREAM_BASE =
+  process.env.UPSTREAM_BASE || "https://www.api.bfb.in.ua";
 
 export async function GET(req: NextRequest) {
   try {

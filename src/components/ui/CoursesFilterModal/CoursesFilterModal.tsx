@@ -20,16 +20,16 @@ interface Product {
   id: string;
   name: string;
   price: string;
-  regularPrice?: string;
-  salePrice?: string;
-  onSale?: boolean;
-  image?: string;
-  categories?: Array<{
+  regularPrice: string;
+  salePrice: string;
+  onSale: boolean;
+  image: string;
+  categories: Array<{
     id: number;
     name: string;
     slug: string;
   }>;
-  stockStatus?: string;
+  stockStatus: string;
 }
 
 interface CoursesFilterModalProps {

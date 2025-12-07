@@ -50,7 +50,6 @@ const PhotoSevenBlock: React.FC = () => {
                 src="/images/ScreenshotSeven.png"
                 alt="Приклад"
                 fill
-                sizes="(max-width: 768px) 100vw, 800px"
                 className={s.photo}
               />
             </div>

@@ -4,40 +4,21 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "./TrainerProfile.module.css";
 import { CloudUploadIcon } from "@/components/Icons/Icons";
 
-type Props = {
-  onChange?: (files: File[]) => void;
-  initialCertificates?: string[]; // URL сертифікатів з профілю
-};
+type Props = { onChange?: (files: File[]) => void };
 import { uploadCoachMedia } from "@/lib/bfbApi";
 import { useAuthStore } from "@/store/auth";
 
-export default function CertificatesSection({
-  onChange,
-  initialCertificates = [],
-}: Props) {
+export default function CertificatesSection({ onChange }: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const [serverCertificates, setServerCertificates] = useState<string[]>(
-    initialCertificates
-  );
   const [isMobile, setIsMobile] = useState(false);
   const uploadInputId = "trainer-cert-upload";
-  
-  // Комбінуємо прев'ю з локальних файлів та URL з сервера
-  const previews = useMemo(() => {
-    const filePreviews = files.map((f) => URL.createObjectURL(f));
-    return [...serverCertificates, ...filePreviews];
-  }, [files, serverCertificates]);
-  
+  const previews = useMemo(
+    () => files.map((f) => URL.createObjectURL(f)),
+    [files]
+  );
   const token = useAuthStore((s) => s.token);
-
-  // Оновлюємо сертифікати з профілю, коли вони змінюються
-  useEffect(() => {
-    if (initialCertificates && Array.isArray(initialCertificates)) {
-      setServerCertificates(initialCertificates);
-    }
-  }, [initialCertificates]);
 
   // Зберігаємо лише прев’ю, щоб після перезавантаження показати користувачу останній стан
   useEffect(() => {
@@ -126,27 +107,46 @@ export default function CertificatesSection({
       <h3 className={styles.sectionTitle}>Сертифікати:</h3>
 
       <div className={styles.certificatesContainer}>
-        {previews.length > 0 && (
-          <div className={styles.certificatePlaceholders}>
-            {previews.map((url, i) => (
-              <div className={styles.certificatePlaceholder} key={i}>
-                <div className={styles.certificateContent}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={url}
-                    alt={`Certificate ${i + 1}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: 8,
-                    }}
-                  />
+        <div className={styles.certificatePlaceholders}>
+          {previews.length > 0
+            ? previews.map((url, i) => (
+                <div className={styles.certificatePlaceholder} key={i}>
+                  <div className={styles.certificateContent}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt={`Certificate ${i + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: 8,
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))
+            : [1, 2, 3].map((i) => (
+                <div className={styles.certificatePlaceholder} key={i}>
+                  <div className={styles.certificateContent}>
+                    <div className={styles.certificateHeader}>CERTIFICATE</div>
+                    <div className={styles.certificateBody}>
+                      <div className={styles.certificateTitle}>Mind&Body</div>
+                      <div className={styles.certificateSubtitle}>
+                        Instructor Balance Functional Board
+                      </div>
+                      <div className={styles.certificateName}>
+                        Ryzhenkova Svitlana
+                      </div>
+                    </div>
+                    <div className={styles.certificateLogos}>
+                      <div className={styles.certificateLogo}>●</div>
+                      <div className={styles.certificateLogo}>●</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+        </div>
 
         <input
           id={uploadInputId}

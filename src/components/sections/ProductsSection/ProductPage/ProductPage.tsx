@@ -25,40 +25,12 @@ import { useAuthStore } from "@/store/auth";
 import RegisterModal from "@/components/auth/RegisterModal/RegisterModal";
 import { normalizeImageUrl } from "@/lib/imageUtils";
 import { useCartStore } from "@/store/cart";
-import ProductPageSkeleton from "./ProductPageSkeleton";
 
 export default function ProductPage({ productSlug }: { productSlug: string }) {
   // productSlug може бути як slug так і ID для сумісності
   const { data: product, isLoading, isError } = useProductQuery(productSlug);
   // Товари для спорту (категорія 30)
   const { data: relatedCategoryProducts = [] } = useProductsByCategory("30");
-
-  // Визначаємо категорію FAQ на основі категорій продукту
-  const getFaqCategoryId = (): number | undefined => {
-    if (!product?.categories || product.categories.length === 0) {
-      return undefined; // Використаємо автоматичне визначення в FAQSection
-    }
-
-    // Перевіряємо категорії продукту
-    // Якщо продукт належить до категорії "Борди" або інших категорій продуктів - використовуємо 70
-    // Можна додати інші маппінги за потреби
-    const productCategorySlugs = product.categories.map((cat) => cat.slug.toLowerCase());
-    
-    // Якщо є категорія, пов'язана з продуктами/бордами
-    if (productCategorySlugs.some((slug) => 
-      slug.includes("board") || 
-      slug.includes("борд") || 
-      slug.includes("product") ||
-      slug.includes("товар")
-    )) {
-      return 70; // Борди
-    }
-
-    // За замовчуванням для продуктів використовуємо категорію "Борди"
-    return 70;
-  };
-
-  const faqCategoryId = getFaqCategoryId();
 
   const baseItemsPerView = 5;
   const [slideIdx, setSlideIdx] = useState(0);
@@ -156,18 +128,18 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
   const [expandedSections, setExpandedSections] = useState<
     Record<SectionKey, boolean>
   >({
-    description: false, // Закрита за замовчуванням
-    delivery: false, // Закрита за замовчуванням
-    payment: false, // Закрита за замовчуванням
-    return: false, // Закрита за замовчуванням
-    characteristics: false, // Закрита за замовчуванням
+    description: true, // Завжди відкрита
+    delivery: true, // Відкрита за замовчуванням
+    payment: true, // Відкрита за замовчуванням
+    return: true, // Відкрита за замовчуванням
+    characteristics: true,
   });
 
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const isControlsDisabled = !isLoggedIn;
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
-  if (isLoading) return <ProductPageSkeleton />;
+  if (isLoading) return <div className={styles.loading}>Завантаження...</div>;
   if (isError || !product)
     return <div className={styles.error}>Товар не знайдено</div>;
 
@@ -274,7 +246,6 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
         price: parsedPrice,
         image: previewImage,
         originalPrice: parsedOriginalPrice,
-        sku: product.sku,
       },
       quantity
     );
@@ -626,7 +597,7 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
                 </div>
                 <div className={styles.productCode}>
                   <p className={styles.productText}>Код товару:</p>{" "}
-                  {product.sku || product.id || "10001"}
+                  {product.sku || "10001"}
                 </div>
               </div>
             </div>
@@ -832,7 +803,7 @@ export default function ProductPage({ productSlug }: { productSlug: string }) {
         </div>
       </div>
 
-      <FAQSection categoryId={faqCategoryId} />
+      <FAQSection />
       <div className={styles.relatedProducts}>
         <div className={styles.relatedProductsHeader}>
           <p className={styles.relatedProductsSubtitle}>Інвентар</p>

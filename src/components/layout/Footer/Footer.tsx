@@ -20,14 +20,11 @@ import {
 } from "../../Icons/Icons";
 import RegisterModal from "@/components/auth/RegisterModal/RegisterModal";
 import LoginModal from "@/components/auth/LoginModal/LoginModal";
-import { useAuthStore } from "@/store/auth";
 
 const Footer = () => {
   const pathname = usePathname();
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const isLoginModalOpen = useAuthStore((s) => s.isLoginModalOpen);
-  const openLoginModal = useAuthStore((s) => s.openLoginModal);
-  const closeLoginModal = useAuthStore((s) => s.closeLoginModal);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Не показуємо футер на сторінках order-success та checkout
   if (pathname === "/order-success" || pathname === "/checkout") {
@@ -57,7 +54,7 @@ const Footer = () => {
         <div className={s.authButtons}>
           <button
             className={s.loginButton}
-            onClick={openLoginModal}
+            onClick={() => setIsLoginOpen(true)}
           >
             Вхід
           </button>
@@ -278,7 +275,7 @@ const Footer = () => {
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}
       />
-      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </footer>
   );
 };

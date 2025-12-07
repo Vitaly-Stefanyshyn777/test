@@ -13,9 +13,6 @@ import {
 } from "@/components/Icons/Icons";
 import { useEventsQuery } from "@/components/hooks/useWpQueries";
 import type { EventPost } from "@/lib/bfbApi";
-import { normalizeImageUrl } from "@/lib/imageUtils";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 interface Event {
   id: string;
@@ -50,19 +47,8 @@ const monthNames = [
 ];
 
 // Функція для форматування дати українською
-// Підтримує формати: YYYY-MM-DD та DD/MM/YYYY
 const formatDateUkrainian = (dateString: string): string => {
-  // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-  let normalizedDate = dateString;
-  if (dateString.includes('/')) {
-    // DD/MM/YYYY -> YYYY-MM-DD
-    const parts = dateString.split('/');
-    if (parts.length === 3) {
-      normalizedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-    }
-  }
-  
-  const date = new Date(normalizedDate);
+  const date = new Date(dateString);
   const months = [
     "Січня",
     "Лютого",
@@ -80,28 +66,14 @@ const formatDateUkrainian = (dateString: string): string => {
   return `${date.getDate()} ${months[date.getMonth()]}`;
 };
 
-// Функція для форматування діапазону дат (тільки нова структура)
+// Функція для форматування діапазону дат
 const formatDateRange = (
-  schedule: Array<{ 
-    date?: string;
-  }>
+  schedule: Array<{ hl_input_date_date?: string }>
 ): string => {
   if (!schedule || schedule.length === 0) return "";
 
   const dates = schedule
-    .map((s) => {
-      const dateValue = s.date;
-      if (!dateValue) return null;
-      // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-      if (dateValue.includes('/')) {
-        // DD/MM/YYYY -> YYYY-MM-DD
-        const parts = dateValue.split('/');
-        if (parts.length === 3) {
-          return `${parts[2]}-${parts[1]}-${parts[0]}`;
-        }
-      }
-      return dateValue;
-    })
+    .map((s) => s.hl_input_date_date)
     .filter(Boolean)
     .sort();
 
@@ -155,33 +127,14 @@ const formatDateRange = (
   } ${firstDate.getFullYear()}`;
 };
 
-// Функція для отримання schedule з eventPost (тільки нова структура)
-const getScheduleFromEventPost = (
-  eventPost: EventPost
-): Array<{ 
-  date?: string;
-  time?: string;
-}> => {
-  const acf = eventPost.acf || {};
-  
-  if (acf.hl_data_schedule && Array.isArray(acf.hl_data_schedule)) {
-    return acf.hl_data_schedule;
-  }
-  
-  return [];
-};
-
-// Функція маппінгу EventPost -> Event (тільки нові поля)
+// Функція маппінгу EventPost -> Event
 const mapEventPostToEvent = (eventPost: EventPost): Event => {
-  const acf = eventPost.acf || {};
-  
-  // Отримуємо schedule (тільки нова структура)
-  const schedule = getScheduleFromEventPost(eventPost);
+  const schedule = eventPost.Schedule || [];
   const firstSchedule = schedule[0];
 
-  // Витягуємо дату та час з першого елемента Schedule (тільки нова структура)
-  const eventDate = firstSchedule?.date || "";
-  const eventTime = firstSchedule?.time || "12:00";
+  // Витягуємо дату та час з першого елемента Schedule
+  const eventDate = firstSchedule?.hl_input_date_date || eventPost.date || "";
+  const eventTime = firstSchedule?.hl_input_time_time || "12:00";
 
   // Форматуємо дату для списку
   const formattedDate = eventDate ? formatDateUkrainian(eventDate) : "";
@@ -189,35 +142,21 @@ const mapEventPostToEvent = (eventPost: EventPost): Event => {
   // Форматуємо діапазон дат
   const dateRange = formatDateRange(schedule);
 
-  // Парсимо results (тільки нова структура як масив)
-  let results: Array<{ icon: string; text: string }> = [];
-  
-  if (acf.hl_data_result && Array.isArray(acf.hl_data_result)) {
-    results = acf.hl_data_result.map((result) => ({
-      icon: result.svg_code || "",
-      text: result.title || "",
-    }));
-  }
-
-  // Парсимо banner (розширений пошук всіх можливих полів)
-  const bannerSource = 
-    acf.image || 
-    acf.photo || 
-    acf.banner || 
-    acf.img_link_data_banner;
-  
-  const normalizedBanner = normalizeImageUrl(bannerSource);
-  const bannerUrl = normalizedBanner;
+  // Перетворюємо Result у results
+  const results = (eventPost.Result || []).map((result) => ({
+    icon: result.hl_img_svg_icon || "",
+    text: result.hl_input_text_text || "",
+  }));
 
   return {
     id: String(eventPost.id),
     date: formattedDate,
     time: eventTime,
-    title: eventPost.title?.rendered || "",
-    description: acf.description || acf.textarea_description || "",
-    image: bannerUrl,
-    location: acf.city || acf.input_text_city || "",
-    venue: acf.location || acf.input_text_location || "",
+    title: eventPost.Title || eventPost.title?.rendered || "",
+    description: eventPost.Description || eventPost.content?.rendered || "",
+    image: eventPost.Banner || "/images/image2.png",
+    location: eventPost.City || "",
+    venue: eventPost.Location || "",
     dateRange,
     results,
   };
@@ -227,30 +166,9 @@ const EventsSection: React.FC = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isMobile, setIsMobile] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Завантажуємо події з API
   const { data: eventsData = [], isLoading, isError } = useEventsQuery();
-
-  // Логування для перевірки, що дані приходять з бекенду
-  React.useEffect(() => {
-    if (eventsData && eventsData.length > 0) {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[EventsSection] Дані отримані з бекенду:", {
-          count: eventsData.length,
-          firstEvent: {
-            id: eventsData[0]?.id,
-            title: eventsData[0]?.title?.rendered,
-            hasAcf: !!eventsData[0]?.acf,
-            acfKeys: eventsData[0]?.acf ? Object.keys(eventsData[0].acf) : [],
-            banner: eventsData[0]?.acf?.img_link_data_banner,
-            city: eventsData[0]?.acf?.input_text_city,
-            location: eventsData[0]?.acf?.input_text_location,
-          },
-        });
-      }
-    }
-  }, [eventsData]);
 
   React.useEffect(() => {
     setIsMounted(true);
@@ -280,17 +198,17 @@ const EventsSection: React.FC = () => {
 
     if (eventsData && eventsData.length > 0) {
       eventsData.forEach((eventPost) => {
-        const schedule = getScheduleFromEventPost(eventPost);
-        schedule.forEach((scheduleItem) => {
-          const dateValue = scheduleItem.date;
-          if (dateValue) {
-            const dateKey = dateValue; // YYYY-MM-DD або DD/MM/YYYY
-            // Якщо для цієї дати ще немає події, додаємо
-            if (!map.has(dateKey)) {
-              map.set(dateKey, eventPost);
+        if (eventPost.Schedule) {
+          eventPost.Schedule.forEach((schedule) => {
+            if (schedule.hl_input_date_date) {
+              const dateKey = schedule.hl_input_date_date; // YYYY-MM-DD
+              // Якщо для цієї дати ще немає події, додаємо
+              if (!map.has(dateKey)) {
+                map.set(dateKey, eventPost);
+              }
             }
-          }
-        });
+          });
+        }
       });
     }
 
@@ -316,24 +234,20 @@ const EventsSection: React.FC = () => {
     const eventDates = new Set<number>();
     if (eventsData && eventsData.length > 0) {
       eventsData.forEach((eventPost) => {
-        const schedule = getScheduleFromEventPost(eventPost);
-        schedule.forEach((scheduleItem) => {
-          const dateValue = scheduleItem.date;
-          if (dateValue) {
-            // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-            const normalizedDate = dateValue.includes('/') 
-              ? dateValue.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
-              : dateValue;
-            const eventDate = new Date(normalizedDate);
-            // Перевіряємо чи подія в цьому місяці
-            if (
-              eventDate.getMonth() === month &&
-              eventDate.getFullYear() === year
-            ) {
-              eventDates.add(eventDate.getDate());
+        if (eventPost.Schedule) {
+          eventPost.Schedule.forEach((schedule) => {
+            if (schedule.hl_input_date_date) {
+              const eventDate = new Date(schedule.hl_input_date_date);
+              // Перевіряємо чи подія в цьому місяці
+              if (
+                eventDate.getMonth() === month &&
+                eventDate.getFullYear() === year
+              ) {
+                eventDates.add(eventDate.getDate());
+              }
             }
-          }
-        });
+          });
+        }
       });
     }
 
@@ -440,25 +354,14 @@ const EventsSection: React.FC = () => {
 
       // Знаходимо перший день першої події для підсвітки в календарі
       const firstEventPost = eventsData[0];
-      if (firstEventPost) {
-        const schedule = getScheduleFromEventPost(firstEventPost);
-        const firstScheduleDate = schedule[0]?.date;
-        if (firstScheduleDate) {
-          // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-          const normalizedDate = firstScheduleDate.includes('/') 
-            ? firstScheduleDate.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
-            : firstScheduleDate;
-          const eventDay = new Date(normalizedDate).getDate();
-          setSelectedDay(eventDay);
-        }
+      const firstScheduleDate =
+        firstEventPost?.Schedule?.[0]?.hl_input_date_date;
+      if (firstScheduleDate) {
+        const eventDay = new Date(firstScheduleDate).getDate();
+        setSelectedDay(eventDay);
       }
     }
   }, [events, selectedEvent, eventsData, isMobile]);
-
-  // Скидаємо стан завантаження зображення при зміні події
-  React.useEffect(() => {
-    setImageLoaded(false);
-  }, [selectedEvent]);
 
   // Функція для обробки кліку на день календаря
   const handleDayClick = (
@@ -503,6 +406,27 @@ const EventsSection: React.FC = () => {
   };
 
   if (!isMounted) return null;
+
+  if (isLoading) {
+    return (
+      <section className={s.section}>
+        <div className={s.container}>
+          <div className={s.header}>
+            <div className={s.headerLine}></div>
+            <div className={s.TitleTextBlock}>
+              <p className={s.headerText}>Календар подій</p>
+              <h2 className={s.title}>
+                Живі події, реальні люди, фітнес, який надихає
+              </h2>
+            </div>
+          </div>
+          <div style={{ padding: "60px 20px", textAlign: "center" }}>
+            Завантаження подій...
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   if (isError) {
     return (
@@ -630,16 +554,10 @@ const EventsSection: React.FC = () => {
                       const eventPost = eventsData.find(
                         (e) => String(e.id) === event.id
                       );
-                      const schedule = eventPost ? getScheduleFromEventPost(eventPost) : [];
-                      const firstScheduleDate = schedule[0]?.date;
+                      const firstScheduleDate =
+                        eventPost?.Schedule?.[0]?.hl_input_date_date;
                       const eventDay = firstScheduleDate
-                        ? (() => {
-                            // Нормалізуємо дату (може бути DD/MM/YYYY або YYYY-MM-DD)
-                            const normalizedDate = firstScheduleDate.includes('/') 
-                              ? firstScheduleDate.split('/').reverse().join('-') // DD/MM/YYYY -> YYYY-MM-DD
-                              : firstScheduleDate;
-                            return new Date(normalizedDate).getDate();
-                          })()
+                        ? new Date(firstScheduleDate).getDate()
                         : null;
 
                       return (
@@ -701,27 +619,14 @@ const EventsSection: React.FC = () => {
                 <div className={s.eventCardBlock}>
                   <div className={s.eventCard}>
                     <div className={s.eventCardImage}>
-                      {!imageLoaded && (
-                        <Skeleton
-                          height="100%"
-                          width="100%"
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            zIndex: 1,
-                          }}
-                        />
-                      )}
                       <Image
                         src={selectedEvent.image}
                         alt={selectedEvent.title}
                         fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
                         className={s.cardImage}
-                        onLoad={() => setImageLoaded(true)}
-                        style={{
-                          opacity: imageLoaded ? 1 : 0,
-                          transition: "opacity 0.3s ease",
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/images/image2.png";
                         }}
                       />
                     </div>
@@ -815,27 +720,14 @@ const EventsSection: React.FC = () => {
                 <div className={s.eventCardBlock}>
                   <div className={s.eventCard}>
                     <div className={s.eventCardImage}>
-                      {!imageLoaded && (
-                        <Skeleton
-                          height="100%"
-                          width="100%"
-                          style={{
-                            position: "absolute",
-                            inset: 0,
-                            zIndex: 1,
-                          }}
-                        />
-                      )}
                       <Image
                         src={selectedEvent.image}
                         alt={selectedEvent.title}
                         fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
                         className={s.cardImage}
-                        onLoad={() => setImageLoaded(true)}
-                        style={{
-                          opacity: imageLoaded ? 1 : 0,
-                          transition: "opacity 0.3s ease",
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/images/image2.png";
                         }}
                       />
                     </div>
