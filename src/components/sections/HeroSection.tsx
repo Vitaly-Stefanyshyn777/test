@@ -280,8 +280,8 @@ const HeroSection = () => {
   // Показуємо loader поки дані завантажуються
   if (isLoading) {
     return (
-      <div className="PageLoader_loader__q04c3">
-        <PageLoader />
+      <div>
+        <h1>Loading...</h1>
       </div>
     );
   }
