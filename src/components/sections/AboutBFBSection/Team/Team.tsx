@@ -127,6 +127,13 @@ export default function Team() {
             const instagram: string = (acf.instagram as { title?: string })?.title || i?.Text_instagram || "";
             const achievements: TeamMemberUi["achievements"] = [];
             
+            if (role) {
+              achievements.push({
+                icon: <WalkingIcon className={s.achievementIconSvg} />,
+                text: role,
+              });
+            }
+            
             // Використовуємо points з acf або старі Point_1, Point_2
             const points = acf.points as Array<{ point?: string }> | undefined;
             if (points && Array.isArray(points) && points.length > 0) {
@@ -159,12 +166,6 @@ export default function Team() {
               achievements.push({
                 icon: <Weight3Icon className={s.achievementIconSvg} />,
                 text: `Досвід: ${experience}`,
-              });
-            
-            if (achievements.length === 0 && role)
-              achievements.push({
-                icon: <WalkingIcon className={s.achievementIconSvg} />,
-                text: role,
               });
             return {
               id: i?.id ?? name,

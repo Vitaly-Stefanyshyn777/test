@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import HeroSection from "@/components/sections/HeroSection";
 import AchievmentsSection from "@/components/sections/AchievmentsSection/AchievmentsSection";
 import TargetAuditorySection from "@/components/sections/TargetAuditorySection/TargetAuditorySection";
@@ -12,6 +11,7 @@ import EventsSection from "@/components/sections/EventsSection/EventsSection";
 import Founder from "@/components/sections/AboutBFBSection/Founder/Founder";
 import InstructorAdvantages from "@/components/sections/InstructorAdvantages/InstructorAdvantages";
 import ContactsSection from "@/components/sections/ContactsSection/ContactsSection";
+import PageLoader from "@/components/PageLoader";
 
 type YoastRobots = {
   index?: string;
@@ -35,11 +35,13 @@ type YoastHeadJson = {
 
 async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
   try {
-    // Для server-side запитів використовуємо headers() для отримання host
-    const headersList = await headers();
-    const host = headersList.get("host") || "localhost:3000";
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-    const baseUrl = `${protocol}://${host}`;
+    // Використовуємо змінну середовища або fallback для статичної генерації
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                    (process.env.VERCEL_URL 
+                      ? `https://${process.env.VERCEL_URL}`
+                      : process.env.NODE_ENV === "production"
+                        ? "https://bfb.com.ua"
+                        : "http://localhost:3000");
     
     const res = await fetch(`${baseUrl}/api/banners`, {
       cache: "no-store",
@@ -111,6 +113,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Home() {
   return (
     <>
+      <PageLoader />
       <HeroSection />
       <AchievmentsSection />
       <TargetAuditorySection />

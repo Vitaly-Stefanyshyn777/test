@@ -10,7 +10,6 @@ import {
 } from "@/components/Icons/Icons";
 import { fetchMainCourses, MainCoursePost } from "@/lib/bfbApi";
 import TrenersModal from "@/components/auth/TrenersModal";
-import LearningFormatsSkeleton from "./LearningFormatsSkeleton";
 
 type Benefit = { text: string };
 
@@ -109,11 +108,6 @@ export default function LearningFormats() {
     // Fallback на статичний текст
     return "";
   };
-
-  // Показуємо skeleton поки дані завантажуються
-  if (isLoading) {
-    return <LearningFormatsSkeleton />;
-  }
 
   return (
     <section className={s.section}>
