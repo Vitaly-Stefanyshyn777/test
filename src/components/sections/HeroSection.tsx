@@ -10,7 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
 import "swiper/css";
-import PageLoader from "@/components/PageLoader";
+import HeroSectionSkeleton from "./HeroSectionSkeleton";
 
 const HeroSection = () => {
   const [banners, setBanners] = useState<BannerPost[]>([]);
@@ -277,13 +277,9 @@ const HeroSection = () => {
     (activeBanner?.Description as string) ||
     "";
 
-  // Показуємо loader поки дані завантажуються
+  // Показуємо skeleton поки дані завантажуються
   if (isLoading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
+    return <HeroSectionSkeleton />;
   }
 
   return (
