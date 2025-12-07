@@ -24,7 +24,7 @@ const Locations: React.FC = () => {
             <div className={styles.leftColumn}>
               <div className={styles.infoItem}>
                 <span className={styles.label}>Телефон:</span>
-                <span className={styles.value}>+38 (99) 999 99 99</span>
+                <span className={styles.value}>+380 95 437 25 75</span>
               </div>
               <div className={styles.infoItem}>
                 <span className={styles.label}>Час роботи у вихідні:</span>
@@ -41,7 +41,9 @@ const Locations: React.FC = () => {
             <div className={styles.rightColumn}>
               <div className={styles.infoItem}>
                 <span className={styles.label}>Email:</span>
-                <span className={styles.value}>bfb@gmail.com</span>
+                <span className={styles.value}>
+                  bfb.board.ukraine@gmail.com
+                </span>
               </div>
               <div className={styles.infoItem}>
                 <span className={styles.label}>Час роботи у будні:</span>

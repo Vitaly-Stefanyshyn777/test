@@ -33,15 +33,7 @@ export default function PaymentForm({
   // Логування тільки при зміні даних
   React.useEffect(() => {
     if (paymentGateways && paymentGateways.length > 0) {
-      console.log("[PaymentForm] 💳 Платіжні методи:", {
-        total: paymentGateways.length,
-        active: activePaymentGateways.length,
-        gateways: activePaymentGateways.map((g) => ({
-          id: g.id,
-          title: g.title,
-          enabled: g.enabled,
-        })),
-      });
+      // Payment gateways loaded
     }
   }, [paymentGateways, activePaymentGateways]);
 

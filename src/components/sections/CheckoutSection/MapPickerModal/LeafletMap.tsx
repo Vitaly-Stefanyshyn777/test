@@ -128,21 +128,12 @@ export default function LeafletMap({
       ))}
 
       {/* Маркер поточної локації користувача */}
-      {(() => {
-        console.log("🔍 LeafletMap: Передаємо пропси до UserLocationMarker:", {
-          locationRefreshTrigger,
-          shouldCenterOnUserLocation,
-          userLocation,
-        });
-        return null;
-      })()}
       <UserLocationMarker
         onLocationFound={(lat, lng) => {
-          console.log("📍 LeafletMap: Отримано геолокацію:", lat, lng);
           onUserLocationFound?.(lat, lng);
         }}
         onLocationError={(error) => {
-          console.warn("⚠️ LeafletMap: Помилка геолокації:", error);
+          // Silent error handling
         }}
         refreshTrigger={locationRefreshTrigger}
         shouldCenter={shouldCenterOnUserLocation}

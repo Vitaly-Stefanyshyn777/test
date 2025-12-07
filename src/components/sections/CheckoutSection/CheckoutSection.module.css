@@ -27,7 +27,6 @@
   font-weight: 500;
   font-size: 26px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 .grid2 {
@@ -70,7 +69,7 @@
 }
 .inputWithIconsNova {
   border-radius: 12px;
-  padding: 20px 20px 20px 60px;
+  padding: 20px;
   background: var(--white);
   width: 100%;
   box-sizing: border-box;
@@ -80,7 +79,8 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  position: relative;
+  gap: 10px;
+  /* position: relative; */
 
   font-family: var(--font-family);
   font-weight: 400;
@@ -96,7 +96,7 @@
 }
 
 .inputText {
-  color: rgba(14, 14, 14, 0.4);
+  color: var(--black);
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
@@ -216,10 +216,10 @@
   gap: 8px;
 }
 .iconLeft {
-  position: absolute;
+  /* position: absolute;
   left: 25px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 50%; */
+  /* transform: translateY(-50%); */
   display: inline-flex;
   align-items: center;
   color: var(--black);
@@ -365,6 +365,7 @@
   cursor: pointer;
   width: auto;
   display: inline-block;
+  height: 64px;
 }
 
 .primary:disabled {
@@ -406,10 +407,34 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 .radioInput {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1.5px solid rgba(14, 14, 14, 0.25);
+  border-radius: 50%;
+  position: relative;
+  background: var(--white);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.radioInput:checked {
+  border-color: var(--violet);
+}
+.radioInput:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background-color: var(--violet);
 }
 .radioBlock {
   border-radius: 12px;
@@ -445,11 +470,29 @@
   flex-direction: column;
   gap: 8px;
 }
+.addressFields {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.addressFields .inputWrap {
+  flex: 1;
+}
+.inputWrapHouse {
+  width: 120px;
+}
+.inputWrapBuilding {
+  width: 120px;
+}
+.inputWrapApartment {
+  width: 120px;
+}
 
 .deliveryRow {
   display: flex;
   gap: 8px;
   align-items: flex-start;
+  width: 924px;
 }
 
 .deliveryRow .inputWrap {
@@ -460,12 +503,22 @@
   width: 457px;
   flex: none;
   position: relative;
+  display: flex;
+}
+
+.deliveryRow .inputWrapBranch .inputWithIcons {
+  flex: 1;
+  width: auto;
 }
 
 .deliveryRow .primary {
   /* flex: 1; */
   width: 461px;
   align-self: flex-start;
+  height: 64px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 135%;
 }
 .paymentBlock {
   display: flex;
@@ -481,6 +534,12 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+.checkboxContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
 }
 .checkboxEmail {
   font-family: var(--font-family);
@@ -510,7 +569,6 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryTotalAmount {
@@ -518,7 +576,6 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryCurrency {
@@ -526,12 +583,11 @@
   font-weight: 500;
   font-size: 30px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryCard {
   background: var(--white);
-  border: 1px solid #eee;
+
   border-radius: 16px;
   padding: 32px;
   display: flex;
@@ -553,7 +609,6 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .summaryDivider {
@@ -657,6 +712,9 @@
 .currentPrice {
   color: #e3362c;
   font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
 }
 .buck {
   margin-left: 2px;
@@ -715,7 +773,6 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .rowTotalBlock {
@@ -729,7 +786,6 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .rowCurrencyTotal {
@@ -737,7 +793,25 @@
   font-weight: 500;
   font-size: 30px;
   line-height: 110%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.costValuePrice {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.costValueNumber {
+  font-family: var(--second-family);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 110%;
+  color: var(--black);
+}
+.costValueCurrency {
+  font-family: var(--second-family);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 110%;
   color: var(--black);
 }
 .back {
@@ -809,6 +883,13 @@
 .color {
   color: rgba(14, 14, 14, 0.6);
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.colorCode {
+  color: rgba(14, 14, 14, 0.4);
+  font-size: 12px;
 }
 .name {
   font-weight: 500;
@@ -842,7 +923,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -851,7 +931,6 @@
   font-weight: 500;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -880,4 +959,456 @@
   color: var(--black);
   text-align: center;
   padding: 40px 20px;
+}
+
+@media (max-width: 1000px) {
+  .page {
+    padding: mvw(20) 0 0;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: mvw(20);
+    padding: mvw(0);
+  }
+
+  .left {
+    padding: mvw(80) mvw(16) mvw(20);
+    gap: mvw(40);
+  }
+
+  .titleFormBlock {
+    gap: mvw(16);
+  }
+
+  .sectionTitle {
+    font-size: mvw(22);
+    line-height: 120%;
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+    gap: mvw(16);
+  }
+
+  .inputWrap,
+  .inputWrapFull {
+    width: 100%;
+  }
+
+  .input {
+    height: mvw(52);
+    padding: mvw(16) mvw(16) mvw(16) mvw(20);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+  }
+
+  .inputWithIcons,
+  .inputWithIconsNova {
+    height: mvw(48);
+    padding: mvw(14) mvw(16) mvw(14) mvw(20);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+    flex-direction: row-reverse;
+    gap: 10px;
+  }
+
+  .inputWithIconsNova {
+    padding-left: mvw(52);
+  }
+
+  .inputText {
+    font-size: mvw(14);
+    width: mvw(290);
+  }
+
+  .dropdownList.scrollable {
+    max-height: mvw(156);
+    overflow-y: auto;
+  }
+
+  .iconLeft {
+    left: mvw(16);
+  }
+
+  .iconRight {
+    right: mvw(16);
+  }
+
+  .dropdownList {
+    border-radius: mvw(12);
+    margin-top: mvw(4);
+  }
+
+  .dropdownItem {
+    padding: mvw(16);
+    font-size: mvw(14);
+    gap: mvw(10);
+  }
+
+  .courierRow {
+    grid-template-columns: 1fr;
+    gap: mvw(12);
+  }
+
+  .checkboxText {
+    font-size: mvw(14);
+    line-height: 130%;
+  }
+
+  .checkboxBlock {
+    gap: mvw(12);
+  }
+
+  .checkbox input[type="checkbox"] {
+    width: mvw(16);
+    height: mvw(16);
+    flex-shrink: 0;
+    border-radius: mvw(4);
+  }
+
+  .textarea {
+    min-height: mvw(140);
+    padding: mvw(16) mvw(16) mvw(16) mvw(20);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+  }
+
+  .primary {
+    padding: mvw(14) mvw(20);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+  }
+
+  .primaryWide {
+    padding: mvw(18) mvw(24);
+    border-radius: mvw(18);
+    font-size: mvw(14);
+  }
+
+  .radioBlock {
+    width: 100%;
+    height: mvw(48);
+    padding: mvw(14) mvw(16);
+    border-radius: mvw(12);
+  }
+
+  .radio {
+    font-size: mvw(14);
+    gap: mvw(12);
+  }
+
+  .radioInput {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .radioRow {
+    flex-direction: column;
+    gap: mvw(8);
+  }
+
+  .deliveryBlock {
+    gap: mvw(16);
+  }
+
+  .deliveryGrid {
+    gap: mvw(16);
+  }
+
+  .checkbox {
+    gap: mvw(8);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .deliveryRow {
+    flex-direction: column;
+    gap: mvw(16);
+    width: 100%;
+  }
+  .addressFields {
+    gap: mvw(8);
+  }
+  .addressFields .inputWrap,
+  .inputWrapHouse,
+  .inputWrapBuilding,
+  .inputWrapApartment {
+    flex: 1 1 0;
+    width: auto;
+  }
+
+  .deliveryRow .inputWrapBranch {
+    width: 100%;
+    display: flex;
+  }
+
+  .deliveryRow .inputWrapBranch .inputWithIcons {
+    flex: 1;
+    width: auto;
+  }
+
+  .deliveryRow .primary {
+    width: 100%;
+    height: mvw(52);
+    font-size: mvw(14);
+  }
+  .deliveryRowAddress {
+    flex-direction: column;
+  }
+
+  .paymentBlock {
+    gap: mvw(16);
+  }
+
+  .commentBlock {
+    gap: mvw(16);
+  }
+
+  .buttonBlock {
+    gap: mvw(16);
+    flex-direction: column-reverse;
+  }
+  .checkboxContainer {
+    gap: mvw(12);
+  }
+
+  .right {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .summaryCard {
+    padding: mvw(20);
+    margin-bottom: mvw(38);
+    gap: mvw(16);
+    border-radius: mvw(16);
+  }
+
+  .summaryHeader {
+    align-items: flex-start;
+    gap: mvw(8);
+  }
+
+  .summaryTotal {
+    font-size: mvw(20);
+    gap: mvw(4);
+  }
+
+  .summaryTotalAmount {
+    font-size: mvw(20);
+  }
+
+  .summaryCurrency {
+    font-size: mvw(20);
+  }
+
+  .summaryList {
+    max-height: none;
+    gap: mvw(16);
+    padding: 0;
+  }
+
+  .item {
+    height: mvw(96);
+    gap: mvw(12);
+    padding: 0;
+    align-items: center;
+  }
+
+  .itemMain {
+    flex-direction: row;
+    gap: mvw(8);
+    align-items: center;
+    width: 100%;
+  }
+
+  .thumb {
+    width: mvw(90);
+    height: mvw(96);
+    border-radius: mvw(12);
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .contentCol {
+    flex: 1;
+    gap: mvw(8);
+    min-width: 0;
+  }
+
+  .nameColorBlock {
+    gap: mvw(4);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .titleBlock {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: mvw(8);
+  }
+
+  .name {
+    font-size: mvw(14);
+    font-weight: 500;
+    line-height: 125%;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .color {
+    font-size: mvw(12);
+    line-height: 125%;
+    opacity: 0.6;
+    gap: mvw(4);
+  }
+  .colorCode {
+    font-size: mvw(10);
+    opacity: 0.4;
+  }
+
+  .controlsBlock {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: mvw(8);
+  }
+
+  .controls {
+    gap: mvw(12);
+    align-items: center;
+  }
+
+  .minus,
+  .plus {
+    width: mvw(30);
+    height: mvw(30);
+    border-radius: mvw(8);
+    flex-shrink: 0;
+  }
+
+  .minus svg,
+  .plus svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .qty {
+    font-size: mvw(14);
+    min-width: mvw(20);
+    text-align: center;
+  }
+
+  .removeBtn {
+    width: mvw(34);
+    height: mvw(34);
+    padding: mvw(8);
+    border-radius: mvw(8);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .removeBtn svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .priceWrap {
+    margin-left: auto;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  .prices {
+    gap: mvw(4);
+    align-items: baseline;
+
+    font-family: var(--second-family);
+    font-weight: 500;
+    font-size: mvw(16);
+  }
+
+  .currentPrice {
+    font-size: mvw(14);
+    gap: mvw(4);
+    font-weight: 500;
+    line-height: 125%;
+    color: var(--style);
+  }
+
+  .buck {
+    font-size: mvw(14);
+    font-weight: 500;
+    line-height: 125%;
+  }
+
+  .oldPrice {
+    font-size: mvw(12);
+    margin-left: mvw(4);
+    opacity: 0.5;
+  }
+
+  .summaryDivider {
+    margin: mvw(0);
+  }
+
+  .totals {
+    gap: mvw(8);
+  }
+
+  .row,
+  .rowStrong {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .rowLabel {
+    font-size: mvw(14);
+  }
+
+  .rowAmount {
+    gap: mvw(4);
+  }
+
+  .rowAmountAmount,
+  .rowAmountCurrency {
+    font-size: mvw(14);
+  }
+
+  .rowNote {
+    font-size: mvw(14);
+  }
+
+  .muted {
+    font-size: mvw(14);
+  }
+
+  .titleTotal {
+    font-size: mvw(20);
+  }
+
+  .rowTotal {
+    font-size: mvw(20);
+  }
+
+  .rowCurrencyTotal {
+    font-size: mvw(18);
+  }
+  .costValuePrice {
+    gap: mvw(4);
+  }
+  .costValueNumber {
+    font-size: mvw(20);
+  }
+  .costValueCurrency {
+    font-size: mvw(16);
+  }
+  .dropdownText {
+    font-size: mvw(14);
+  }
 }

@@ -5,30 +5,54 @@ import {
   Check3Icon,
   GiftIcon,
   FavoriteHeader,
+  Favorite2Icon,
+  FavoriteBlacIcon,
   CheckMarkIcon,
-  Smitnik2Icon,
+  СalendarIcon,
+  СlockIcon,
+  GlobeIcon,
+  NotGlobeIcon,
 } from "@/components/Icons/Icons";
 import { useFavoriteStore } from "@/store/favorites";
 import { useAuthStore } from "@/store/auth";
 import TrenersModal from "@/components/auth/TrenersModal/TrenersModal";
 import RegisterModal from "@/components/auth/RegisterModal/RegisterModal";
+import Badge from "@/components/ui/Badge/Badge";
+import BadgeContainer from "@/components/ui/Badge/BadgeContainer";
 // import { useStickySidebar } from "@/hooks/useStickySidebar";
 import styles from "./CourseSidebar.module.css";
+import { normalizeImageUrl } from "@/lib/imageUtils";
 import {
   useWcProductsQuery,
   useCourseQuery,
 } from "@/components/hooks/useWpQueries";
 import { useCourseQuery as useCourseDataQuery } from "@/lib/coursesQueries";
 import { useCartStore } from "@/store/cart";
+import CourseSidebarCourseInfoSkeleton from "./CourseSidebarCourseInfoSkeleton";
+import CourseSidebarImageSkeleton from "./CourseSidebarImageSkeleton";
 
 interface CourseSidebarProps {
-  courseId?: number;
+  courseId?: string | number;
 }
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   const [favorite, setFavorite] = useState(false);
   const [isTrenersModalOpen, setIsTrenersModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Визначення мобільної версії
+  React.useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1000px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    if (mql.addEventListener) mql.addEventListener("change", update);
+    else mql.addListener(update);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", update);
+      else mql.removeListener(update);
+    };
+  }, []);
   const toggleFav = useFavoriteStore((s) => s.toggleFavorite);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const isControlsDisabled = !isLoggedIn;
@@ -51,8 +75,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
       const courseName = course.title.rendered.replace(/____FULL____/g, "");
       const coursePrice =
         parseFloat(hasDiscount ? salePrice : currentPrice) / 100;
-      const courseImageUrl =
-        courseImage || product?.images?.[0]?.src || "/images/course-hero.jpg";
+      const courseImageUrl = normalizeImageUrl(
+        courseImage || product?.images?.[0]?.src || "/images/course-hero.jpg"
+      );
 
       addItem(
         {
@@ -67,15 +92,18 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   };
 
   // Отримуємо дані курсу для динамічного контенту
-  const { data: course } = useCourseQuery(courseId);
+  const { data: course, isLoading: isLoadingCourse } = useCourseQuery(courseId);
 
   // Отримуємо дані курсу з coursesQueries (як в CourseCard)
-  const { data: courseData } = useCourseDataQuery(courseId || 169);
+  // Конвертуємо courseId в число для сумісності
+  const courseIdForQuery = typeof courseId === "number" ? courseId : 
+                           /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
+                           169;
+  const { data: courseData, isLoading: isLoadingCourseData } = useCourseDataQuery(courseIdForQuery);
 
   // Логування для дебагу
   React.useEffect(() => {
-    console.log("[CourseSidebar] 🎓 Course data:", course);
-    console.log("[CourseSidebar] 🏷️ Course title:", course?.title?.rendered);
+    // Course data loaded
   }, [course]);
 
   // Функція для розрахунку "Новинка" (30 днів)
@@ -118,9 +146,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (course?.featured_media) {
-      fetch(
-        `https://www.api.bfb.projection-learn.website/wp-json/wp/v2/media/${course.featured_media}`
-      )
+      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+      fetch(`${baseUrl}/wp-json/wp/v2/media/${course.featured_media}`)
         .then((res) => res.json())
         .then((data) => setCourseImage(data.source_url))
         .catch(() => setCourseImage(null));
@@ -133,8 +160,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
     per_page: 1,
   });
   const product = useMemo(() => {
-    console.log("[CourseSidebar] 🔍 Products from WooCommerce:", products);
-    console.log("[CourseSidebar] 🎯 Selected product:", products[0]);
     return products[0];
   }, [products]);
 
@@ -157,30 +182,57 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   React.useEffect(() => {
     if (courseId) {
-      fetch(
-        `https://www.api.bfb.projection-learn.website/wp-json/wc/v3/products/${courseId}`,
-        {
-          headers: {
-            Authorization:
-              "Basic " +
-              btoa(
-                "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
-              ),
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      // Використовуємо ID з отриманого курсу, якщо він є, інакше використовуємо courseId
+      const courseIdForApi = course?.id || 
+                              (typeof courseId === "number" ? courseId : 
+                               /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
+                               courseId);
+      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+      fetch(`${baseUrl}/wp-json/wc/v3/products/${courseIdForApi}`, {
+        headers: {
+          Authorization:
+            "Basic " +
+            btoa(
+              "ck_fbd08d0a763d79d93aff6c3a56306214710ebb71:cs_871e6f287926ed84839018c2d7578ef9a71865c4"
+            ),
+          "Content-Type": "application/json",
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
-          console.log("[CourseSidebar] 🛒 WooCommerce API response:", data);
           setStoreProduct(data);
         })
-        .catch((error) => {
-          console.error("[CourseSidebar] ❌ WooCommerce API error:", error);
+        .catch(() => {
           setStoreProduct(null);
         });
     }
-  }, [courseId]);
+  }, [courseId, course?.id]);
+
+  const ratingValue = useMemo(() => {
+    const parsed = parseFloat(
+      storeProduct?.average_rating || product?.average_rating || "0"
+    );
+    if (Number.isNaN(parsed)) return 0;
+    return Math.max(0, Math.min(5, parsed));
+  }, [storeProduct?.average_rating, product?.average_rating]);
+
+  const renderStars = (value: number) => {
+    const stars = [];
+    const rounded = Math.round(value);
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span
+          key={i}
+          className={`${styles.star} ${
+            i <= rounded ? styles.starFilled : styles.starEmpty
+          }`}
+        >
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
 
   // Функція для форматування ціни
   const formatPrice = (
@@ -237,14 +289,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
   const formattedRegularPrice = formatPrice(regularPrice, false);
   const formattedSalePrice = salePrice ? formatPrice(salePrice, false) : null;
 
-  // Додаткове логування для дебагу форматування
-  console.log("[CourseSidebar] 🔧 Форматування:", {
-    currentPrice,
-    formattedCurrentPrice,
-    courseDataExists: !!courseData,
-    storeProductExists: !!storeProduct,
-    productExists: !!product,
-  });
+  // Price formatting
 
   // Перевіряємо чи є знижка (як в CourseCard)
   const hasDiscount =
@@ -269,24 +314,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   // Логування для дебагу цін
   React.useEffect(() => {
-    console.log("[CourseSidebar] 💰 Ціни:", {
-      courseId,
-      courseData: courseData?.wcProduct,
-      storeProduct: storeProduct?.prices,
-      product: product?.price,
-      currentPrice,
-      regularPrice,
-      salePrice,
-      isOnSale,
-      formattedCurrentPrice,
-      formattedRegularPrice,
-      formattedSalePrice,
-      hasDiscount,
-      hasFallbackDiscount,
-      finalDiscount,
-      fallbackPrice,
-      fallbackOriginalPrice,
-    });
+    // Price data
   }, [
     courseId,
     courseData,
@@ -308,148 +336,178 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
 
   // Логування для дебагу Course_include
   React.useEffect(() => {
-    console.log("[CourseSidebar] 📋 Course_include:", {
-      courseId,
-      course: course?.course_data,
-      courseInclude: course?.course_data?.Course_include,
-      courseIncludeLength: course?.course_data?.Course_include?.length,
-      courseIncludeType: typeof course?.course_data?.Course_include,
-      courseIncludeIsArray: Array.isArray(course?.course_data?.Course_include),
-    });
+    // Course include data
   }, [courseId, course]);
 
   // Логування для дебагу dateBlock даних
   React.useEffect(() => {
-    console.log("[CourseSidebar] 📅 DateBlock дані:", {
-      courseId,
-      storeProduct: {
-        purchasable: storeProduct?.purchasable,
-        is_purchasable: storeProduct?.is_purchasable,
-        average_rating: storeProduct?.average_rating,
-        rating_count: storeProduct?.rating_count,
-        stock_status: storeProduct?.stock_status,
-      },
-      product: {
-        stock_status: product?.stock_status,
-        average_rating: product?.average_rating,
-        rating_count: product?.rating_count,
-      },
-      availability:
-        storeProduct?.purchasable ||
-        storeProduct?.is_purchasable ||
-        product?.stock_status === "instock"
-          ? "В наявності"
-          : "Немає",
-      rating: parseFloat(
-        storeProduct?.average_rating || product?.average_rating || "0"
-      ),
-      reviewsCount: storeProduct?.rating_count || product?.rating_count || 0,
-    });
+    // DateBlock data
   }, [courseId, storeProduct, product]);
+
+  // Отримуємо категорії курсу для форматів (Online/Offline)
+  const [categories, setCategories] = React.useState<number[]>([]);
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Використовуємо ID з отриманого курсу, якщо він є
+        const courseIdForApi = course?.id || 
+                               (typeof courseId === "number" ? courseId : 
+                                /^\d+$/.test(String(courseId)) ? parseInt(String(courseId)) : 
+                                courseId);
+        const response = await fetch(`/api/wc/v3/products/${courseIdForApi}`);
+        if (response.ok) {
+          const data = await response.json();
+          const categoryIds =
+            data.categories?.map((cat: { id: number }) => cat.id) || [];
+          setCategories(categoryIds);
+        }
+      } catch {
+        // Silent error handling
+      }
+    };
+
+    if (courseId) {
+      fetchCategories();
+    }
+  }, [courseId, course?.id]);
+
+  const hasOnlineFormat = categories.includes(67);
+  const hasOfflineFormat = categories.includes(68);
 
   return (
     <div className={styles.sidebar}>
-      <div className={styles.imageContainer}>
-        <Image
-          src={
-            courseImage ||
-            product?.images?.[0]?.src ||
-            "/images/course-hero.jpg"
-          }
-          alt={(
-            product?.name ||
-            course?.title?.rendered ||
-            "Основи тренерства BFB"
-          ).replace(/____FULL____/g, "")}
-          width={400}
-          height={300}
-          className={styles.courseImage}
-        />
-        <div className={styles.badges}>
-          {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
-          {isNewProduct(course?.course_data?.Date_start || undefined) && (
-            <span className={styles.newBadge}>Новинка</span>
-          )}
+      {isLoadingCourse || isLoadingCourseData ? (
+        <CourseSidebarImageSkeleton />
+      ) : (
+        <div className={styles.imageContainer}>
+          <Image
+            src={normalizeImageUrl(
+              courseImage ||
+                product?.images?.[0]?.src ||
+                "/images/course-hero.jpg"
+            )}
+            alt={(
+              product?.name ||
+              course?.title?.rendered ||
+              "Основи тренерства BFB"
+            ).replace(/____FULL____/g, "")}
+            width={400}
+            height={300}
+            className={styles.courseImage}
+          />
+          <BadgeContainer>
+            {/* Новинка - якщо курс створений менше ніж 30 днів тому */}
+            {isNewProduct(course?.course_data?.Date_start || undefined) && (
+              <Badge variant="new" />
+            )}
 
-          {/* Знижка - якщо курс на розпродажі */}
-          {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
-            <span className={styles.discountBadge}>-{finalDiscount}%</span>
-          )}
+            {/* Знижка - якщо курс на розпродажі */}
+            {(hasDiscount || hasFallbackDiscount) && finalDiscount > 0 && (
+              <Badge variant="discount" text={`-${finalDiscount}%`} />
+            )}
 
-          {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
-          {storeProduct && isHitProduct(storeProduct) && (
-            <span className={styles.hitBadge}>Хіт</span>
-          )}
+            {/* Хіт - якщо курс популярний на основі рейтингу та відгуків */}
+            {storeProduct && isHitProduct(storeProduct) && (
+              <Badge variant="hit" />
+            )}
+          </BadgeContainer>
+        </div>
+      )}
+
+      <div className={styles.courseInfoBlock}>
+        <div className={styles.tagsCodeBlock}>
+          <div className={styles.tags}>
+            {/* ///// */}
+            {course?.course_data.Date_start && (
+              <div className={styles.tag}>
+                <div className={styles.tagIcon}>
+                  <СalendarIcon />
+                </div>
+                <p className={styles.tagText}>
+                  {course.course_data.Date_start}
+                </p>
+              </div>
+            )}
+            {course?.course_data.Duration && (
+              <div className={styles.tag}>
+                <div className={styles.tagIcon}>
+                  <СlockIcon />
+                </div>
+                <p className={styles.tagText}>{course.course_data.Duration}</p>
+              </div>
+            )}
+            {hasOnlineFormat && (
+              <div className={styles.tag}>
+                <div className={styles.tagIcon}>
+                  <GlobeIcon />
+                </div>
+                <p className={styles.tagText}>Online</p>
+              </div>
+            )}
+            {hasOfflineFormat && (
+              <div className={styles.tag}>
+                <NotGlobeIcon />
+                <p className={styles.tagText}>Offline</p>
+              </div>
+            )}
+          </div>
+          <div className={styles.courseCode}>
+            <p className={styles.courseCodeText}>Код курсу:</p>
+            <p className={styles.courseCodeNumber}>{course?.id || courseId}</p>
+          </div>
         </div>
       </div>
 
-      <div className={styles.courseInfo}>
-        <div className={styles.courseTitleBlock}>
+      {isLoadingCourse || isLoadingCourseData ? (
+        <CourseSidebarCourseInfoSkeleton />
+      ) : (
+        <div className={styles.courseInfo}>
+          <div className={styles.courseTitleBlock}>
           <div className={styles.categoryTagBlock}>
             <div className={styles.categoryTag}>Курси</div>
-            <div className={styles.titleWithBadges}>
-              <h2 className={styles.courseTitle}>
-                {(
-                  product?.name ||
-                  course?.title?.rendered ||
-                  "Основи тренерства BFB"
-                ).replace(/____FULL____/g, "")}
-              </h2>
-              <div className={styles.courseBadges}>
-                {storeProduct && isHitProduct(storeProduct) && (
-                  <span className={`${styles.badge} ${styles.hitBadge}`}>
-                    Хіт
+            <div className={styles.titleWithDateRow}>
+              <div className={styles.titleWithBadges}>
+                <h2 className={styles.courseTitle}>
+                  {(
+                    product?.name ||
+                    course?.title?.rendered ||
+                    "Основи тренерства BFB"
+                  ).replace(/____FULL____/g, "")}
+                </h2>
+                <div className={styles.courseBadges}>
+                  {storeProduct && isHitProduct(storeProduct) && (
+                    <Badge variant="hit" />
+                  )}
+                </div>
+              </div>
+              <div className={styles.dateBlock}>
+                <div className={styles.availability}>
+                  <CheckMarkIcon />
+                  <span className={styles.inStock}>
+                    {storeProduct?.purchasable ||
+                    storeProduct?.is_purchasable ||
+                    product?.stock_status === "instock"
+                      ? "В наявності"
+                      : "Немає"}
                   </span>
-                )}
+                </div>
+
+                <div className={styles.rating}>
+                  <div className={styles.stars}>{renderStars(ratingValue)}</div>
+                  <span className={styles.reviewsCount}>
+                    ({storeProduct?.rating_count || product?.rating_count || 0})
+                  </span>
+                </div>
               </div>
             </div>
-            <p className={styles.courseDescription}>
-              {course?.excerpt?.rendered?.replace(/<[^>]*>/g, "") ||
-                "Професійний курс для тренерів з функціонального тренування на BFB"}
-            </p>
           </div>
         </div>
 
-        <div className={styles.dateBlock}>
-          <div className={styles.availability}>
-            <CheckMarkIcon />
-            <span className={styles.inStock}>
-              {storeProduct?.purchasable ||
-              storeProduct?.is_purchasable ||
-              product?.stock_status === "instock"
-                ? "В наявності"
-                : "Немає"}
-            </span>
-          </div>
-
-          <div className={styles.rating}>
-            <div className={styles.stars}>
-              {Array.from({ length: 5 }, (_, i) => (
-                <span
-                  key={i}
-                  className={`${styles.star} ${
-                    i <
-                    Math.floor(
-                      parseFloat(
-                        storeProduct?.average_rating ||
-                          product?.average_rating ||
-                          "0"
-                      )
-                    )
-                      ? styles.starFilled
-                      : ""
-                  }`}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-            <span className={styles.reviewsCount}>
-              (Відгуки{" "}
-              {storeProduct?.rating_count || product?.rating_count || 0})
-            </span>
-          </div>
-        </div>
+        <p className={styles.courseDescription}>
+          {course?.excerpt?.rendered?.replace(/<[^>]*>/g, "") ||
+            "Професійний курс для тренерів з функціонального тренування на BFB"}
+        </p>
 
         <div className={styles.courseIncludes}>
           <h3 className={styles.courseIncludesTitle}>ЦЕЙ КУРС ВКЛЮЧАЄ:</h3>
@@ -506,15 +564,40 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
           </ul>
         </div>
 
-        <div className={styles.pricingCartBlock}>
-          <div className={styles.pricing}>
-            <span className={styles.currentPrice}>
-              {formattedCurrentPrice} ₴
-            </span>
-            {(hasDiscount || hasFallbackDiscount) && formattedRegularPrice && (
-              <span className={styles.oldPrice}>{formattedRegularPrice} ₴</span>
+        <div className={styles.topicsSection}>
+          <h3 className={styles.topicsSectionTitle}>ЯКІ ТЕМИ ПОКРИВАЄ КУРС:</h3>
+          <div className={styles.topicsGrid}>
+            {course?.course_data.Course_themes?.map((theme, index) => (
+              <div key={index} className={styles.topicTag}>
+                <p className={styles.topicText}>{theme}</p>
+              </div>
+            )) || (
+              <div className={styles.topicTag}>
+                <p className={styles.topicText}>
+                  Ведення груп і персональних занять
+                </p>
+              </div>
             )}
           </div>
+        </div>
+
+        <div className={styles.pricingCartBlock}>
+          {/* На десктопі pricing перед subscriptionOffer */}
+          {!isMobile && (
+            <div className={styles.pricing}>
+              <span className={styles.currentPrice}>
+                {formattedCurrentPrice}
+                <span className={styles.currentPriceCurrency}>₴</span>
+              </span>
+              {(hasDiscount || hasFallbackDiscount) &&
+                formattedRegularPrice && (
+                  <div className={styles.oldPrice}>
+                    <span>{formattedRegularPrice}</span>
+                    <span className={styles.oldPriceCurrency}>₴</span>
+                  </div>
+                )}
+            </div>
+          )}
 
           <div className={styles.subscriptionOffer}>
             <div className={styles.subscriptionOfferIcon}>
@@ -545,6 +628,25 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
               </button>
             </div>
           )}
+        </div>
+
+        <div className={styles.pricingActionsBlock}>
+          {/* На мобілці pricing в pricingActionsBlock */}
+          {isMobile && (
+            <div className={styles.pricing}>
+              <span className={styles.currentPrice}>
+                {formattedCurrentPrice}
+                <span className={styles.currentPriceCurrency}>₴</span>
+              </span>
+              {(hasDiscount || hasFallbackDiscount) &&
+                formattedRegularPrice && (
+                  <div className={styles.oldPrice}>
+                    <span>{formattedRegularPrice}</span>
+                    <span className={styles.oldPriceCurrency}>₴</span>
+                  </div>
+                )}
+            </div>
+          )}
 
           <div className={styles.actions}>
             <button
@@ -563,11 +665,12 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courseId = 169 }) => {
               onClick={isControlsDisabled ? undefined : toggleFavorite}
               disabled={isControlsDisabled}
             >
-              {favorite ? <Smitnik2Icon /> : <FavoriteHeader />}
+              {favorite ? <FavoriteBlacIcon /> : <Favorite2Icon />}
             </button>
           </div>
         </div>
       </div>
+      )}
 
       {!isLoggedIn && (
         <>

@@ -47,8 +47,23 @@ const OrdersHistory: React.FC = () => {
     queryKey: ["orders", user?.id],
     enabled: Boolean(user?.id),
     queryFn: async () => {
+      // WooCommerce API очікує числовий customer_id, а не slug
+      // Перевіряємо, чи user?.id є числом, якщо ні - отримуємо числовий ID з профілю
+      let customerId = user?.id;
+      if (customerId && isNaN(Number(customerId))) {
+        // Якщо ID не число (наприклад, slug "trainer_123"), отримуємо числовий ID
+        try {
+          const { getMyProfile } = await import("@/lib/auth");
+          const profile = await getMyProfile();
+          if (profile?.id) {
+            customerId = String(profile.id);
+          }
+        } catch (e) {
+          console.warn("[OrdersHistory] Failed to get numeric user ID:", e);
+        }
+      }
       const path = `/wp-json/wc/v3/orders?customer=${encodeURIComponent(
-        String(user?.id)
+        String(customerId || user?.id || "")
       )}`;
       const { data } = await adminRequest({
         method: "GET",
@@ -128,11 +143,11 @@ const OrdersHistory: React.FC = () => {
   };
 
   const handleRepeatOrder = (orderId: string) => {
-    console.log("Повторити замовлення:", orderId);
+    // Repeat order
   };
 
   const handleViewProduct = (orderId: string) => {
-    console.log("Переглянути товар:", orderId);
+    // View product
   };
 
   return (
@@ -149,84 +164,63 @@ const OrdersHistory: React.FC = () => {
           .map((order, index) => (
             <React.Fragment key={order.id}>
               <div className={styles.orderCard}>
-                <div className={styles.productImage}>
-                  <Image
-                    src={order.productImage}
-                    alt={order.productName}
-                    width={80}
-                    height={80}
-                    style={{ objectFit: "cover" }}
-                  />
+                <div className={styles.productImageContainer}>
+                  <div className={styles.productImage}>
+                    <Image
+                      src={order.productImage}
+                      alt={order.productName}
+                      width={80}
+                      height={80}
+                    />
+                  </div>
+                  <div className={styles.quantityBadge}>x{order.quantity}</div>
                 </div>
 
                 <div className={styles.orderDetails}>
-                  <div className={styles.leftSectionBlock}>
-                    <div className={styles.productInfo}>
-                      <div className={styles.productInfoBlock}>
-                        <h3 className={styles.productName}>
-                          {order.productName}
-                        </h3>
-                        <span className={styles.quantity}>
-                          x{order.quantity}
-                        </span>
-                      </div>
-
-                      <div className={styles.orderMeta}>
-                        <span className={styles.orderDate}>
-                          {order.orderDate}
-                        </span>
-                        <span className={styles.orderNumber}>
-                          {order.orderNumber}
-                        </span>
-                        {/* <span
-                      className={`${styles.status} ${getStatusClass(
-                        order.status
-                      )}`}
-                    >
-                      {getStatusText(order.status)}
-                    </span> */}
-                      </div>
+                  <div className={styles.productHeader}>
+                    <h3 className={styles.productName}>{order.productName}</h3>
+                    <div className={styles.deliveryIcon}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M14 10H12V8H10V10H8L6 12V14H14V10Z"
+                          fill="#ED1C24"
+                        />
+                        <path d="M2 4H10V6H2V4ZM2 8H8V10H2V8Z" fill="#ED1C24" />
+                      </svg>
                     </div>
-                    <span
-                      className={`${styles.status} ${getStatusClass(
-                        order.status
-                      )}`}
-                    >
-                      {getStatusText(order.status)}
+                  </div>
+
+                  <div className={styles.orderMeta}>
+                    <span className={styles.orderDate}>{order.orderDate}</span>
+                    <span className={styles.orderNumber}>
+                      {order.orderNumber}
                     </span>
                   </div>
 
                   <div className={styles.orderSummary}>
-                    <div className={styles.totalPrice}>
-                      <span className={styles.totalLabel}>
-                        Сума замовлення:
-                      </span>
-                      <span className={styles.price}>{order.totalPrice}₴</span>
-                    </div>
-                  </div>
-
-                  <div className={styles.rightSection}>
-                    {/* <div className={styles.orderSummary}>
-                  <div className={styles.totalPrice}>
                     <span className={styles.totalLabel}>Сума замовлення:</span>
-                    <span className={styles.price}>{order.totalPrice}₴</span>
+                    <span className={styles.price}>{order.totalPrice} ₴</span>
                   </div>
-                </div> */}
 
-                    <div className={styles.orderActions}>
-                      <button
-                        className={styles.repeatBtn}
-                        onClick={() => handleRepeatOrder(order.id)}
-                      >
-                        Повторити замовлення
-                      </button>
-                      <button
-                        className={styles.productBtn}
-                        onClick={() => handleViewProduct(order.id)}
-                      >
-                        Сторінка товару
-                      </button>
-                    </div>
+                  <div className={styles.orderActions}>
+                    <button
+                      className={styles.repeatBtn}
+                      onClick={() => handleRepeatOrder(order.id)}
+                    >
+                      Замовити
+                    </button>
+                    <button
+                      className={styles.productBtn}
+                      onClick={() => handleViewProduct(order.id)}
+                    >
+                      Сторінка товару
+                    </button>
                   </div>
                 </div>
               </div>
@@ -235,24 +229,26 @@ const OrdersHistory: React.FC = () => {
               )}
             </React.Fragment>
           ))}
-        {isLoading && <div style={{ padding: 12 }}>Завантаження...</div>}
+        {/* {isLoading && <div style={{ padding: 12 }}>Завантаження...</div>}
         {!isLoading && !orders.length && !isError && (
           <div style={{ padding: 12 }}>Замовлень ще немає</div>
-        )}
+        )} */}
         {!isLoading && isError && (
           <div className={styles.error}>Не вдалося завантажити замовлення</div>
         )}
       </div>
 
-      <div className={styles.pagination}>
-        <PaginationNav
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          onPrev={handlePrev}
-          onNext={handleNext}
-        />
-      </div>
+      {orders.length > 4 && (
+        <div className={styles.pagination}>
+          <PaginationNav
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        </div>
+      )}
     </div>
   );
 };

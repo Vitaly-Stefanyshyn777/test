@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./TrainingDirectionFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface TrainingDirectionFilterProps {
   value: string;
@@ -29,7 +31,6 @@ export const TrainingDirectionFilter = ({
 
   const loadDirections = useCallback(async () => {
     try {
-      console.log("[TrainingDirectionFilter] 🚀 Завантажую напрямки з API...");
       setLoading(true);
 
       // Отримуємо тренерів без фільтрів щоб витягти унікальні напрямки
@@ -61,11 +62,8 @@ export const TrainingDirectionFilter = ({
       } else {
         setDirections(fallbackDirections);
       }
-    } catch (error) {
-      console.error(
-        "[TrainingDirectionFilter] ❌ Помилка завантаження напрямків:",
-        error
-      );
+    } catch {
+      // Silent error handling
       setDirections(fallbackDirections);
     } finally {
       setLoading(false);
@@ -77,10 +75,6 @@ export const TrainingDirectionFilter = ({
   }, [loadDirections]);
 
   const handleDirectionChange = async (selectedDirection: string) => {
-    console.log(
-      "[TrainingDirectionFilter] 🎯 Обрано напрямок:",
-      selectedDirection
-    );
     onChange(selectedDirection);
   };
 
@@ -108,34 +102,45 @@ export const TrainingDirectionFilter = ({
         }`}
       >
         {loading ? (
-          <div className={styles.loadingText}>Завантаження...</div>
+          <div className={styles.radioGroup}>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Skeleton width={20} height={20} borderRadius={10} />
+                <Skeleton width={180} height={16} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className={styles.radioGroup}>
             {directions.map((direction) => {
               const isSelected = value === direction;
+              const inputId = `direction-${direction
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`;
               return (
                 <label
                   key={direction}
+                  htmlFor={inputId}
                   className={`${styles.radioLabel} ${
                     isSelected ? styles.selected : ""
                   }`}
-                  onClick={() => {
-                    // Toggle behavior: if already selected, deselect; if not selected, select
-                    if (isSelected) {
-                      handleDirectionChange(""); // Deselect
-                    } else {
-                      handleDirectionChange(direction); // Select
-                    }
-                  }}
                 >
                   <input
-                    type="radio"
+                    id={inputId}
+                    type="checkbox"
                     name="trainingDirection"
                     value={direction}
                     checked={isSelected}
-                    onChange={() => {}} // Controlled by onClick
+                    onChange={() => {
+                      if (isSelected) {
+                        handleDirectionChange(""); // скасувати вибір
+                      } else {
+                        handleDirectionChange(direction); // встановити
+                      }
+                    }}
                     className={styles.radioInput}
                   />
+                  <span className={styles.radioCircle} aria-hidden="true" />
                   <span className={styles.radioText}>{direction}</span>
                 </label>
               );

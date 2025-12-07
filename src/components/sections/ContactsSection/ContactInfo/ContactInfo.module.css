@@ -1,5 +1,5 @@
 .contactInfo {
-  flex: 0 0 41.1%;
+  flex: 0 0 43.1%;
   padding: 32px;
   border-radius: 32px;
   display: flex;
@@ -72,7 +72,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -101,7 +100,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.4);
 }
 
@@ -153,8 +151,14 @@
   font-weight: 700;
   font-size: 42px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--white);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.valueNumber:hover {
+  opacity: 0.8;
 }
 
 .valueEmail {
@@ -162,8 +166,14 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--white);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.valueEmail:hover {
+  opacity: 0.8;
 }
 
 .valueAddress {
@@ -171,7 +181,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -180,7 +189,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -189,4 +197,102 @@
   backdrop-filter: blur(20px);
   color: var(--white);
   border-color: var(--violet);
+}
+
+@media (max-width: 1000px) {
+  .contactInfo {
+    width: auto;
+    height: auto;
+    padding: mvw(20);
+    border-radius: mvw(32);
+    backdrop-filter: blur(10px);
+    background: rgba(249, 249, 249, 0.1);
+    gap: 0;
+    flex: none;
+    flex-direction: row-reverse;
+  }
+  .content {
+    gap: mvw(16);
+    height: 100%;
+  }
+  .titleTextBlock {
+    gap: 0;
+    display: none;
+  }
+  .contactDetailsContainer {
+    gap: mvw(16);
+    height: 100%;
+    justify-content: space-between;
+  }
+  .contactDetailsBlock {
+    gap: mvw(16);
+  }
+  .contactIcons {
+    margin-bottom: mvw(8);
+  }
+  .socialIconsContainer {
+    gap: 0;
+  }
+  .socialIconBlock {
+    gap: mvw(12);
+    display: flex;
+    flex-direction: row;
+  }
+  .socialIcon {
+    padding: mvw(12);
+    border-radius: mvw(16);
+    border: mvw(2) solid rgba(255, 255, 255, 0.2);
+
+    width: mvw(58);
+    height: mvw(58);
+  }
+  .socialIcon svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
+  .contactEmailNumber {
+    gap: mvw(15);
+  }
+  .valueNumber {
+    font-size: mvw(24);
+    line-height: 110%;
+
+    font-family: var(--second-family);
+    font-weight: 700;
+  }
+  .valueEmail {
+    font-size: mvw(16);
+    line-height: 140%;
+
+    font-family: var(--second-family);
+    font-weight: 500;
+
+    line-height: 110%;
+    color: var(--white);
+  }
+  .contactAddressBlock {
+    gap: mvw(12);
+  }
+  .valueAddress {
+    font-size: mvw(16);
+    line-height: 140%;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 110%;
+  }
+  .contactItem {
+    gap: mvw(10);
+  }
+  .valueSchedule {
+    font-size: mvw(16);
+    line-height: 140%;
+
+    font-weight: 500;
+
+    line-height: 140%;
+  }
+  .contactInfo {
+    border: mvw(2) solid rgba(255, 254, 252, 0.3);
+    border-radius: mvw(32);
+  }
 }

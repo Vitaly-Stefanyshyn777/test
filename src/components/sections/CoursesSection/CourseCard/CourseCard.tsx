@@ -6,7 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./CourseCard.module.css";
 import { FavoriteHeader, BasketIcon, SmitnikIcon } from "../../../Icons/Icons";
+import FavoriteButton from "@/components/ui/Buttons/FavoriteButton";
+import CartButton from "@/components/ui/Buttons/CartButton";
+import Badge from "@/components/ui/Badge/Badge";
+import BadgeContainer from "@/components/ui/Badge/BadgeContainer";
+import SubscriptionBadge from "@/components/ui/SubscriptionBadge/SubscriptionBadge";
 import { useCartStore } from "@/store/cart";
+import { FavoriteIcon } from "../../../Icons/Icons";
 
 interface CourseCardProps {
   id: string;
@@ -81,9 +87,9 @@ const CourseCard = ({
   isHit = false,
   isFavorite = false,
   image,
-  rating = 3,
-  reviewsCount = 235,
-  requirements,
+  rating = 0,
+  reviewsCount = 0,
+  requirements = "",
   subscriptionDiscount = 20,
   dateCreated,
   courseData,
@@ -271,77 +277,6 @@ const CourseCard = ({
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0; // Не показуємо знижку якщо немає реальних даних
 
-  if (process.env.NODE_ENV !== "production") {
-    try {
-      console.group(`🔍 [CourseCard] ДЕТАЛЬНА ДІАГНОСТИКА - ID: ${id}`);
-
-      console.log("=== ВХІДНІ ДАНІ ===");
-      console.log("isLoggedIn:", isLoggedIn);
-      console.log("regularPrice:", regularPrice);
-      console.log("salePrice:", salePrice);
-      console.log("currentPrice:", currentPrice);
-      console.log("originalPrice:", originalPrice);
-      console.log("price:", price);
-      console.log("wcProduct:", wcProduct ? "є" : "немає");
-
-      console.log("=== РОЗРАХУНКИ ===");
-      console.log("basePrice:", basePrice);
-      console.log("baseDiscount:", Math.round(baseDiscount * 100) / 100 + "%");
-      console.log("finalPrice:", Math.round(finalPrice * 100) / 100);
-      console.log(
-        "totalDiscount:",
-        Math.round(totalDiscount * 100) / 100 + "%"
-      );
-      console.log("authDiscount:", Math.round(authDiscount * 100) + "%");
-
-      console.log("=== ПЕРЕВІРКА ЛОГІКИ ===");
-      const regularPriceNum = regularPrice ? parseFloat(regularPrice) : 0;
-      const salePriceNum = salePrice ? parseFloat(salePrice) : 0;
-      const basePriceNum = basePrice ? parseFloat(basePrice) : 0;
-      const baseDiscountCalc =
-        salePrice && regularPrice
-          ? ((parseFloat(regularPrice) - parseFloat(salePrice)) /
-              parseFloat(regularPrice)) *
-            100
-          : 0;
-      const totalDiscountCalc =
-        regularPrice && finalPrice
-          ? ((parseFloat(regularPrice) - finalPrice) /
-              parseFloat(regularPrice)) *
-            100
-          : 0;
-
-      console.log("regularPriceNum:", regularPriceNum);
-      console.log("salePriceNum:", salePriceNum);
-      console.log("basePriceNum:", basePriceNum);
-      console.log("finalPriceNum:", finalPrice);
-      console.log(
-        "baseDiscountCalc:",
-        Math.round(baseDiscountCalc * 100) / 100 + "%"
-      );
-      console.log(
-        "totalDiscountCalc:",
-        Math.round(totalDiscountCalc * 100) / 100 + "%"
-      );
-
-      console.log("=== ОЧІКУВАНІ РЕЗУЛЬТАТИ ===");
-      console.log("Для sale=5000, regular=7000, авторизований:");
-      console.log("- basePrice: 5000");
-      console.log("- finalPrice: 5000 * 0.8 = 4000");
-      console.log("- totalDiscount: (7000-4000)/7000*100 = 42.86%");
-      console.log("- expectedBadge: -42.86%");
-
-      console.log("=== ФОРМАТОВАНІ ЦІНИ ===");
-      console.log("formattedCurrentPrice:", formattedCurrentPrice);
-      console.log("formattedRegularPrice:", formattedRegularPrice);
-      console.log("formattedSalePrice:", formattedSalePrice);
-
-      console.groupEnd();
-    } catch (e) {
-      console.error("❌ [CourseCard] Помилка логування:", e);
-    }
-  }
-
   // Визначаємо чи є продукт новинкою
   const isActuallyNew = isNewProduct(dateCreated) || isNew;
 
@@ -351,8 +286,14 @@ const CourseCard = ({
 
   const truncateDescription = (text: string, maxLength: number = 80) => {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + "...";
+    return text.substring(0, maxLength).trimEnd() + "..";
   };
+
+  const stripTags = (html?: string | null) =>
+    (html || "")
+      .replace(/<[^>]*>/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -382,108 +323,124 @@ const CourseCard = ({
           className={styles.productImage}
         />
 
-        <div className={styles.badges}>
-          {isActuallyNew && (
-            <span className={`${styles.badge} ${styles.newBadge}`}>
-              Новинка
-            </span>
-          )}
+        <BadgeContainer>
+          {isActuallyNew && <Badge variant="new" />}
           {isLoggedIn
             ? // Авторизований: показуємо загальну знижку
               totalDiscount > 0 && (
-                <span className={`${styles.badge} ${styles.discountBadge}`}>
-                  -{Math.round(totalDiscount)}%
-                </span>
+                <Badge variant="discount" text={`-${Math.round(totalDiscount)}%`} />
               )
             : // Неавторизований: показуємо акційну знижку
               baseDiscount > 0 && (
-                <span className={`${styles.badge} ${styles.discountBadge}`}>
-                  -{Math.round(baseDiscount)}%
-                </span>
+                <Badge variant="discount" text={`-${Math.round(baseDiscount)}%`} />
               )}
-          {isActuallyHit && (
-            <span className={`${styles.badge} ${styles.hitBadge}`}>Хіт</span>
-          )}
-        </div>
+          {isActuallyHit && <Badge variant="hit" />}
+        </BadgeContainer>
 
-        <button
-          className={`${styles.favoriteBtn} ${
-            isFav ? styles.favoriteActive : ""
-          }`}
-          onClick={toggleFavorite}
-        >
-          {isFav ? <SmitnikIcon /> : <FavoriteHeader />}
-        </button>
+        <FavoriteButton
+          id={favoriteKey}
+          name={name}
+          price={price || 0}
+          image={image}
+          className={styles.favoriteBtn}
+          activeClassName={styles.favoriteActive}
+        />
       </div>
 
       <div className={styles.cardContent}>
-        <h3 className={styles.productName}>
-          {name || "Тренер BFB: Базовий рівень"}
-        </h3>
+        <div className={styles.productInfo}>
+          <div className={styles.productInfoName}>
+            <h3 className={styles.productName}>
+              {name || "Тренер BFB: Базовий рівень"}
+            </h3>
 
-        <p className={styles.description}>
-          {truncateDescription(
-            courseData?.excerpt?.rendered?.replace(/<[^>]*>/g, "") ||
-              description ||
-              "Курс BFB — це сертифікаційна навчальна програма, яка дає не просто знання, а право стати частиною авторської системи"
-          )}
-        </p>
-
-        <div className={styles.rating}>
-          {renderStars(rating)}
-          <span className={styles.reviewsCount}>({reviewsCount})</span>
-        </div>
-
-        <div className={styles.requirements}>
-          <span className={styles.requirementsBadge}>
-            {courseData?.Required_equipment ||
-              requirements ||
-              "Для проходження потрібені гантелі"}
-          </span>
-        </div>
-
-        <div className={styles.subscriptionDiscount}>
-          {!isLoggedIn && (
-            <span className={styles.subscriptionBadge}>-20% з підпискою</span>
-          )}
-        </div>
-
-        <div className={styles.pricing}>
-          {isLoggedIn ? (
-            // Авторизовані: показуємо finalPrice та regularPrice (перекреслена)
-            <>
-              <span className={styles.currentPrice}>
-                {finalPrice
-                  ? formatPrice(finalPrice.toString(), !!wcProduct)
-                  : "0"}{" "}
-                ₴
-              </span>
-              <span className={styles.originalPrice}>
-                {formattedRegularPrice} ₴
-              </span>
-            </>
-          ) : (
-            // Неавторизовані: показуємо basePrice та regularPrice (якщо є знижка)
-            <>
-              <span className={styles.currentPrice}>
-                {formattedSalePrice || formattedCurrentPrice} ₴
-              </span>
-              {salePrice && (
-                <span className={styles.originalPrice}>
-                  {formattedRegularPrice} ₴
-                </span>
+            <p className={styles.description}>
+              {truncateDescription(
+                stripTags(courseData?.excerpt?.rendered) ||
+                  stripTags(description) ||
+                  "Курс BFB — це сертифікаційна навчальна програма, яка дає не просто знання, а право стати частиною авторської системи"
               )}
-            </>
+            </p>
+          </div>
+
+          <div className={styles.rating}>
+            {renderStars(rating || 0)}
+            <span className={styles.reviewsCount}>
+              ({reviewsCount || 0})
+            </span>
+          </div>
+
+          {(courseData?.Required_equipment || requirements) && (
+            <div className={styles.requirements}>
+              <span className={styles.requirementsBadge}>
+                {courseData?.Required_equipment || requirements}
+              </span>
+            </div>
           )}
         </div>
+        <div className={styles.subscriptionPriceBlock}>
+          <div className={styles.subscriptionBlock}>
+            <div className={styles.subscriptionDiscount}>
+              {!isLoggedIn && (
+                <SubscriptionBadge>-20% з підпискою</SubscriptionBadge>
+              )}
+            </div>
 
-        <button
-          className={`${styles.cartBtn} ${inCart ? styles.cartBtnActive : ""}`}
-          onClick={handleCartClick}
-          aria-pressed={inCart}
-        >
-          {inCart ? <SmitnikIcon /> : <BasketIcon />}
-        </button>
+            <div className={styles.pricing}>
+              {isLoggedIn ? (
+                // Авторизовані: показуємо finalPrice та regularPrice (перекреслена)
+                <>
+                  {finalPrice > 0 && (
+                    <span className={styles.currentPrice}>
+                      <span className={styles.currentPriceValue}>
+                        {formatPrice(finalPrice.toString(), !!wcProduct)}
+                      </span>
+                      <span className={styles.priceCurrency}>₴</span>
+                    </span>
+                  )}
+                  {regularPrice && parseFloat(regularPrice) > 0 && totalDiscount > 0 && (
+                    <span className={styles.originalPrice}>
+                      <span className={styles.originalPriceValue}>
+                        {formattedRegularPrice}
+                      </span>
+                      <span className={styles.originalPriceCurrency}>₴</span>
+                    </span>
+                  )}
+                </>
+              ) : (
+                // Неавторизовані: показуємо basePrice та regularPrice (якщо є знижка)
+                <>
+                  {(formattedSalePrice || formattedCurrentPrice) && 
+                    parseFloat(salePrice || currentPrice || "0") > 0 && (
+                    <span className={styles.currentPrice}>
+                      <span className={styles.currentPriceValue}>
+                        {formattedSalePrice || formattedCurrentPrice}
+                      </span>
+                      <span className={styles.priceCurrency}>₴</span>
+                    </span>
+                  )}
+                  {salePrice && regularPrice && parseFloat(regularPrice) > 0 && (
+                    <span className={styles.originalPrice}>
+                      <span className={styles.originalPriceValue}>
+                        {formattedRegularPrice}
+                      </span>
+                      <span className={styles.originalPriceCurrency}>₴</span>
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <CartButton
+            id={cartKey}
+            name={name}
+            price={price || 0}
+            image={image}
+            className={styles.cartBtn}
+            activeClassName={styles.cartBtnActive}
+          />
+        </div>
       </div>
     </Link>
   );

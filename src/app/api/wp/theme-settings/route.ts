@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const UPSTREAM_BASE =
-  process.env.UPSTREAM_BASE || "https://www.api.bfb.projection-learn.website";
+const UPSTREAM_BASE = process.env.UPSTREAM_BASE as string;
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,8 +23,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Формуємо URL для WordPress Theme Settings API
-    const url = new URL(`${UPSTREAM_BASE}/wp-json/wp/v2/theme-settings`);
+    // Формуємо URL для WordPress Theme Settings API з параметром hl_data_gallery
+    const url = new URL(`${UPSTREAM_BASE}/wp-json/wp/v2/theme_settings`);
+    url.searchParams.set("hl_data_gallery", "1");
+    
+    console.log("[Theme Settings API] 📋 URL з параметром hl_data_gallery:", url.toString());
 
     // Визначаємо режим авторизації: Bearer (пріоритет) або Basic
     const bearerToken = jwtFromHeader || jwtFromEnv;

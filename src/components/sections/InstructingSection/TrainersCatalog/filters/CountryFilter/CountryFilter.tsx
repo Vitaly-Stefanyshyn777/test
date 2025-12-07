@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./CountryFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface CountryFilterProps {
   value: string;
@@ -41,8 +43,7 @@ export const CountryFilter = ({ value, onChange }: CountryFilterProps) => {
       } else {
         setCountries(fallbackCountries);
       }
-    } catch (error) {
-      console.error("[CountryFilter] ❌ Помилка завантаження країн:", error);
+    } catch {
       setCountries(fallbackCountries);
     } finally {
       setLoading(false);
@@ -54,10 +55,6 @@ export const CountryFilter = ({ value, onChange }: CountryFilterProps) => {
   }, [loadCountries]);
 
   const handleCountryChange = (selectedCountry: string) => {
-    console.log(
-      "[CountryFilter] 🌍 Обрано країну (локально):",
-      selectedCountry
-    );
     onChange(selectedCountry);
   };
 
@@ -82,34 +79,46 @@ export const CountryFilter = ({ value, onChange }: CountryFilterProps) => {
         }`}
       >
         {loading ? (
-          <div className={styles.loadingText}>Завантаження...</div>
+          <div className={styles.radioGroup}>
+            {[...Array(5)].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Skeleton width={20} height={20} borderRadius={10} />
+                <Skeleton width={120} height={16} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className={styles.radioGroup}>
             {countries.map((country) => {
               const isSelected = value === country;
+              const inputId = `country-${country
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`;
               return (
                 <label
                   key={country}
+                  htmlFor={inputId}
                   className={`${styles.radioLabel} ${
                     isSelected ? styles.selected : ""
                   }`}
-                  onClick={() => {
-                    // Toggle behavior: if already selected, deselect; if not selected, select
-                    if (isSelected) {
-                      handleCountryChange(""); // Deselect
-                    } else {
-                      handleCountryChange(country); // Select
-                    }
-                  }}
                 >
                   <input
-                    type="radio"
+                    id={inputId}
+                    type="checkbox"
                     name="country"
                     value={country}
                     checked={isSelected}
-                    onChange={() => {}} // Controlled by onClick
+                    onChange={() => {
+                      if (isSelected) {
+                        handleCountryChange("");
+                      } else {
+                        handleCountryChange(country);
+                      }
+                    }}
                     className={styles.radioInput}
                   />
+                  <span className={styles.radioCircle} aria-hidden="true" />
+
                   <span className={styles.radioText}>{country}</span>
                 </label>
               );

@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 1000;
 }
 .modal {
   background: #f9f9f9;
@@ -35,31 +35,7 @@
   font-weight: 500;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
-}
-.close {
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  background-color: #f2f2f2;
-  width: 46px;
-  height: 46px;
-  color: var(--black);
-  transition: all 0.3s ease;
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-}
-
-.close:hover {
-  color: var(--white);
-  background: var(--violet);
 }
 .list {
   overflow: auto;
@@ -113,7 +89,14 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.summaryLabelPrimary,
+.summaryAmountPrimary {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
   color: var(--black);
 }
 .amountDiscount {
@@ -121,7 +104,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.4;
 }
@@ -131,7 +113,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.4;
 }
@@ -141,7 +122,13 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+}
+.summaryCurrencyPrimary {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
   color: var(--black);
 }
 .label {
@@ -157,7 +144,6 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -166,7 +152,6 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
   color: var(--black);
 }
@@ -175,7 +160,6 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .value {
@@ -186,7 +170,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .totalValue {
@@ -194,7 +177,6 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .progressTrack {
@@ -260,6 +242,13 @@
   font-size: 16px;
   line-height: 135%;
   color: #8426d7;
+  transition: all 0.3s ease;
+}
+
+.secondary:hover {
+  color: var(--white);
+  background: var(--black);
+  border-color: var(--black);
 }
 
 .recommendations {
@@ -277,7 +266,6 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .recoRow {
@@ -369,7 +357,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -378,7 +365,6 @@
   font-weight: 500;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
   display: flex;
@@ -390,7 +376,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .recoOldPrice {
@@ -419,6 +404,16 @@
     width: 14px;
     height: 14px;
   }
+}
+.smallDelete {
+  background: var(--style);
+  border-radius: 38px;
+  padding: 12px 14px;
+  width: 120px;
+  height: 36px;
+}
+.smallDelete:hover {
+  background: var(--style);
 }
 .recoNav {
   margin-left: auto;
@@ -556,7 +551,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -565,7 +559,6 @@
   font-weight: 500;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--style);
 }
@@ -624,4 +617,449 @@
   font-size: 16px;
   line-height: 135%;
   color: var(--white);
+  transition: background 0.3s ease;
+}
+
+.primary:hover {
+  background: var(--black);
+}
+
+@media (max-width: 1000px) {
+  .backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    /* border-radius: mvw(20) mvw(20) 0 0; */
+    padding: mvw(20) mvw(16);
+    gap: mvw(24);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .topbarListBlock {
+    gap: mvw(20);
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .topbarListBlock::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header {
+    gap: mvw(12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .title {
+    font-size: mvw(24);
+    line-height: 110%;
+  }
+
+  .bodyTwoCols {
+    flex-direction: column;
+    gap: mvw(20);
+    flex: 0 0 auto;
+    min-height: auto;
+    height: auto;
+  }
+
+  .leftList {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    gap: mvw(16);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item {
+    gap: mvw(12);
+    padding: mvw(12);
+    border-radius: mvw(12);
+    background: var(--white);
+  }
+
+  .itemMain {
+    gap: mvw(12);
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .thumb {
+    width: mvw(95);
+    height: mvw(95);
+    border-radius: mvw(8);
+    flex-shrink: 0;
+  }
+
+  .contentCol {
+    gap: mvw(12);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .nameColorBlock {
+    gap: mvw(4);
+  }
+
+  .titleBlock {
+    gap: mvw(8);
+    align-items: flex-start;
+  }
+
+  .name {
+    font-size: mvw(14);
+    line-height: 140%;
+    flex: 1;
+  }
+
+  .removeBtn {
+    width: mvw(32);
+    height: mvw(32);
+    border-radius: mvw(8);
+    flex-shrink: 0;
+  }
+
+  .removeBtn svg {
+    width: mvw(14);
+    height: mvw(14);
+  }
+
+  .color {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .controlsBlock {
+    gap: mvw(12);
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .controls {
+    gap: mvw(12);
+  }
+
+  .minus,
+  .plus {
+    width: mvw(32);
+    height: mvw(32);
+    border-radius: mvw(8);
+  }
+
+  .minus svg,
+  .plus svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .qty {
+    font-size: mvw(14);
+    min-width: mvw(24);
+    text-align: center;
+  }
+
+  .priceWrap {
+    gap: mvw(4);
+    align-items: flex-end;
+  }
+
+  .prices {
+    gap: mvw(4);
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .currentPrice {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .buck {
+    font-size: mvw(15);
+    line-height: 120%;
+  }
+
+  .oldPrice {
+    font-size: mvw(14);
+    line-height: 120%;
+    margin-left: 0;
+  }
+
+  .rightSummary {
+    max-width: 100%;
+    padding: mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(20);
+    flex-shrink: 0;
+  }
+
+  .freeShipping {
+    gap: mvw(10);
+    font-size: mvw(14);
+  }
+
+  .badgeIcon {
+    width: mvw(20);
+    height: mvw(20);
+    flex-shrink: 0;
+  }
+
+  .badgeIcon img {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .freeShippingText {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .amount {
+    font-size: mvw(14);
+
+    color: var(--violet);
+  }
+
+  .summaryLabelPrimary,
+  .summaryAmountPrimary {
+    font-size: mvw(14);
+    color: var(--black);
+  }
+
+  .currency {
+    font-size: mvw(14);
+    color: var(--violet);
+  }
+
+  .summaryCurrencyPrimary {
+    font-size: mvw(14);
+    color: var(--black);
+  }
+
+  .progressTrack {
+    height: mvw(4);
+    border-radius: mvw(4);
+  }
+
+  .summaryBlock {
+    gap: mvw(8);
+  }
+
+  .summaryRows {
+    gap: mvw(12);
+  }
+
+  .summaryRow {
+    font-size: mvw(14);
+    gap: mvw(8);
+  }
+
+  .label {
+    font-size: mvw(14);
+    line-height: 130%;
+  }
+
+  .value {
+    font-size: mvw(14);
+  }
+
+  .amountDiscount,
+  .currencyDiscount {
+    font-size: mvw(14);
+  }
+
+  .valueNote {
+    font-size: mvw(14);
+    line-height: 140%;
+    width: 502px;
+  }
+
+  .totalRow {
+    gap: mvw(8);
+  }
+
+  .labelStrong {
+    font-size: mvw(20);
+    line-height: 110%;
+  }
+
+  .totalValue {
+    font-size: mvw(20);
+    line-height: 110%;
+  }
+
+  .amountTogether,
+  .currencyTogether {
+    font-size: mvw(20);
+    line-height: 110%;
+  }
+
+  .summaryButtons {
+    gap: mvw(4);
+  }
+
+  .primary {
+    width: 100%;
+    padding: mvw(16) mvw(24);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    text-align: center;
+  }
+
+  .secondary {
+    width: 100%;
+    padding: mvw(16) mvw(24);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    text-align: center;
+  }
+
+  .recommendations {
+    gap: mvw(16);
+  }
+
+  .recoHeader {
+    gap: mvw(12);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recoTitle {
+    font-size: mvw(20);
+    line-height: 110%;
+  }
+
+  .recoNav {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .recoRow {
+    gap: mvw(12);
+  }
+
+  .recoSwiper {
+    width: 100%;
+  }
+
+  .recoSlide {
+    width: mvw(155) !important;
+  }
+
+  .recoItem {
+    border-radius: mvw(12);
+    gap: mvw(0);
+    flex-direction: column;
+  }
+
+  .recoThumb {
+    width: 100%;
+    height: mvw(100);
+    border-radius: mvw(8);
+  }
+
+  .recoContent {
+    gap: mvw(6);
+    flex: 1;
+    padding: mvw(16);
+  }
+
+  .recoTextBlock {
+    gap: mvw(0);
+  }
+
+  .recoBrand {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .recoName {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .recoColor {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .recoPriceButtonBlock {
+    gap: mvw(8);
+    align-items: center;
+  }
+
+  .recoPriceBlock {
+    gap: mvw(4);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recoPrice {
+    font-size: mvw(16);
+    line-height: 120%;
+    gap: mvw(2);
+  }
+
+  .recoPriceBucks {
+    font-size: mvw(14);
+    line-height: 120%;
+  }
+
+  .recoCurrency {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .recoOldPrice {
+    font-size: mvw(14);
+    line-height: 120%;
+  }
+
+  .smallPrimary {
+    height: mvw(35);
+    padding: mvw(8) mvw(12);
+    border-radius: mvw(32);
+    font-size: mvw(12);
+    gap: mvw(6);
+    span {
+      display: none;
+    }
+  }
+
+  .smallPrimary svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .smallDelete {
+    width: auto;
+    height: mvw(35);
+    padding: mvw(8) mvw(12);
+  }
+
+  .empty {
+    padding: mvw(40) mvw(20);
+    font-size: mvw(16);
+    text-align: center;
+  }
 }

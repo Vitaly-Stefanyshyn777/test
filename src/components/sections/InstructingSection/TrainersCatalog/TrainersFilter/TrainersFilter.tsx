@@ -23,9 +23,11 @@ interface TrainersFilterProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   onReset: () => void;
-  onTrainersChange?: (trainers: unknown[]) => void;
+  onTrainersChange?: (trainers: unknown[] | undefined) => void;
   trainers: Array<{ location?: string }>;
   searchTerm: string;
+  hideButtons?: boolean; // Проп для приховування кнопок
+  isInModal?: boolean; // Проп для визначення, чи компонент в модалці
 }
 
 const TrainersFilter = ({
@@ -35,6 +37,8 @@ const TrainersFilter = ({
   onTrainersChange,
   trainers,
   searchTerm,
+  hideButtons = false,
+  isInModal = false,
 }: TrainersFilterProps) => {
   const [loading, setLoading] = useState(false);
   const { data: coaches = [] } = useCoachesQuery();
@@ -47,26 +51,17 @@ const TrainersFilter = ({
     onFiltersChange(newFilters);
   };
 
+  const handleReset = () => {
+    onReset();
+    // Скидаємо відфільтровані тренери, щоб показати всіх тренерів
+    if (onTrainersChange) {
+      onTrainersChange(undefined);
+    }
+  };
+
   const handleApplyFilters = async () => {
     try {
-      console.log("[TrainersFilter] 🚀 Застосовую всі фільтри:", filters);
-      console.log("[TrainersFilter] 📊 Деталі фільтрів:");
-      console.log("- Країна:", filters.country);
-      console.log("- Місто:", filters.city);
-      console.log("- Міста:", filters.cities);
-      console.log("- Напрям тренувань:", filters.trainingDirection);
-      console.log("- Для кого:", filters.forWhom);
-      console.log("- Формат роботи:", filters.workFormat);
-
       setLoading(true);
-
-      console.log(
-        "[TrainersFilter] 🔍 Фільтрую локально дані з useCoachesQuery..."
-      );
-      console.log(
-        "[TrainersFilter] 📊 Всього тренерів для фільтрації:",
-        coaches.length
-      );
 
       // Локальна фільтрація даних з useCoachesQuery (UI-модель)
       const filteredTrainers = (coaches as CoachUiItem[]).filter((coach) => {
@@ -119,40 +114,23 @@ const TrainersFilter = ({
         return true;
       });
 
-      console.log(
-        "[TrainersFilter] 🎯 Після фільтрації:",
-        filteredTrainers.length,
-        "тренерів"
-      );
-
-      console.log(
-        "[TrainersFilter] 📋 Фінальні тренери:",
-        filteredTrainers.map((coach) => ({
-          id: coach.id,
-          name: coach.name,
-          location: coach.location,
-        }))
-      );
+      // Filtered trainers
 
       if (onTrainersChange) {
-        console.log(
-          "[TrainersFilter] 🔄 Передаю тренерів до батьківського компонента"
-        );
         onTrainersChange(filteredTrainers as unknown[]);
       }
     } catch (error) {
-      console.error(
-        "[TrainersFilter] ❌ Помилка застосування фільтрів:",
-        error
-      );
+      // Silent error handling
     } finally {
       setLoading(false);
-      console.log("[TrainersFilter] 🏁 Завершено застосування фільтрів");
     }
   };
 
   return (
-    <div className={styles.filterContainer}>
+    <div 
+      className={`${styles.filterContainer} ${isInModal ? styles.inModal : ''}`}
+      data-in-modal={isInModal ? 'true' : undefined}
+    >
       <div className={styles.filterSidebar}>
         <CountryFilter
           value={filters.country}
@@ -183,11 +161,13 @@ const TrainersFilter = ({
           onChange={(value) => handleFilterChange("workFormat", value)}
         />
       </div>
-      <ButtonFilter
-        onApply={handleApplyFilters}
-        onReset={onReset}
-        loading={loading}
-      />
+      {!hideButtons && (
+        <ButtonFilter
+          onApply={handleApplyFilters}
+          onReset={handleReset}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth";
 import s from "./Header.module.css";
@@ -25,18 +26,30 @@ import { useFavoriteStore } from "@/store/favorites";
 import CartModal from "../../CartModal/CartModal";
 import FavoritesModal from "../../FavoritesModal/FavoritesModal";
 import { mainNavigation, burgerMenuNavigation } from "@/lib/navigation";
+import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
+import { getContactData } from "@/lib/themeSettingsUtils";
 
 export default function Header() {
   const [headerClass, setHeaderClass] = useState("");
-  const [, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [isEventsModalOpen, setIsEventsModalOpen] = useState(false);
+  const [isTrenersModalOpen, setIsTrenersModalOpen] = useState(false);
+  const [isUserHovered, setIsUserHovered] = useState(false);
   const { isLoggedIn } = useAuthStore();
   const isHydrated = useAuthStore((s) => s.isHydrated);
+  const isLoginModalOpen = useAuthStore((s) => s.isLoginModalOpen);
+  const openLoginModal = useAuthStore((s) => s.openLoginModal);
+  const closeLoginModal = useAuthStore((s) => s.closeLoginModal);
   const openCart = useCartStore((s) => s.open);
   const openFav = useFavoriteStore((s) => s.open);
+  const toggleCart = useCartStore((s) => s.toggle);
+  const toggleFav = useFavoriteStore((s) => s.toggle);
+  const isCartOpen = useCartStore((s) => s.isOpen);
+  const isFavOpen = useFavoriteStore((s) => s.isOpen);
 
   // Використовуємо useMemo для кешування результатів
   const cartItemsMap = useCartStore((s) => s.items);
@@ -53,6 +66,13 @@ export default function Header() {
     [cartItems]
   );
   const favoriteCount = useMemo(() => favoriteItems.length, [favoriteItems]);
+
+  // Отримуємо контактні дані з theme_settings
+  const { data: themeSettings } = useThemeSettingsQuery();
+  const contactData = useMemo(
+    () => getContactData(themeSettings),
+    [themeSettings]
+  );
 
   const getHeaderColorByPath = useCallback(() => {
     if (pathname.startsWith("/trainers/")) return s.headerTrainerProfile;
@@ -71,35 +91,55 @@ export default function Header() {
     return "";
   }, [pathname]);
 
+  // Визначаємо чи є світла тема (білий фон)
+  const isLightTheme = useMemo(() => {
+    // Світла тема коли додано клас прокрутки (стає з білим фоном)
+    if (headerClass.includes(s.headerScrolled)) return true;
+    // Деякі сторінки мають білий фон хедера завжди
+    if (headerClass.includes(s.headerTrainerProfile)) return true;
+    return false;
+  }, [headerClass]);
+
   useEffect(() => {
     setHeaderClass(getHeaderColorByPath());
   }, [pathname, getHeaderColorByPath]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const baseClass = getHeaderColorByPath();
-      const heroSection = document.querySelector("[data-hero-section]");
+    let ticking = false;
 
-      if (heroSection) {
-        const heroBottom = heroSection.getBoundingClientRect().bottom;
-        if (heroBottom < 0) {
-          // Вийшли з хіро секції
-          setHeaderClass(`${baseClass} ${s.headerScrolled}`);
-        } else {
-          // Ще в хіро секції
-          setHeaderClass(baseClass);
-        }
-      } else {
-        // Якщо хіро секції немає, використовуємо стару логіку
-        if (window.scrollY > 100) {
-          setHeaderClass(`${baseClass} ${s.headerScrolled}`);
-        } else {
-          setHeaderClass(baseClass);
-        }
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const baseClass = getHeaderColorByPath();
+          const heroSection = document.querySelector("[data-hero-section]");
+
+          if (heroSection) {
+            const heroBottom = heroSection.getBoundingClientRect().bottom;
+            if (heroBottom < 0) {
+              // Вийшли з хіро секції
+              setHeaderClass(`${baseClass} ${s.headerScrolled}`);
+            } else {
+              // Ще в хіро секції
+              setHeaderClass(baseClass);
+            }
+          } else {
+            // Якщо хіро секції немає, використовуємо стару логіку
+            if (window.scrollY > 100) {
+              setHeaderClass(`${baseClass} ${s.headerScrolled}`);
+            } else {
+              setHeaderClass(baseClass);
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    // Викликаємо один раз при монтуванні для встановлення початкового стану
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname, getHeaderColorByPath]);
 
@@ -107,12 +147,12 @@ export default function Header() {
     if (isLoggedIn) {
       window.location.href = "/profile";
     } else {
-      setIsLoginOpen(true);
+      openLoginModal();
     }
   };
 
   const handleLoginSuccess = async () => {
-    setIsLoginOpen(false);
+    closeLoginModal();
   };
 
   const toggleMenu = () => {
@@ -137,15 +177,74 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
-  // Обробник скролу для зміни кольору хедера
+  // Визначення мобільної версії
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50); // Змінюємо колір після 50px скролу
+    const mql = window.matchMedia("(max-width: 1000px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    if (mql.addEventListener) mql.addEventListener("change", update);
+    else mql.addListener(update);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", update);
+      else mql.removeListener(update);
+    };
+  }, []);
+
+  // Відстеження стану модалки InstructingSlider
+  useEffect(() => {
+    const checkSliderState = () => {
+      setIsSliderOpen(
+        document.body.classList.contains("instructing-slider-open")
+      );
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    checkSliderState();
+
+    const observer = new MutationObserver(checkSliderState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Відстеження стану модалки EventsSection
+  useEffect(() => {
+    const checkEventsModalState = () => {
+      setIsEventsModalOpen(
+        document.body.classList.contains("events-modal-open")
+      );
+    };
+
+    checkEventsModalState();
+
+    const observer = new MutationObserver(checkEventsModalState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Відстеження стану модалки TrenersModal
+  useEffect(() => {
+    const checkTrenersModalState = () => {
+      setIsTrenersModalOpen(
+        document.body.classList.contains("treners-modal-open")
+      );
+    };
+
+    checkTrenersModalState();
+
+    const observer = new MutationObserver(checkTrenersModalState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   // Не показуємо хедер на сторінках order-success та checkout
@@ -153,53 +252,42 @@ export default function Header() {
     return null;
   }
 
+  // Перевірка безпосередньо в рендері для надійності
+  const shouldHideHeader =
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 1000px)").matches &&
+    (document.body.classList.contains("instructing-slider-open") ||
+      document.body.classList.contains("events-modal-open") ||
+      document.body.classList.contains("treners-modal-open"));
+
+  // Перевірка для InstructingSlider на всіх пристроях
+  const shouldHideHeaderForSlider =
+    typeof window !== "undefined" &&
+    document.body.classList.contains("instructing-slider-open");
+
+  // Не показуємо хедер на мобільних, коли модалка InstructingSlider, EventsSection або TrenersModal відкрита
+  // Або на всіх пристроях, коли відкритий InstructingSlider
+  if (
+    shouldHideHeaderForSlider ||
+    (isMobile && (isSliderOpen || isEventsModalOpen || isTrenersModalOpen)) ||
+    shouldHideHeader
+  ) {
+    return null;
+  }
+
   return (
-    <header className={`${s.header} ${headerClass}`}>
+    <header
+      className={`${s.header} ${headerClass || ""} ${
+        isMobile ? s.mobileHeader : ""
+      }`}
+      suppressHydrationWarning
+    >
       <div className={s.headerTrainerProfileBlock}>
-        <div className={s.left}>
-          <button className={s.burger} onClick={toggleMenu}>
-            <BurgerMenu />
-          </button>
-          <nav className={s.nav}>
-            {mainNavigation.slice(2).map((item) => (
-              <Link key={item.href} href={item.href}>
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className={s.logo}>
-          <div className={s.LogoIcon}>
-            <LogoHeader />
-          </div>
-          <Link href="/">B.F.B Fitness</Link>
-        </div>
-
-        <div className={s.right}>
-          <div className={s.phone}>
-            <NumberHeader />
-            <div className={s.contacts}>
-              <p className={s.contactText}>Ми на зв&apos;язку:</p>
-              <div className={s.phoneWrapper}>
-                <a href="tel:+380443338598" className={s.phoneLink}>
-                  +38 (044) 333 85 98
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className={s.headerActions}>
-            <div className={s.icons}>
-              <button className={s.iconBtn} onClick={openFav}>
-                <FavoriteHeader />
-                {favoriteCount > 0 && (
-                  <span className={s.badge}>{favoriteCount}</span>
-                )}
-              </button>
-              <button className={s.iconBtn} onClick={openCart}>
-                <BasketHeader />
-                {cartCount > 0 && <span className={s.badge}>{cartCount}</span>}
+        {isMobile ? (
+          <>
+            <div className={s.mobileLeft}>
+              <button className={s.burger} onClick={toggleMenu}>
+                <BurgerMenu />
               </button>
               <button
                 className={s.iconBtn}
@@ -217,18 +305,161 @@ export default function Header() {
               </button>
             </div>
 
-            <div className={s.authButtons}>
-              {isHydrated && !isLoggedIn && (
-                <button
-                  className={s.register}
-                  onClick={() => setIsRegisterOpen(true)}
-                >
-                  Реєстрація
-                </button>
-              )}
+            <div className={s.mobileLogo}>
+              <Link href="/">
+                <div className={s.LogoIcon}>
+                  {headerClass.includes(s.headerScrolled) ? (
+                    <Image
+                      src="/Vector2.svg"
+                      alt="B.F.B Fitness Logo"
+                      width={48}
+                      height={48}
+                      style={{ objectFit: "contain" }}
+                    />
+                  ) : (
+                    <Image
+                      src="/Vector6.svg"
+                      alt="B.F.B Fitness Logo"
+                      width={34}
+                      height={43}
+                      style={{ objectFit: "contain" }}
+                    />
+                  )}
+                </div>
+              </Link>
             </div>
-          </div>
-        </div>
+
+            <div className={s.mobileRight}>
+              <button
+                className={`${s.iconBtn} ${isFavOpen ? s.active : ""}`}
+                onClick={toggleFav}
+                title="Обране"
+              >
+                <FavoriteHeader />
+                {favoriteCount > 0 && (
+                  <span className={s.badge}>{favoriteCount}</span>
+                )}
+              </button>
+              <button
+                className={`${s.iconBtn} ${isCartOpen ? s.active : ""}`}
+                onClick={toggleCart}
+                title="Кошик"
+              >
+                <BasketHeader />
+                {cartCount > 0 && <span className={s.badge}>{cartCount}</span>}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={s.left}>
+              <button className={s.burger} onClick={toggleMenu}>
+                <BurgerMenu />
+              </button>
+              <nav className={s.nav}>
+                {mainNavigation.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className={s.logo}>
+              <Link href="/">
+                <div className={s.LogoIcon}>
+                  {isLightTheme || pathname.startsWith("/products") ? (
+                    <Image
+                      src="/Vector2.svg"
+                      alt="B.F.B Fitness Logo"
+                      width={48}
+                      height={48}
+                      style={{ objectFit: "contain" }}
+                    />
+                  ) : (
+                    <LogoHeader />
+                  )}
+                </div>
+              </Link>
+              <Link href="/">B.F.B Fitness</Link>
+            </div>
+
+            <div className={s.right}>
+              <div className={s.phone}>
+                <NumberHeader />
+                <div className={s.contacts}>
+                  <p className={s.contactText}>Ми на зв&apos;язку:</p>
+                  <div className={s.phoneWrapper}>
+                    <a href="tel:+380954372575" className={s.phoneLink}>
+                      +380 95 437 25 75
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className={s.headerActions}>
+                <div className={s.icons}>
+                  <button
+                    className={`${s.iconBtn} ${isFavOpen ? s.active : ""}`}
+                    onClick={toggleFav}
+                    title="Обране"
+                  >
+                    <FavoriteHeader />
+                    {favoriteCount > 0 && (
+                      <span className={s.badge}>{favoriteCount}</span>
+                    )}
+                  </button>
+                  <button
+                    className={`${s.iconBtn} ${isCartOpen ? s.active : ""}`}
+                    onClick={toggleCart}
+                    title="Кошик"
+                  >
+                    <BasketHeader />
+                    {cartCount > 0 && (
+                      <span className={s.badge}>{cartCount}</span>
+                    )}
+                  </button>
+                  <button
+                    className={`${s.iconBtn} ${s.userBtn}`}
+                    onClick={handleUserIconClick}
+                    onMouseEnter={() => !isMobile && setIsUserHovered(true)}
+                    onMouseLeave={() => setIsUserHovered(false)}
+                    title={
+                      isHydrated
+                        ? isLoggedIn
+                          ? "Особистий кабінет"
+                          : "Увійти"
+                        : "Профіль"
+                    }
+                    suppressHydrationWarning
+                  >
+                    {!isMobile && isUserHovered ? (
+                      <Image
+                        src="/images/fi_232123248.svg"
+                        alt="User hover icon"
+                        width={16}
+                        height={16}
+                      />
+                    ) : (
+                      <UserHeader />
+                    )}
+                  </button>
+                </div>
+
+                <div className={s.authButtons}>
+                  {isHydrated && !isLoggedIn && (
+                    <button
+                      className={s.register}
+                      onClick={() => setIsRegisterOpen(true)}
+                    >
+                      Реєстрація
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <RegisterModal
@@ -236,8 +467,8 @@ export default function Header() {
         onClose={() => setIsRegisterOpen(false)}
       />
       <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
+        isOpen={isLoginModalOpen}
+        onClose={closeLoginModal}
         onSubmit={handleLoginSuccess}
       />
       <CartModal />
@@ -294,22 +525,30 @@ export default function Header() {
                 <div className={s.contactRow}>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Телефон</h5>
-                    <p className={s.contactValue}>+38 (044) 333 85 98</p>
+                    <p className={s.contactValue}>
+                      {contactData.phone || "+380 95 437 25 75"}
+                    </p>
                   </div>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Час роботи у вихідні:</h5>
-                    <p className={s.contactValue}>10:00 - 20:00</p>
+                    <p className={s.contactValue}>
+                      {contactData.weekends || "10:00 - 20:00"}
+                    </p>
                   </div>
                 </div>
 
                 <div className={s.contactRow}>
                   <div className={s.contactItem}>
-                    <h5 className={s.contactLabel}>Email:</h5>
-                    <p className={s.contactValue}>bfb@gmail.com</p>
+                    <h5 className={s.contactLabel}>Email</h5>
+                    <p className={s.contactValue}>
+                      {contactData.email || "bfb.board.ukraine@gmail.com"}
+                    </p>
                   </div>
                   <div className={s.contactItem}>
                     <h5 className={s.contactLabel}>Час роботи у будні:</h5>
-                    <p className={s.contactValue}>10:00 - 20:00</p>
+                    <p className={s.contactValue}>
+                      {contactData.weekdays || "10:00 - 20:00"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -317,23 +556,54 @@ export default function Header() {
               <div className={s.addressSection}>
                 <h5 className={s.contactLabel}>Адреса головного залу:</h5>
                 <p className={s.contactValue}>
-                  м. Київ, Хрещатик, будинок 23/A
+                  {contactData.address || "м. Київ, Хрещатик, будинок 23/A"}
                 </p>
               </div>
 
               <div className={s.socialSection}>
-                <div className={s.socialIcon}>
-                  <InstagramIcon />
-                </div>
-                <div className={s.socialIcon}>
-                  <FacebookIcon />
-                </div>
-                <div className={s.socialIcon}>
-                  <TelegramIcon />
-                </div>
-                <div className={s.socialIcon}>
-                  <WhatsappIcon />
-                </div>
+                {contactData.socialLinks.length > 0 ? (
+                  contactData.socialLinks.map((social, index) => {
+                    const iconMap: Record<string, React.ComponentType> = {
+                      Instagram: InstagramIcon,
+                      Facebook: FacebookIcon,
+                      Telegram: TelegramIcon,
+                      WhatsApp: WhatsappIcon,
+                    };
+                    const Icon = iconMap[social.name] || null;
+                    if (!Icon) return null;
+                    return (
+                      <a
+                        key={index}
+                        href={social.link || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={s.socialIcon}
+                      >
+                        <Icon />
+                      </a>
+                    );
+                  })
+                ) : (
+                  <>
+                    <a
+                      href="https://www.instagram.com/bfb.official_ukraine?igsh=enFybWFmZGE3NG8z"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={s.socialIcon}
+                    >
+                      <InstagramIcon />
+                    </a>
+                    <div className={s.socialIcon}>
+                      <FacebookIcon />
+                    </div>
+                    <div className={s.socialIcon}>
+                      <TelegramIcon />
+                    </div>
+                    <div className={s.socialIcon}>
+                      <WhatsappIcon />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

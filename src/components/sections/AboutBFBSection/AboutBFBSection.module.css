@@ -4,3 +4,9 @@
   flex-direction: column;
   gap: 200px;
 }
+
+@media (max-width: 1024px) {
+  .aboutBFB {
+    gap: mvw(100);
+  }
+}

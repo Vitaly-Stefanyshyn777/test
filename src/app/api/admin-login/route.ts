@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(_req: NextRequest) {
   try {
-    const username = process.env.ADMIN_USER;
-    const password = process.env.ADMIN_PASS;
+    const normalize = (v?: string) => (v || "").replace(/^['"]|['"]$/g, "");
+    const username = normalize(process.env.ADMIN_USER);
+    const password = normalize(process.env.ADMIN_PASS);
     const upstreamBase = process.env.UPSTREAM_BASE;
 
     if (!username || !password || !upstreamBase) {

@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "./ButtonFilter.module.css";
+import { ApplyFilterButton } from "@/components/ui/Buttons/ApplyFilterButton";
+import { ResetFilterButton } from "@/components/ui/Buttons/ResetFilterButton";
 
 interface FilterActionsProps {
   onApply: () => void;
@@ -14,12 +16,12 @@ export const ButtonFilter = ({
 }: FilterActionsProps) => {
   return (
     <div className={styles.filterActions}>
-      <button className={styles.applyBtn} onClick={onApply} disabled={loading}>
+      <ApplyFilterButton onClick={onApply} disabled={loading}>
         {loading ? "Завантаження..." : "Застосувати фільтри"}
-      </button>
-      <button className={styles.resetBtn} onClick={onReset} disabled={loading}>
+      </ApplyFilterButton>
+      <ResetFilterButton onClick={onReset} disabled={loading}>
         Скинути всі налаштування
-      </button>
+      </ResetFilterButton>
     </div>
   );
 };

@@ -1,3 +1,9 @@
+.trainerProfileWrapper {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
 .trainerProfile {
   background-color: #f8f9fa;
   display: flex;
@@ -35,6 +41,8 @@
 #locations {
   scroll-margin-top: 140px;
   padding-top: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 #overview {
@@ -56,7 +64,7 @@
   display: flex;
   flex-direction: column;
   background: var(--white);
-  z-index: 100;
+
   --overview-height: 0px;
 }
 
@@ -167,6 +175,7 @@
   font-size: 16px;
   line-height: 140%;
   color: rgba(14, 14, 14, 0.8);
+  opacity: 0.4;
 }
 
 .name {
@@ -174,7 +183,6 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -257,7 +265,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -278,7 +285,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -295,7 +301,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -308,6 +313,7 @@
   border-radius: 8px;
   padding: 16px;
   background: var(--bg-color);
+  width: fit-content;
 }
 
 .favoriteExercise {
@@ -319,11 +325,25 @@
 }
 
 .exerciseText {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.exerciseTag {
+  background: var(--bg-color);
+  background: var(--bg-color);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
   color: var(--black);
 }
 
@@ -333,19 +353,17 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 
 .exerciseItem {
   border-radius: 0.625vw;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.83333vw;
+
+  /* padding: 0.83333vw; */
   font-size: 1.1rem;
   display: flex;
   width: fit-content;
-  background: var(--bg-color);
 }
 
 .exerciseIcon {
@@ -379,7 +397,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 .IconsBlock {
@@ -418,7 +435,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -483,8 +499,8 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
+  margin-top: 20px; /* відступ між заголовком і описом */
 }
 
 .period {
@@ -499,13 +515,11 @@
   background: none;
   border: none;
   cursor: pointer;
-  text-decoration: underline;
 
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
@@ -687,6 +701,7 @@
   font-size: 1.2rem;
   color: #6f42c1;
   text-decoration: none;
+
 }
 
 .loading,
@@ -725,6 +740,15 @@
   font-size: 16px;
   line-height: 100%;
   color: var(--white);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  display: none;
+}
+
+.contactButton:hover {
+  background: var(--black);
+  color: var(--white);
+  cursor: pointer;
 }
 
 .contactButton:active {
@@ -744,7 +768,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: 0.03em;
   color: var(--black);
 }
 
@@ -761,6 +784,12 @@
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+.galleryImageGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .galleryImage {
@@ -830,4 +859,357 @@
   background: #000;
   border-radius: 50%;
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  .trainerProfileWrapper {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    padding-bottom: mvw(240);
+    margin-bottom: mvw(120);
+    overflow: visible;
+    min-height: auto;
+  }
+
+  .trainerProfile {
+    flex-direction: column;
+    padding: mvw(24) mvw(16);
+    gap: mvw(24);
+    background-color: var(--white);
+    margin-bottom: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 0;
+    padding-top: 0;
+    position: relative;
+    display: none;
+  }
+
+  .mainContent {
+    padding: 0;
+    width: 100%;
+  }
+
+  .overview {
+    border-radius: 0;
+    flex-direction: column;
+    gap: mvw(24);
+    padding: 0;
+  }
+
+  .profileInfo {
+    flex-direction: column;
+    gap: mvw(24);
+  }
+
+  .superPowerContainer {
+    width: 100%;
+    gap: mvw(24);
+    display: contents; /* Розпаковуємо контейнер для використання order */
+  }
+
+  .headerContainer {
+    width: 100%;
+    gap: mvw(24);
+    display: contents; /* Розпаковуємо контейнер для використання order */
+  }
+
+  .profileImage {
+    position: relative;
+    top: 0;
+    width: 100%;
+    order: 1;
+  }
+
+  .headerBlock {
+    order: 2;
+  }
+
+  .superPowerBlock {
+    order: 3;
+  }
+
+  .specializationsContainer {
+    order: 4;
+  }
+
+  .workExperienceContainer {
+    order: 5;
+  }
+
+  .gallerySection {
+    order: 6;
+  }
+
+  .ContactsContainer {
+    display: none; /* Приховуємо контакти в Overview, вони будуть в TrainerMap */
+  }
+
+  .avatar {
+    width: 100%;
+    height: auto;
+    min-height: mvw(300);
+    border-radius: mvw(12);
+  }
+
+  .headerBlock {
+    gap: mvw(16);
+  }
+
+  .header {
+    gap: mvw(16);
+  }
+
+  .title {
+    font-size: mvw(14);
+    line-height: 140%;
+    opacity: 0.4;
+  }
+
+  .name {
+    font-size: mvw(24);
+    line-height: 120%;
+  }
+
+  .info {
+    gap: mvw(20);
+  }
+
+  .infoItem {
+    gap: mvw(10);
+    font-size: mvw(14);
+  }
+
+  .infoIcon {
+    font-size: mvw(16);
+  }
+
+  .infoIcon svg {
+    width: mvw(22);
+    height: mvw(22);
+  }
+
+  .infoText {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .superPowerBlock {
+    gap: mvw(20);
+  }
+
+  .superPower {
+    gap: mvw(16);
+  }
+
+  .superPower h3 {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .superPower p {
+    font-size: mvw(14);
+    line-height: 140%;
+    padding: mvw(12);
+  }
+
+  .favoriteExercise {
+    gap: mvw(16);
+  }
+
+  .favoriteExercise h3 {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .exerciseItem {
+    padding: mvw(12);
+    gap: mvw(8);
+    border-radius: mvw(8);
+  }
+
+  .exerciseIcon {
+    font-size: mvw(16);
+  }
+
+  .exerciseIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .exerciseText {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .ContactsContainer {
+    gap: mvw(16);
+  }
+
+  .ContactsText {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .IconsContainer {
+    gap: mvw(12);
+  }
+
+  .IconsBlock {
+    width: mvw(44);
+    height: mvw(44);
+    padding: mvw(10);
+    border-radius: mvw(12);
+  }
+
+  .IconsBlock svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .contactButton {
+    padding: mvw(16) mvw(24);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    line-height: 100%;
+  }
+
+  .specializationsContainer {
+    gap: mvw(16);
+  }
+
+  .specializations {
+    gap: mvw(16);
+  }
+
+  .specializations h3 {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .tags {
+    gap: mvw(8);
+  }
+
+  .tag {
+    padding: mvw(10) mvw(14);
+    font-size: mvw(12);
+    line-height: 140%;
+    border-radius: mvw(8);
+  }
+
+  .workExperienceContainer {
+    gap: mvw(26);
+  }
+
+  .workExperienceTitle {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .workExperienceBlock {
+    gap: mvw(16);
+  }
+
+  .experienceEntryBlock {
+    gap: mvw(12);
+  }
+
+  .experienceHeaderContainer {
+    gap: mvw(8);
+  }
+
+  .experienceHeader {
+    align-items: flex-start;
+    gap: mvw(8);
+  }
+
+  .company {
+    font-size: mvw(14);
+    line-height: 135%;
+  }
+
+  .period {
+    font-size: mvw(14);
+    line-height: 135%;
+  }
+
+  .experienceDescription {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .showMore {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.6);
+  }
+
+  .gallerySection {
+    gap: mvw(16);
+  }
+
+  .galleryTitle {
+    font-size: mvw(16);
+    line-height: 120%;
+  }
+
+  .galleryContainer {
+    height: mvw(300);
+    border-radius: mvw(12);
+  }
+
+  .galleryImageWrapper {
+    border-radius: mvw(12);
+  }
+
+  .galleryImage {
+    border-radius: mvw(21);
+  }
+
+  .galleryImageGrid {
+    gap: mvw(8);
+  }
+  .navContainer {
+    margin-left: 0;
+    margin-right: 0;
+    margin: 0;
+  }
+
+  .galleryContainer :global(.navContainer) {
+    bottom: mvw(12);
+    padding: mvw(8) mvw(12);
+    height: mvw(48);
+    gap: mvw(8);
+    margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .galleryContainer :global(.leftBtn),
+  .galleryContainer :global(.rightBtn) {
+    width: mvw(32);
+    height: mvw(32);
+  }
+
+  .galleryContainer :global(.leftBtn) svg,
+  .galleryContainer :global(.rightBtn) svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .galleryContainer :global(.dot),
+  .galleryContainer :global(.activeDot) {
+    width: mvw(6);
+    height: mvw(6);
+  }
 }

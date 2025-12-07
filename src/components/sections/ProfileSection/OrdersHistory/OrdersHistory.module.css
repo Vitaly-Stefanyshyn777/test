@@ -16,7 +16,6 @@
   font-weight: 500;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0;
 }
@@ -28,18 +27,24 @@
 
 .orderCard {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   background: white;
-  border-radius: 16px;
+  border-radius: 12px;
   transition: box-shadow 0.2s ease;
   align-items: flex-start;
-  padding: 32px 0px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.productImageContainer {
+  position: relative;
+  flex-shrink: 0;
 }
 
 .productImage {
-  border-radius: 12px;
-  width: 144px;
-  height: 115px;
+  border-radius: 8px;
+  width: 80px;
+  height: 80px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -50,98 +55,69 @@
   object-fit: cover;
 }
 
+.quantityBadge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  background: var(--black);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 140%;
+  color: var(--white);
+  z-index: 1;
+}
+
 .orderDetails {
   flex: 1;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.productHeader {
+  display: flex;
   align-items: flex-start;
-  gap: 24px;
-  align-items: center;
-}
-
-.rightSection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-end;
-}
-
-.productInfoBlock {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.productInfo {
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 8px;
 }
 
 .productName {
   font-family: var(--font-family);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 140%;
   color: var(--black);
+  flex: 1;
+  margin: 0;
+}
+
+.deliveryIcon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
 }
 
 .orderMeta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   flex-wrap: wrap;
-}
-
-.quantity {
-  background: var(--violet);
-  border-radius: 8px;
-  padding: 8px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-family: var(--font-family);
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 140%;
-  letter-spacing: -0.02em;
-  color: var(--white);
-}
-
-.leftSectionBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .orderDate,
 .orderNumber {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 14px;
-  color: rgba(14, 14, 14, 0.6);
-}
-
-.status {
-  padding: 4px 12px;
-  border-radius: 12px;
-  width: fit-content;
-  display: inline-block;
-
-  border-radius: 8px;
-  padding: 8px 12px;
-
-  font-family: var(--font-family);
-  font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 140%;
-  letter-spacing: -0.02em;
-  color: var(--black);
-  opacity: 0.4;
+  color: rgba(14, 14, 14, 0.6);
 }
 
 .delivered {
@@ -161,30 +137,22 @@
 .orderSummary {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.totalPrice {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 4px;
 }
 
 .totalLabel {
   font-family: var(--font-family);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 140%;
-  color: rgba(14, 14, 14, 0.4);
+  color: var(--black);
 }
 
 .price {
   font-family: var(--second-family);
   font-weight: 500;
-  font-size: 28px;
+  font-size: 20px;
   line-height: 120%;
-  letter-spacing: -0.01em;
-  /* text-align: right; */
   color: var(--black);
 }
 
@@ -192,6 +160,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 4px;
 }
 
 .repeatBtn {
@@ -200,18 +169,14 @@
   border: none;
   cursor: pointer;
   font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s ease;
-
-  border-radius: 15px;
-  padding: 16px 24px;
-
-  font-family: var(--third-family);
   font-weight: 500;
   font-size: 14px;
-  line-height: 135%;
-  color: #f9f9f9;
+  line-height: 140%;
+  transition: all 0.2s ease;
+  border-radius: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  text-align: center;
 }
 
 .repeatBtn:hover {
@@ -223,21 +188,21 @@
   background: white;
   color: var(--black);
   cursor: pointer;
-  font-weight: 700;
+  font-family: var(--font-family);
+  font-weight: 400;
   font-size: 14px;
+  line-height: 140%;
   transition: all 0.2s ease;
-
-  border: 2px solid var(--grey);
-  border-radius: 16px;
-  padding: 16px 42px;
-
-  font-family: var(--third-family);
-  line-height: 135%;
+  border: 1px solid rgba(14, 14, 14, 0.2);
+  border-radius: 12px;
+  padding: 12px 20px;
+  width: 100%;
+  text-align: center;
 }
 
 .productBtn:hover {
   background: #f5f5f5;
-  border-color: #d1d5db;
+  border-color: rgba(14, 14, 14, 0.3);
 }
 
 .divider {
@@ -260,4 +225,114 @@
   color: var(--black);
   text-align: center;
   padding: 40px 20px;
+}
+
+@media (max-width: 1000px) {
+  .ordersContainer {
+    gap: mvw(24);
+  }
+
+  .header {
+    gap: mvw(16);
+  }
+
+  .title {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .ordersList {
+    gap: mvw(16);
+  }
+
+  .orderCard {
+    gap: mvw(12);
+    padding: mvw(16);
+    border-radius: mvw(12);
+  }
+
+  .productImage {
+    width: mvw(80);
+    height: mvw(80);
+    border-radius: mvw(8);
+  }
+
+  .quantityBadge {
+    top: mvw(-4);
+    left: mvw(-4);
+    border-radius: mvw(6);
+    padding: mvw(2) mvw(6);
+    font-size: mvw(10);
+  }
+
+  .orderDetails {
+    gap: mvw(12);
+  }
+
+  .productHeader {
+    gap: mvw(8);
+  }
+
+  .productName {
+    font-size: mvw(16);
+    line-height: 140%;
+  }
+
+  .deliveryIcon {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .deliveryIcon svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .orderMeta {
+    gap: mvw(8);
+  }
+
+  .orderDate,
+  .orderNumber {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .orderSummary {
+    gap: mvw(4);
+  }
+
+  .totalLabel {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .price {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .orderActions {
+    gap: mvw(8);
+    margin-top: mvw(4);
+  }
+
+  .repeatBtn {
+    font-size: mvw(14);
+    line-height: 140%;
+    border-radius: mvw(12);
+    padding: mvw(12) mvw(20);
+  }
+
+  .productBtn {
+    font-size: mvw(14);
+    line-height: 140%;
+    border-radius: mvw(12);
+    padding: mvw(12) mvw(20);
+    border-width: mvw(1);
+  }
+
+  .divider {
+    height: mvw(1);
+  }
 }

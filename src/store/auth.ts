@@ -8,19 +8,7 @@ function readInitialAuth(): {
   isLoggedIn: boolean;
   isHydrated: boolean;
 } {
-  if (typeof window === "undefined") {
-    return { token: null, user: null, isLoggedIn: false, isHydrated: false };
-  }
-  try {
-    const token =
-      localStorage.getItem("bfb_token") ||
-      localStorage.getItem("bfb_token_old");
-    const raw = localStorage.getItem("bfb_user");
-    const user = raw ? (JSON.parse(raw) as AuthUser) : null;
-    return { token, user, isLoggedIn: !!token, isHydrated: true };
-  } catch {
-    return { token: null, user: null, isLoggedIn: false, isHydrated: true };
-  }
+  return { token: null, user: null, isLoggedIn: false, isHydrated: false };
 }
 const initial = readInitialAuth();
 
@@ -29,6 +17,7 @@ export interface AuthUser {
   email?: string;
   nicename?: string;
   displayName?: string;
+  avatar?: string;
 }
 
 interface AuthState {
@@ -36,6 +25,7 @@ interface AuthState {
   token: string | null;
   isLoggedIn: boolean;
   isHydrated: boolean;
+  isLoginModalOpen: boolean;
   setAuth: (token: string, user?: AuthUser | null) => void;
   setUser: (user: AuthUser | null) => void;
   clear: () => void;
@@ -43,6 +33,8 @@ interface AuthState {
   logout: () => Promise<void>;
   initAuth: () => void;
   checkTokenValidity: () => Promise<boolean>;
+  openLoginModal: () => void;
+  closeLoginModal: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -52,158 +44,97 @@ export const useAuthStore = create<AuthState>()(
       token: initial.token,
       isLoggedIn: initial.isLoggedIn,
       isHydrated: initial.isHydrated,
+      isLoginModalOpen: false,
 
       setAuth: (token: string, user: AuthUser | null = null) => {
-        localStorage.setItem("bfb_token", token);
-        if (user) {
-          localStorage.setItem("bfb_user", JSON.stringify(user));
-        }
-
         set({ token, user, isLoggedIn: true });
       },
 
       setUser: (user: AuthUser | null) => {
-        if (user) {
-          localStorage.setItem("bfb_user", JSON.stringify(user));
-        } else {
-          localStorage.removeItem("bfb_user");
-        }
         set({ user });
       },
 
       clear: () => {
-        localStorage.removeItem("bfb_token");
-        localStorage.removeItem("bfb_token_old");
-        localStorage.removeItem("bfb_user");
         set({ token: null, user: null, isLoggedIn: false });
       },
 
       initAuth: () => {
-        console.log("🔐 [AuthStore] initAuth() викликано");
-        if (typeof window !== "undefined") {
-          const savedToken = localStorage.getItem("bfb_token");
-          const savedUserRaw = localStorage.getItem("bfb_user");
-
-          console.log("🔐 [AuthStore] localStorage дані:", {
-            hasToken: !!savedToken,
-            tokenLength: savedToken?.length || 0,
-            hasUser: !!savedUserRaw,
-            userData: savedUserRaw ? "present" : "missing",
-          });
-
-          let parsedUser: AuthUser | null = null;
-          if (savedUserRaw) {
-            try {
-              parsedUser = JSON.parse(savedUserRaw);
-              console.log("🔐 [AuthStore] Користувач розпарсено:", {
-                id: parsedUser?.id,
-                email: parsedUser?.email,
-                displayName: parsedUser?.displayName,
-              });
-            } catch (error) {
-              console.error(
-                "🔐 [AuthStore] Помилка парсингу користувача:",
-                error
-              );
-              parsedUser = null;
-              localStorage.removeItem("bfb_user");
-            }
-          }
-
-          if (savedToken) {
-            console.log("🔐 [AuthStore] Токен знайдено, встановлюю стан...");
-            set({
-              token: savedToken,
-              user: parsedUser,
-              isLoggedIn: true,
-              isHydrated: true,
-            });
-
-            console.log(
-              "🔐 [AuthStore] Відправляю токен на сервер для встановлення кукі..."
-            );
-            fetch("/api/set-user-cookie", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token: savedToken }),
-            })
-              .then((response) => {
-                console.log("🔐 [AuthStore] set-user-cookie відповідь:", {
-                  status: response.status,
-                  ok: response.ok,
-                });
-                return response;
-              })
-              .catch((error) => {
-                console.error("🔐 [AuthStore] Помилка set-user-cookie:", error);
-              })
-              .finally(() => {
-                console.log("🔐 [AuthStore] Перевіряю валідність токена...");
-                get().checkTokenValidity();
-              });
-          } else {
-            console.log(
-              "🔐 [AuthStore] Токен не знайдено, встановлюю тільки isHydrated"
-            );
-            set({ isHydrated: true });
-          }
-        } else {
-          console.log("🔐 [AuthStore] SSR режим, пропускаю initAuth");
-        }
+        set({ isHydrated: true });
       },
 
       checkTokenValidity: async () => {
         const { token, user } = get();
 
-        console.log("🔐 [AuthStore] checkTokenValidity() викликано", {
-          hasToken: !!token,
-          tokenLength: token?.length || 0,
-          hasUser: !!user,
-        });
-
         if (!token) {
-          console.log("🔐 [AuthStore] Токен відсутній, повертаю false");
           return false;
         }
 
         try {
-          console.log("🔐 [AuthStore] Запитую профіль користувача...");
-          const profile = await getMyProfile();
-          console.log("🔐 [AuthStore] Профіль отримано:", {
-            hasProfile: !!profile,
-            profileId: profile?.id,
-            profileEmail: profile?.email,
-            profileName: profile?.name,
-          });
+          type UserProfile = {
+            id?: number | string;
+            name?: string;
+            first_name?: string;
+            last_name?: string;
+            email?: string;
+            user_email?: string;
+            slug?: string;
+            meta?: { img_link_data_avatar?: string } | null;
+            avatar?: string;
+            avatar_urls?: Record<string, string>;
+          };
+
+          const profile = (await getMyProfile()) as UserProfile | null;
 
           if (!profile) {
-            console.log("🔐 [AuthStore] Профіль не знайдено, повертаю false");
             return false;
           }
 
-          const resolvedName =
-            profile?.name ||
-            `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+          // SSOT: first_name + last_name має бути головним джерелом імені
+          const fullName = `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+          const resolvedName = fullName || profile?.name || "";
           const resolvedEmail =
             profile?.email || profile?.user_email || user?.email;
+
+          // Зберігаємо попередній avatar навіть якщо стор ще порожній (беремо з localStorage)
+          let previousSavedAvatar: string | undefined;
+          try {
+            const raw = localStorage.getItem("bfb_user");
+            if (raw) {
+              previousSavedAvatar = (JSON.parse(raw) as AuthUser | null)?.avatar || undefined;
+            }
+          } catch {}
 
           const nextUser: AuthUser = {
             id: String(profile?.id || user?.id || ""),
             email: resolvedEmail,
             nicename: profile?.slug || user?.nicename,
             displayName: resolvedName || user?.displayName,
+            // Пріоритет на клієнті: meta.img_link_data_avatar → avatar → avatar_urls["96"] → попередній user.avatar
+            // Додатково: не перезаписуємо клієнтський uploads-URL, якщо сервер повертає порожнє/граватар
+            avatar: (() => {
+              const metaAvatar = profile?.meta?.img_link_data_avatar;
+              const anyAvatar = profile?.avatar;
+              const avatar96 = profile?.avatar_urls?.["96"];
+
+              const serverCandidate = metaAvatar || anyAvatar || avatar96 || undefined;
+              const serverHasUploads =
+                typeof serverCandidate === "string" &&
+                serverCandidate.includes("/wp-content/uploads/");
+              const clientHasUploads =
+                typeof user?.avatar === "string" &&
+                user.avatar.includes("/wp-content/uploads/");
+
+              if (!serverHasUploads && clientHasUploads) {
+                return user!.avatar;
+              }
+
+              return serverCandidate || user?.avatar || previousSavedAvatar;
+            })(),
           };
 
-          console.log("🔐 [AuthStore] Оновлюю дані користувача:", nextUser);
-          localStorage.setItem("bfb_user", JSON.stringify(nextUser));
           set({ user: nextUser, isLoggedIn: true });
-          console.log("🔐 [AuthStore] Токен валідний, автологін успішний!");
           return true;
-        } catch (error) {
-          console.error("🔐 [AuthStore] Помилка перевірки токена:", error);
-          console.log(
-            "🔐 [AuthStore] Повертаю true (токен вважається валідним)"
-          );
+        } catch {
           return true;
         }
       },
@@ -212,34 +143,62 @@ export const useAuthStore = create<AuthState>()(
         try {
           const data = await loginApi(credentials);
 
+          // Після логіну одразу отримуємо числовий id через /users/me
+          let numericId: string | undefined;
+          try {
+            const me = await getMyProfile();
+            if (me?.id) numericId = String(me.id);
+          } catch {}
+
           const user = {
-            id: data.user_nicename,
+            id: numericId || data.user_nicename,
             email: data.user_email,
             displayName: data.user_display_name,
           };
 
-          localStorage.setItem("bfb_token", data.token);
-          localStorage.setItem("bfb_user", JSON.stringify(user));
-
-          set({
-            user,
-            token: data.token,
-            isLoggedIn: true,
-          });
+          set({ user, token: data.token, isLoggedIn: true });
         } catch (error) {
           throw error;
         }
       },
 
       logout: async () => {
-        localStorage.removeItem("bfb_token");
-        localStorage.removeItem("bfb_token_old");
-        localStorage.removeItem("bfb_user");
+        // Спочатку очищаємо стор
         set({ user: null, token: null, isLoggedIn: false });
+        
+        // Очищаємо всі дані з localStorage
+        if (typeof window !== "undefined") {
+          try {
+            // Очищаємо токени користувача
+            localStorage.removeItem("bfb_token");
+            localStorage.removeItem("bfb_token_old");
+            localStorage.removeItem("wp_jwt");
+            localStorage.removeItem("wp_jwt_override");
+            
+            // Очищаємо zustand persist (bfb-auth)
+            localStorage.removeItem("bfb-auth");
+            
+            // Очищаємо інші дані користувача
+            localStorage.removeItem("bfb_user");
+            
+            // Очищаємо тимчасові дані форм
+            localStorage.removeItem("trainer_certificates_preview");
+            localStorage.removeItem("orderData");
+            localStorage.removeItem("userLocationConfirmed");
+            localStorage.removeItem("userLocation");
+          } catch (error) {
+            console.error("[logout] Помилка очищення localStorage:", error);
+          }
+        }
+        
+        // Очищаємо httpOnly cookie
         try {
           await fetch("/api/set-user-cookie", { method: "DELETE" });
         } catch {}
       },
+
+      openLoginModal: () => set({ isLoginModalOpen: true }),
+      closeLoginModal: () => set({ isLoginModalOpen: false }),
     }),
     {
       name: "bfb-auth",

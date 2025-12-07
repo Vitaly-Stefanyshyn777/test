@@ -78,12 +78,30 @@ const PurchasedCourses: React.FC<PurchasedCoursesProps> = ({
         }
 
         setIsLoading(true);
-        const userId = parseInt(user.id);
+        let userId = Number(user.id);
+        if (!Number.isFinite(userId)) {
+          // резолвимо числовий id через users/me
+          try {
+            const res = await fetch(
+              "/api/proxy?" +
+                new URLSearchParams({
+                  path: "/wp-json/wp/v2/users/me?context=edit",
+                }).toString(),
+              { headers: { "x-internal-admin": "1" } }
+            );
+            if (res.ok) {
+              const me = (await res.json()) as { id?: number };
+              userId = Number(me?.id);
+            }
+          } catch {}
+        }
+        if (!Number.isFinite(userId)) {
+          setError("Не вдалося визначити користувача");
+          return;
+        }
         const data = await fetchPurchasedProducts(userId, token || undefined);
-        console.log("[PurchasedCourses] response:", data);
         setPurchasedProducts(data);
       } catch (err) {
-        console.error("[PurchasedCourses] Error:", err);
         setError("Не вдалося завантажити придбані курси");
       } finally {
         setIsLoading(false);

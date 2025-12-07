@@ -1,22 +1,83 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import styles from "./TrainerProfile.module.css";
-import { CloudUploadIcon } from "@/components/Icons/Icons";
+import { CloudUploadIcon, DumpUploadIcon } from "@/components/Icons/Icons";
 
-type Props = { onChange?: (files: File[]) => void };
+type Props = {
+  onChange?: (files: File[]) => void;
+  initialCertificates?: string[]; // URL сертифікатів з профілю
+  onGetCertificatesUrls?: (getUrls: () => string[]) => void; // Callback для отримання поточного стану сертифікатів
+  onGetCertificatesFiles?: (getFiles: () => File[]) => void; // Callback для отримання локальних файлів для завантаження
+};
 import { uploadCoachMedia } from "@/lib/bfbApi";
 import { useAuthStore } from "@/store/auth";
 
-export default function CertificatesSection({ onChange }: Props) {
+export default function CertificatesSection({
+  onChange,
+  initialCertificates = [],
+  onGetCertificatesUrls,
+  onGetCertificatesFiles,
+}: Props) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
-  const previews = useMemo(
-    () => files.map((f) => URL.createObjectURL(f)),
-    [files]
+  const [serverCertificates, setServerCertificates] = useState<string[]>(
+    initialCertificates
   );
+  const [isMobile, setIsMobile] = useState(false);
+  const uploadInputId = "trainer-cert-upload";
+  
+  // Комбінуємо прев'ю з локальних файлів та URL з сервера
+  const previews = useMemo(() => {
+    const filePreviews = files.map((f) => URL.createObjectURL(f));
+    return [...serverCertificates, ...filePreviews];
+  }, [files, serverCertificates]);
+  
   const token = useAuthStore((s) => s.token);
+
+  // Використовуємо ref для зберігання функцій, щоб уникнути нескінченного циклу
+  const getCertificatesUrlsRef = useRef<() => string[]>(() => serverCertificates);
+  const getCertificatesFilesRef = useRef<() => File[]>(() => files);
+
+  // Оновлюємо ref при зміні стану
+  useEffect(() => {
+    getCertificatesUrlsRef.current = () => serverCertificates;
+    getCertificatesFilesRef.current = () => files;
+  }, [serverCertificates, files]);
+
+  // Надаємо функції для отримання поточного стану сертифікатів та файлів батьківському компоненту
+  useEffect(() => {
+    if (onGetCertificatesUrls) {
+      onGetCertificatesUrls(() => getCertificatesUrlsRef.current());
+    }
+    if (onGetCertificatesFiles) {
+      onGetCertificatesFiles(() => getCertificatesFilesRef.current());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onGetCertificatesUrls, onGetCertificatesFiles]);
+
+  // Оновлюємо сертифікати з профілю, коли вони змінюються
+  useEffect(() => {
+    if (initialCertificates === undefined) {
+      // Якщо initialCertificates undefined, нічого не робимо
+      return;
+    }
+    
+    if (Array.isArray(initialCertificates)) {
+      if (initialCertificates.length > 0) {
+        setServerCertificates(initialCertificates);
+      } else {
+        // Якщо initialCertificates порожній масив, не очищаємо serverCertificates
+        // щоб не втратити дані після завантаження
+        if (process.env.NODE_ENV !== "production") {
+          console.log(
+            "[CertificatesSection] initialCertificates порожній масив, зберігаємо поточні serverCertificates"
+          );
+        }
+      }
+    }
+  }, [initialCertificates]);
 
   // Зберігаємо лише прев’ю, щоб після перезавантаження показати користувачу останній стан
   useEffect(() => {
@@ -40,6 +101,21 @@ export default function CertificatesSection({ onChange }: Props) {
     } catch {}
   }, [previews]);
 
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1000px)");
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile("matches" in e ? e.matches : (e as MediaQueryList).matches);
+    };
+    handler(mql);
+    const listener = (ev: MediaQueryListEvent) => handler(ev);
+    if (mql.addEventListener) mql.addEventListener("change", listener);
+    else mql.addListener(listener);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", listener);
+      else mql.removeListener(listener);
+    };
+  }, []);
+
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -47,37 +123,87 @@ export default function CertificatesSection({ onChange }: Props) {
     const selected = inputEl.files;
     if (!selected || selected.length === 0) return;
 
-    try {
-      setUploading(true);
-      setError(null);
+    // Перевірка розміру файлів перед завантаженням (ліміт 10 МБ)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 МБ в байтах
+    const oversizedFiles: string[] = [];
 
-      // Миттєвий аплоад у кастомний ендпоїнт для сертифікатів
-      if (token) {
-        try {
-          const resp = await uploadCoachMedia({
-            token,
-            fieldType: "img_link_data_certificate_",
-            files: Array.from(selected),
-          });
-          if (!resp?.success) {
-            throw new Error("uploadCoachMedia failed");
-          }
-        } catch (e) {
-          // навіть якщо бекенд впаде, локальне прев'ю залишимо
-          console.error("Certificates upload error:", e);
-        }
+    for (const file of Array.from(selected)) {
+      if (file.size > MAX_FILE_SIZE) {
+        oversizedFiles.push(file.name);
       }
+    }
 
-      const next = [...files, ...Array.from(selected)];
+    if (oversizedFiles.length > 0) {
+      setError(
+        `Файл${
+          oversizedFiles.length > 1 ? "и" : ""
+        } перевищують ліміт 10 МБ: ${oversizedFiles.join(", ")}`
+      );
+      if (inputEl) inputEl.value = "";
+      return;
+    }
+
+    try {
+      setError(null);
+      // Додаємо файли тільки локально, завантаження на сервер відбудеться при збереженні
+      const filesArray = Array.from(selected);
+      const next = [...files, ...filesArray];
       setFiles(next);
       onChange?.(next);
 
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[CertificatesSection] Файли додано локально:", {
+          filesCount: filesArray.length,
+          totalFiles: next.length,
+          fileNames: filesArray.map((f) => f.name),
+        });
+      }
+
       if (inputEl) inputEl.value = "";
-    } catch (e) {
+    } catch (error) {
       setError("Не вдалося додати файл");
-      console.error("Select file error:", e);
-    } finally {
-      setUploading(false);
+      if (process.env.NODE_ENV !== "production") {
+        console.error(error);
+      }
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[CertificatesSection] Видалення за індексом:", {
+        index,
+        serverCertificatesLength: serverCertificates.length,
+        filesLength: files.length,
+        previewsLength: previews.length,
+      });
+    }
+    
+    // Просто видаляємо за індексом з previews
+    // Якщо індекс в межах serverCertificates - видаляємо з serverCertificates
+    // Інакше - з files
+    if (index < serverCertificates.length) {
+      // Видаляємо з серверних сертифікатів
+      const newServerCertificates = serverCertificates.filter((_, i) => i !== index);
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[CertificatesSection] Видалення з serverCertificates:", {
+          before: serverCertificates.length,
+          after: newServerCertificates.length,
+        });
+      }
+      setServerCertificates(newServerCertificates);
+    } else {
+      // Видаляємо з локальних файлів
+      const fileIndex = index - serverCertificates.length;
+      const newFiles = files.filter((_, i) => i !== fileIndex);
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[CertificatesSection] Видалення з files:", {
+          fileIndex,
+          before: files.length,
+          after: newFiles.length,
+        });
+      }
+      setFiles(newFiles);
+      onChange?.(newFiles);
     }
   };
 
@@ -86,73 +212,84 @@ export default function CertificatesSection({ onChange }: Props) {
       <h3 className={styles.sectionTitle}>Сертифікати:</h3>
 
       <div className={styles.certificatesContainer}>
-        <div className={styles.certificatePlaceholders}>
-          {previews.length > 0
-            ? previews.map((url, i) => (
-                <div className={styles.certificatePlaceholder} key={i}>
-                  <div className={styles.certificateContent}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt={`Certificate ${i + 1}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: 8,
-                      }}
-                    />
-                  </div>
+        {previews.length > 0 && (
+          <div className={styles.certificatePlaceholders}>
+            {previews.map((url, i) => (
+              <div className={styles.certificatePlaceholder} key={i}>
+                <div className={styles.certificateContent}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`Certificate ${i + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
                 </div>
-              ))
-            : [1, 2, 3].map((i) => (
-                <div className={styles.certificatePlaceholder} key={i}>
-                  <div className={styles.certificateContent}>
-                    <div className={styles.certificateHeader}>CERTIFICATE</div>
-                    <div className={styles.certificateBody}>
-                      <div className={styles.certificateTitle}>Mind&Body</div>
-                      <div className={styles.certificateSubtitle}>
-                        Instructor Balance Functional Board
-                      </div>
-                      <div className={styles.certificateName}>
-                        Ryzhenkova Svitlana
-                      </div>
-                    </div>
-                    <div className={styles.certificateLogos}>
-                      <div className={styles.certificateLogo}>●</div>
-                      <div className={styles.certificateLogo}>●</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-        </div>
+                <button
+                  className={styles.deletePhotoBtn}
+                  onClick={() => handleDelete(i)}
+                  type="button"
+                  aria-label="Видалити сертифікат"
+                >
+                  <DumpUploadIcon className={styles.deleteIcon} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <div className={styles.uploadArea}>
+        <input
+          id={uploadInputId}
+          type="file"
+          accept="image/*"
+          multiple
+          className={styles.fileInput}
+          onChange={handleFileUpload}
+        />
+
+        {isMobile ? (
+          <div className={styles.uploadAreaOutside}>
+            <label
+              htmlFor={uploadInputId}
+              className={styles.uploadArea}
+            >
+              <div className={styles.uploadIcon}>
+                <CloudUploadIcon />
+              </div>
+              <p className={styles.uploadTextMobile}>
+                Загрузіть ваш сертифікат
+              </p>
+              {error ? (
+                <div className={styles.errorMessage}>{error}</div>
+              ) : null}
+            </label>
+            <p className={styles.uploadFormatsOutside}>
+              .pdf .doc .jpg .png до 10 МБ
+            </p>
+          </div>
+        ) : (
           <label
-            className={styles.uploadLabel}
-            style={{ opacity: uploading ? 0.6 : 1 }}
+            htmlFor={uploadInputId}
+            className={styles.uploadArea}
           >
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              className={styles.fileInput}
-              onChange={handleFileUpload}
-              disabled={uploading}
-            />
             <div className={styles.uploadIcon}>
               <CloudUploadIcon />
             </div>
             <p className={styles.uploadText}>
-              <span className={styles.uploadLink}>
-                {uploading ? "Завантаження..." : "Загрузіть"}
-              </span>{" "}
-              або перетащіть сюди файл
+              <span className={styles.uploadLink}>Загрузіть</span>
+              <span className={styles.uploadHint}>
+                {" "}
+                або перетащіть сюди файл
+              </span>
             </p>
-            <p className={styles.uploadFormats}>.pdf .doc .jpg .png до 5 МБ</p>
+            <p className={styles.uploadFormats}>.pdf .doc .jpg .png до 10 МБ</p>
+            {error ? <div className={styles.errorMessage}>{error}</div> : null}
           </label>
-          {error ? <div className={styles.errorMessage}>{error}</div> : null}
-        </div>
+        )}
       </div>
     </div>
   );

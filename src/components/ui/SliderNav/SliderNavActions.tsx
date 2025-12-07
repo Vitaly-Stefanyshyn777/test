@@ -9,6 +9,7 @@ export default function SliderNav({
   onNext,
   onDotClick,
   buttonBgColor = "var(--white)",
+  containerClassName,
 }: {
   activeIndex: number;
   dots: number;
@@ -17,9 +18,10 @@ export default function SliderNav({
   onDotClick: (idx: number) => void;
   buttonBgColor?: string;
   containerBgColor?: string;
+  containerClassName?: string;
 }) {
   return (
-    <div className={s.navContainer} style={{}}>
+    <div className={`${s.navContainer} ${containerClassName || ""}`} style={{}}>
       <button
         className={s.leftBtn}
         onClick={onPrev}

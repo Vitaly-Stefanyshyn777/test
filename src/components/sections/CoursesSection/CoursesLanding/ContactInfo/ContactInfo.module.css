@@ -5,7 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100%;
+  height: auto;
+  min-height: auto;
   backdrop-filter: blur(10px);
   background: rgba(249, 249, 249, 0.1);
   gap: 10px;
@@ -18,6 +19,7 @@
   color: white;
   justify-content: space-between;
   height: 100%;
+  min-height: auto;
 }
 
 .titleTextBlock {
@@ -33,7 +35,6 @@
   font-weight: 700;
   font-size: 40px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -42,7 +43,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -78,7 +78,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.4);
 }
 
@@ -106,7 +105,6 @@
 
 .socialIcons {
   gap: 12px;
-  padding: 20px;
 }
 
 .socialIcon {
@@ -131,4 +129,119 @@
   backdrop-filter: blur(20px);
   color: var(--white);
   border-color: var(--violet);
+}
+
+@media (max-width: 1000px) {
+  .contactInfo {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    padding: mvw(24) mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(24);
+    box-sizing: border-box;
+    height: auto;
+    min-height: auto;
+    flex-direction: column;
+    background: none;
+  }
+
+  .content {
+    gap: mvw(24);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    height: auto;
+    min-height: auto;
+    flex-direction: column-reverse;
+  }
+
+  .titleTextBlock {
+    gap: mvw(12);
+    text-align: left;
+    align-items: center;
+  }
+
+  .title {
+    font-size: mvw(28);
+    width: mvw(200);
+    line-height: 120%;
+    text-align: left;
+
+    font-family: var(--second-family);
+    font-weight: 700;
+
+    line-height: 120%;
+    text-align: center;
+    color: var(--white);
+  }
+  .description {
+    font-size: mvw(14);
+    line-height: 140%;
+    text-align: left;
+    text-align: center;
+
+    font-family: var(--font-family);
+    font-weight: 500;
+  }
+
+  .contactDetails {
+    flex-direction: column-reverse;
+    gap: mvw(16);
+    align-items: flex-start;
+  }
+
+  .contactItemBlock {
+    width: 100%;
+    gap: mvw(16);
+  }
+
+  .contactItem {
+    gap: mvw(4);
+  }
+
+  .label {
+    font-size: mvw(14);
+    line-height: 110%;
+  }
+
+  .value {
+    font-size: mvw(16);
+    line-height: 140%;
+  }
+
+  .contactIconsBlock {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .socialIcons {
+    padding: 0;
+    gap: mvw(12);
+  }
+
+  .socialIconsContainer {
+    flex-direction: row;
+    gap: mvw(12);
+  }
+
+  .socialIconBlock {
+    gap: mvw(12);
+    flex-direction: row;
+    display: flex;
+  }
+
+  .socialIcon {
+    width: mvw(58);
+    height: mvw(58);
+    /* padding: mvw(20); */
+    border-radius: mvw(16);
+    border: mvw(2) solid rgba(255, 255, 255, 0.3);
+  }
+
+  .socialIcon svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
 }

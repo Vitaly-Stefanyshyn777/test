@@ -1,10 +1,11 @@
+/* Базовий блок фільтра в сайдбарі курсів */
 .filterSection {
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 24px 24px 28px;
+  gap: 20px; /* було 30px – зменшуємо вертикальні відступи всередині секції */
+  padding: 20px 24px; /* було 24px 24px 28px – менше «повітря» зверху/знизу */
   border-bottom: 1px solid #e1e1e1;
 }
 
@@ -29,10 +30,9 @@
 }
 
 .sectionContent {
-  transition: all 0.3s ease-in-out;
   display: flex;
-  gap: 30px;
   flex-direction: column;
+  gap: 16px; /* було 30px – менший розрив між елементами контенту */
   height: auto;
   opacity: 1;
   overflow: hidden;
@@ -52,7 +52,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -75,7 +74,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 
   border: none;
@@ -94,7 +92,6 @@
 .cityInput::placeholder {
   color: #666;
   font-size: 13px;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
@@ -107,10 +104,9 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  max-height: 116px;
   overflow-y: auto;
-  padding-right: 8px;
+  /* padding-right: 8px; */
+  height: auto;
 }
 
 .checkboxGroup::-webkit-scrollbar {
@@ -151,7 +147,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--violet);
   background: none;
   border: none;
@@ -170,7 +165,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #666;
   background: none;
   border: none;
@@ -200,7 +194,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 3px;
   outline: none;
   transition: all 0.2s ease;
@@ -240,7 +234,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -304,36 +297,67 @@
   cursor: pointer;
 }
 
-.filterSection {
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 24px 24px 28px;
-}
+@media (max-width: 1000px) {
+  .filterSection {
+    padding: mvw(16) 0;
+    gap: mvw(16);
+    border-bottom: none;
+  }
 
-.filterSection:last-of-type {
-  border-bottom: none;
-  margin-bottom: 0;
-}
+  .filterSection:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
 
-.sectionTitleContainer {
-  width: auto;
-  height: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
+  .sectionTitleContainer {
+    width: 100%;
+    padding: 0;
+    margin-bottom: mvw(16);
+  }
 
-.sectionTitle {
-  font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 140%;
-  letter-spacing: -0.01em;
-  color: var(--black);
+  .sectionTitleContainer svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .sectionTitle {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(16);
+    line-height: 140%;
+    color: var(--black);
+  }
+
+  .sectionContent {
+    gap: mvw(16);
+  }
+
+  .checkboxGroup {
+    gap: mvw(14);
+    height: auto;
+  }
+
+  .checkboxLabel {
+    gap: mvw(12);
+    font-size: mvw(14);
+  }
+
+  .checkboxInput {
+    width: mvw(20);
+    height: mvw(20);
+    min-width: mvw(20);
+    min-height: mvw(20);
+    border-radius: mvw(4);
+  }
+
+  .checkboxInput:checked::after {
+    width: mvw(4);
+    height: mvw(8);
+  }
+
+  .checkboxText {
+    font-size: mvw(14);
+  }
 }
 
 .sectionContent {

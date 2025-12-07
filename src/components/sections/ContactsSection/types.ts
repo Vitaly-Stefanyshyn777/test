@@ -20,6 +20,14 @@ export type TrainerUser = {
     hl_input_text_schedule_five?: string;
     hl_input_text_schedule_two?: string;
     hl_input_text_address?: string;
+    hl_input_text_coord_lat?: string;
+    hl_input_text_coord_ln?: string;
+    coord_lat?: string;
+    coord_lng?: string;
+    latitude?: string | number;
+    longitude?: string | number;
+    lat?: string | number;
+    lng?: string | number;
   }>;
   gallery?: string | string[];
   certificate?: string | string[];

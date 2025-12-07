@@ -32,7 +32,6 @@
   font-weight: 600;
   font-size: 28px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -48,7 +47,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
@@ -63,4 +61,30 @@
   text-align: center;
   line-height: 1;
   flex-shrink: 0;
+}
+
+@media (max-width: 1000px) {
+  .userProfile {
+    gap: mvw(12);
+    padding: mvw(16);
+    border-radius: mvw(12);
+  }
+
+  .avatar {
+    width: mvw(60);
+    height: mvw(60);
+  }
+
+  .greeting {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .email {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+  .userInfo {
+    gap: mvw(4);
+  }
 }

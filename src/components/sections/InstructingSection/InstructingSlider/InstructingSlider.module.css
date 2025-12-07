@@ -6,7 +6,7 @@
   bottom: 0;
   backdrop-filter: blur(10px);
   background: rgba(14, 14, 14, 0.2);
-  z-index: 9999;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,6 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -51,6 +50,7 @@
   height: 46px;
   border: none;
   background: #f3f3f3;
+  color: var(--black);
   border-radius: 10px;
   svg {
     width: 15px;
@@ -174,4 +174,85 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
+}
+
+@media (max-width: 1000px) {
+  .overlay {
+    padding: mvw(16);
+    align-items: center;
+  }
+
+  .modalContainer {
+    max-width: mvw(343);
+    max-height: mvw(624);
+    width: 100%;
+    height: 100%;
+    border-radius: mvw(16);
+    padding: mvw(16);
+    gap: mvw(16);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modalBlock {
+    flex-shrink: 0;
+  }
+
+  .modalText {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .closeButton {
+    width: mvw(32);
+    height: mvw(32);
+    border-radius: mvw(8);
+  }
+
+  .closeButton svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .mainImageContainer {
+    flex: 1;
+    min-height: 0;
+    gap: mvw(12);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mainImageBlock {
+    flex: 1;
+    min-height: 0;
+    max-height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thumbnailContainer {
+    height: auto;
+    min-height: mvw(80);
+    gap: mvw(12);
+  }
+
+  .thumbnails {
+    gap: mvw(8);
+    padding: 0 mvw(4);
+  }
+
+  .thumbnail {
+    width: mvw(80);
+    height: mvw(80);
+    border-radius: mvw(8);
+  }
+
+  .sliderNavContainer {
+    padding: mvw(12);
+    flex-shrink: 0;
+    justify-content: flex-start;
+  }
 }

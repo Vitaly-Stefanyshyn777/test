@@ -1,10 +1,12 @@
+/* Базовий блок фільтра в сайдбарі курсів */
 .filterSection {
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 24px 24px 28px;
+  gap: 20px; /* було 30px – менший розрив між заголовком і контентом */
+  padding: 20px 24px; /* було 24px 24px 28px */
+  border-bottom: 1px solid #e1e1e1;
 }
 
 .filterSection:last-of-type {
@@ -28,10 +30,9 @@
 }
 
 .sectionContent {
-  transition: all 0.3s ease-in-out;
   display: flex;
-  gap: 30px;
   flex-direction: column;
+  gap: 16px; /* було 30px – менше «повітря» між чекбоксами/контентом */
   height: auto;
   opacity: 1;
   overflow: hidden;
@@ -51,7 +52,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -74,7 +74,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 
   border: none;
@@ -93,7 +92,6 @@
 .cityInput::placeholder {
   color: #666;
   font-size: 13px;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
@@ -106,6 +104,27 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-y: auto;
+  padding-right: 8px;
+  height: auto;
+}
+
+.checkboxGroup::-webkit-scrollbar {
+  width: 6px;
+}
+
+.checkboxGroup::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.checkboxGroup::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.checkboxGroup::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .buttonsContainer {
@@ -128,7 +147,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--violet);
   background: none;
   border: none;
@@ -147,7 +165,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #666;
   background: none;
   border: none;
@@ -168,8 +185,6 @@
   cursor: pointer;
   font-size: 14px;
   color: #555;
-  padding: 8px 0;
-  user-select: none;
 }
 
 .checkboxInput {
@@ -179,14 +194,12 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: 2px solid #ccc;
+  border: 1px solid #b4bab6;
   border-radius: 3px;
   outline: none;
   transition: all 0.2s ease;
   position: relative;
   background-color: white;
-  pointer-events: auto;
-  z-index: 1;
 }
 
 .checkboxInput:checked {
@@ -221,7 +234,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -283,4 +295,94 @@
   background: #000;
   border-radius: 50%;
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  .filterSection {
+    padding: mvw(16) 0;
+    gap: mvw(16);
+    border-bottom: none;
+  }
+
+  .filterSection:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .sectionTitleContainer {
+    width: 100%;
+    padding: 0;
+    margin-bottom: mvw(16);
+  }
+
+  .sectionTitleContainer svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .sectionTitle {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(16);
+    line-height: 140%;
+    color: var(--black);
+  }
+
+  .sectionContent {
+    gap: mvw(16);
+  }
+
+  .checkboxGroup {
+    gap: mvw(14);
+    height: auto;
+  }
+
+  .checkboxLabel {
+    gap: mvw(12);
+    font-size: mvw(14);
+  }
+
+  .checkboxInput {
+    width: mvw(20);
+    height: mvw(20);
+    min-width: mvw(20);
+    min-height: mvw(20);
+    border-radius: mvw(4);
+  }
+
+  .checkboxInput:checked::after {
+    width: mvw(4);
+    height: mvw(8);
+  }
+
+  .checkboxText {
+    font-size: mvw(14);
+  }
+}
+
+.sectionContent {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  height: auto;
+  opacity: 1;
+}
+
+.sectionContent.collapsed {
+  height: 0;
+  opacity: 0;
+}
+
+.sectionContent.expanded {
+  height: auto;
+  opacity: 1;
+}
+
+.filterSection.collapsed {
+  gap: 0;
+  border-radius: 8px;
+}
+
+.filterSection:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
 }

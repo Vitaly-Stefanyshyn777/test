@@ -39,6 +39,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
       document.body.style.position = "fixed";
       document.body.style.width = "100%";
       document.body.style.top = `-${window.scrollY}px`;
+      document.body.classList.add("instructing-slider-open");
     } else {
       const scrollY = document.body.style.top;
       document.body.style.overflow = "unset";
@@ -46,6 +47,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
       document.body.style.position = "unset";
       document.body.style.width = "unset";
       document.body.style.top = "unset";
+      document.body.classList.remove("instructing-slider-open");
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || "0") * -1);
       }
@@ -58,6 +60,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
       document.body.style.position = "unset";
       document.body.style.width = "unset";
       document.body.style.top = "unset";
+      document.body.classList.remove("instructing-slider-open");
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || "0") * -1);
       }
@@ -126,6 +129,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
                     src={image}
                     alt={`Мініатюра ${index + 1}`}
                     fill
+                    sizes="100px"
                     className={styles.thumbnailImage}
                   />
                 </div>
@@ -141,7 +145,7 @@ const InstructingSlider: React.FC<InstructingSliderProps> = ({
             onPrev={prevSlide}
             onNext={nextSlide}
             onDotClick={setCurrentSlide}
-            buttonBgColor="var(--bg-color)"
+            buttonBgColor="var(--white)"
           />
         </div>
       </div>

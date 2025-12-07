@@ -19,21 +19,12 @@
 }
 
 .badge {
-  display: inline-block;
-
-  color: var(--violet);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-family: var(--font-family);
-
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 18px;
   line-height: 135%;
   text-align: center;
+  color: var(--violet);
 }
 
 .title {
@@ -41,7 +32,6 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
 }
@@ -74,6 +64,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
+  position: relative;
   transition: transform 0.3s ease;
 }
 
@@ -101,6 +93,10 @@
   padding: 16px 20px;
 }
 
+.instagramBadge:hover {
+  background: var(--violet);
+}
+
 .instagramIcon {
   font-size: 14px;
 }
@@ -120,7 +116,6 @@
   font-weight: 600;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -129,7 +124,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -177,4 +171,110 @@
   background: var(--violet);
   color: white;
   border-color: var(--violet);
+}
+
+@media (max-width: 1000px) {
+  .trainersSection {
+    padding: mvw(24) 0;
+  }
+  .container {
+    padding: 0;
+    gap: mvw(16);
+  }
+  .header {
+    padding: 0 mvw(16);
+    gap: mvw(8);
+    text-align: center;
+  }
+  .badge {
+    font-size: mvw(12);
+    text-align: center;
+  }
+  .title {
+    font-size: mvw(28);
+    line-height: 120%;
+    text-align: center;
+  }
+  .mobileSliderWrap {
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0 mvw(16);
+  }
+  .mobileSlider {
+    width: 100%;
+    padding: 0;
+  }
+  .mobileSlider :global(.swiper) {
+    width: 100%;
+    overflow: visible;
+  }
+  .mobileSlider :global(.swiper-wrapper) {
+    display: flex;
+    width: 100%;
+  }
+  .mobileSlider :global(.swiper-slide) {
+    width: mvw(260) !important;
+    flex-shrink: 0;
+    display: block;
+    box-sizing: border-box;
+  }
+  .trainerCard {
+    width: mvw(260) !important;
+    max-width: 100%;
+    border-radius: mvw(16);
+    height: auto;
+    margin: 0;
+  }
+  .imageContainer {
+    height: mvw(160);
+    border-radius: mvw(16) mvw(16) 0 0;
+  }
+  .instagramBadge {
+    top: mvw(12);
+    left: mvw(12);
+    padding: mvw(8) mvw(12);
+    border-radius: mvw(20);
+    gap: mvw(6);
+    transition: all 0.3s;
+  }
+  .instagramBadge:hover {
+    background: var(--violet);
+  }
+  .instagramIcon {
+    font-size: mvw(14);
+  }
+  .instagramIcon svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+  .instagramBadge span:last-child {
+    font-size: mvw(12);
+  }
+  .trainerInfo {
+    padding: mvw(16);
+    gap: mvw(16);
+  }
+  .trainerName {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+  .trainerDescription {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+  .trainerImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    position: relative;
+    top: 0;
+
+    transition: transform 0.3s ease;
+    img {
+      position: absolute;
+      top: 0;
+    }
+  }
 }

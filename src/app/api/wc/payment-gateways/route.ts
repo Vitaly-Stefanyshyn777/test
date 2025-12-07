@@ -25,8 +25,9 @@ export async function GET(request: NextRequest) {
 
     console.log("[WC Payment Gateways API] 🚀 Отримую платіжні методи");
 
+    const upstreamBase = process.env.UPSTREAM_BASE as string;
     const response = await fetch(
-      "https://www.api.bfb.projection-learn.website/wp-json/wc/v3/payment_gateways",
+      `${upstreamBase}/wp-json/wc/v3/payment_gateways`,
       {
         method: "GET",
         headers: {

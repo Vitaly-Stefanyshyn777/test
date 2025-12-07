@@ -58,14 +58,13 @@
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
 .iconContainer {
   display: flex;
   justify-content: center;
-
+  align-items: center;
   border-radius: 12px;
   padding: 18px;
   width: 60px;
@@ -74,25 +73,17 @@
 }
 
 .icon {
-  background: #8426d7;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-
-  border-radius: 12px;
-  padding: 18px;
-  width: 60px;
-  height: 60px;
-  svg {
-    width: 24px;
-    height: 24px;
-  }
+  width: 100%;
+  height: 100%;
 }
 
 .icon svg {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
 }
 
 .thankYou {
@@ -100,7 +91,6 @@
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -109,7 +99,6 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 130%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
 }
@@ -119,7 +108,6 @@
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -147,7 +135,7 @@
 .productImage img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .quantityBadge {
@@ -194,7 +182,6 @@
   font-weight: 400;
   font-size: 18px;
   line-height: 144%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -203,7 +190,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 144%;
-  letter-spacing: -0.02em;
   color: #302215;
 }
 
@@ -230,7 +216,6 @@
   font-weight: 400;
   font-size: 18px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 .costLabelPrice {
@@ -238,7 +223,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
 }
@@ -248,7 +232,6 @@
   font-weight: 600;
   font-size: 28px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
 }
@@ -258,7 +241,6 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 130%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -283,5 +265,220 @@
 }
 
 .returnButton:hover {
-  background: #6b1fb8;
+  background: var(--black);
+}
+
+@media (max-width: 1000px) {
+  .page {
+    padding: mvw(20) 0 0;
+    margin-top: mvw(60);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: visible;
+    height: auto;
+  }
+
+  .container {
+    max-width: 100%;
+    width: 100%;
+    padding: 0 mvw(16) mvw(20);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: visible;
+    height: auto;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 100%;
+    padding: mvw(32) mvw(16) mvw(16);
+    gap: mvw(32);
+    border-radius: mvw(20);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: visible;
+    height: auto;
+    background: #fbfbfb;
+  }
+
+  .CartItemsBlock {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .headerBlock {
+    width: 100%;
+    box-sizing: border-box;
+    gap: mvw(24);
+  }
+
+  .thanBlock {
+    width: 100%;
+    box-sizing: border-box;
+    gap: mvw(12);
+  }
+
+  .iconContainer {
+    width: mvw(60);
+    height: mvw(60);
+    padding: mvw(18);
+    border-radius: mvw(12);
+  }
+
+  .icon svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
+
+  .thankYou {
+    font-size: mvw(18);
+  }
+
+  .successTitle {
+    font-size: mvw(24);
+    line-height: 130%;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    text-align: center;
+  }
+
+  .numberOrdereBlock {
+    gap: mvw(6);
+    justify-content: center;
+  }
+
+  .numberOrdereTitle {
+    font-size: mvw(14);
+  }
+
+  .orderNumber {
+    font-size: mvw(14);
+    text-align: center;
+    width: 100%;
+    word-wrap: break-word;
+  }
+
+  .CartItemsBlock {
+    gap: mvw(32);
+    width: 100%;
+  }
+
+  .productsBlock {
+    gap: mvw(32);
+    width: 100%;
+  }
+
+  .products {
+    gap: mvw(16);
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: mvw(4) 0;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .productImage {
+    width: mvw(93);
+    height: mvw(110);
+    border-radius: mvw(12);
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .quantityBadge {
+    width: mvw(24);
+    height: mvw(24);
+    border-radius: mvw(4);
+    font-size: mvw(10);
+    font-weight: 600;
+    bottom: mvw(8);
+    right: mvw(8);
+    padding: mvw(4);
+  }
+
+  .infoBlock {
+    gap: mvw(24);
+  }
+
+  .orderDetails {
+    gap: mvw(24);
+    width: 100%;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: mvw(12);
+    width: 100%;
+  }
+
+  .label {
+    font-size: mvw(14);
+    width: 100%;
+  }
+
+  .value {
+    font-size: mvw(16);
+    word-break: break-word;
+    width: 100%;
+  }
+
+  .divider {
+    margin: mvw(12) 0;
+  }
+
+  .costSummary {
+    gap: mvw(8);
+    width: 100%;
+  }
+
+  .costRow {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: mvw(8);
+    width: 100%;
+  }
+
+  .costLabel {
+    font-size: mvw(14);
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .costLabelPrice {
+    font-size: mvw(18);
+    font-weight: 600;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .costValuePrice {
+    font-size: mvw(20);
+    font-weight: 600;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .costValue {
+    font-size: mvw(14);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .returnButton {
+    width: 100%;
+    padding: mvw(18) mvw(24);
+    border-radius: mvw(18);
+    font-size: mvw(16);
+    text-align: center;
+  }
 }

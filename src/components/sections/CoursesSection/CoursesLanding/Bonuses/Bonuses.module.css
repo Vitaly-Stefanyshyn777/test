@@ -14,6 +14,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  align-items: center;
 }
 
 .kicker {
@@ -30,10 +31,9 @@
 
 .title {
   font-family: var(--second-family);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 56px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -63,6 +63,14 @@
   max-height: 278px;
   border-radius: 32px;
   background-image: url(/images/Frame-1321319184.png);
+}
+
+.coursesBlock {
+  width: 100%;
+  height: 100%;
+  max-height: 278px;
+  border-radius: 32px;
+  background: white;
 }
 
 .halfBlockRow {
@@ -95,7 +103,8 @@
 
 .fullBlock .cardContent {
   flex: 1 1 55%;
-  max-width: 720px;
+  /* max-width: 720px; */
+  width: auto;
 }
 
 .cardRight {
@@ -120,7 +129,7 @@
 
 .cardAvatarWrap {
   display: flex;
-  justify-content: space-around;
+  /* justify-content: space-around; */
 }
 
 .card {
@@ -329,7 +338,6 @@
   font-weight: 600;
   font-size: 44px;
   line-height: 120%;
-  letter-spacing: -0.01em;
 
   color: var(--black);
 }
@@ -339,17 +347,16 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   white-space: normal;
   word-break: break-word;
+  hyphens: auto;
+  overflow-wrap: anywhere;
 
-  font-family: var(--second-family);
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 120%;
-  letter-spacing: -0.01em;
-  color: var(--black);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .cardTitleWhite {
@@ -362,7 +369,6 @@
   font-weight: 600;
   font-size: 28px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -371,14 +377,51 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+  opacity: 0.4;
+}
+
+.cardText1 {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--black);
+  opacity: 0.4;
+}
+.cardText2 {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--black);
+  opacity: 0.4;
+  width: 285px;
+}
+.cardText3 {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--black);
+  opacity: 0.4;
+  width: mvw(180);
+}
+.cardText4 {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
   color: var(--black);
   opacity: 0.4;
 }
 
 .peopleGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
 }
 
@@ -392,8 +435,8 @@
   overflow: hidden;
 
   border-radius: 10px;
-  width: 132px;
-  height: 114px;
+  width: 100%;
+  aspect-ratio: 132 / 114;
 }
 
 .personImage {
@@ -413,8 +456,8 @@
   position: relative;
   overflow: visible; /* allow overlay circle to exceed bounds */
   border-radius: 10px;
-  width: 132px;
-  height: 114px;
+  width: 100%;
+  aspect-ratio: 132 / 114;
 }
 
 .personCenterImage {
@@ -438,15 +481,23 @@
   pointer-events: none;
 
   border-radius: 88px;
+  width: 180px;
+  height: 180px;
   padding: 50px 60px;
+  max-width: 32vw;
+  max-height: 32vw;
+  min-width: 120px;
+  min-height: 120px;
 
   backdrop-filter: blur(12px);
   background: rgba(249, 249, 249, 0.1);
-  width: 180px;
-  height: 180px;
   svg {
     width: 72px;
     height: 72px;
+    max-width: 12vw;
+    max-height: 12vw;
+    min-width: 40px;
+    min-height: 40px;
   }
 }
 
@@ -671,7 +722,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url(/images/Frame-1321318105.png);
+  background-image: url(/images/Frame13213181052.png);
   background-size: cover;
   background-position: center;
   z-index: 1;
@@ -691,3 +742,476 @@
   height: 100%;
   gap: 8px;
 }
+
+@media (max-width: 1000px) {
+  .section {
+    padding: mvw(24) 0;
+  }
+
+  .container {
+    padding: 0 mvw(16);
+    gap: mvw(24);
+  }
+
+  .header {
+    text-align: left;
+    gap: mvw(8);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  .kicker {
+    font-size: mvw(14);
+    text-align: left;
+  }
+
+  .title {
+    font-size: mvw(28);
+    line-height: 120%;
+    text-align: center;
+    width: 100%;
+    max-width: mvw(220);
+    margin: 0 auto;
+  }
+
+  .flexContainer {
+    gap: mvw(16);
+  }
+
+  .cardContentBlock {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    gap: mvw(16);
+  }
+
+  .fullBlock {
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(16);
+    min-height: auto;
+  }
+
+  .cardTitle {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .cardText {
+    font-size: mvw(14);
+    line-height: 140%;
+    font-weight: 400;
+    color: rgba(14, 14, 14, 0.4);
+    width: mvw(165);
+  }
+
+  .cardText1,
+  .cardText2,
+  .cardText3,
+  .cardText4 {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.4);
+  }
+
+  .halfBlockRow {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    max-width: 100%;
+    gap: mvw(16);
+  }
+
+  .halfBlock {
+    max-height: none;
+    height: auto;
+    min-height: mvw(200);
+  }
+
+  .coursesBlock {
+    max-height: none;
+    height: auto;
+    min-height: mvw(200);
+  }
+
+  .halfBlocklower {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+    gap: mvw(16);
+  }
+
+  .card {
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(16);
+    min-height: auto;
+    max-height: none;
+    position: relative;
+    position: static;
+  }
+
+  .cardRight {
+    /* padding: mvw(20) mvw(16); */
+    border-radius: mvw(16);
+  }
+
+  .peopleGrid {
+    gap: mvw(8);
+    grid-template-columns: repeat(3, 21.4667vw);
+    grid-auto-rows: 17.4667vw;
+    /* gap: 2.13333vw; */
+  }
+
+  .personAvatar {
+    width: auto;
+    height: auto;
+    border-radius: mvw(8);
+  }
+
+  .personCenter {
+    width: auto;
+    height: auto;
+    border-radius: mvw(8);
+  }
+
+  .overlayAvatar {
+    width: mvw(136);
+    height: mvw(136);
+    padding: mvw(38) mvw(45);
+    border-radius: mvw(68);
+  }
+
+  .overlayAvatar svg {
+    width: mvw(54);
+    height: mvw(54);
+  }
+
+  .lockVisual {
+    /* transform: scale(0.7); */
+  }
+
+  .lockIcon {
+    width: mvw(113);
+    height: mvw(113);
+    top: mvw(-27);
+    left: mvw(86);
+  }
+
+  .lockIcon svg {
+    width: mvw(53);
+    height: mvw(53);
+  }
+
+  .sideBubble {
+    width: mvw(66);
+    height: mvw(66);
+  }
+
+  .leftBubble {
+    left: mvw(135);
+    bottom: mvw(33);
+  }
+
+  .leftBubble svg {
+    width: mvw(30);
+    height: mvw(30);
+  }
+
+  .rightBubble {
+    right: mvw(-30);
+    bottom: mvw(93);
+    transform: rotate(0deg);
+    svg {
+      width: mvw(30) !important;
+      height: mvw(30) !important;
+    }
+  }
+
+  .rightBubble svg {
+    width: mvw(37);
+    height: mvw(37);
+  }
+
+  .iconsRow {
+    gap: mvw(8);
+  }
+
+  .iconItem {
+    width: mvw(48);
+    height: mvw(48);
+    padding: mvw(13);
+    border-radius: mvw(48);
+  }
+
+  .iconItem svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .inventoryCardInner {
+    flex-direction: column;
+    gap: mvw(16);
+  }
+
+  .inventoryVisualWrap {
+    flex: 0 0 auto;
+    width: 100%;
+    height: mvw(160);
+  }
+
+  .telegramCardInner {
+    flex-direction: column;
+    gap: mvw(16);
+    min-height: auto;
+    /* position: absolute;
+    top: mvw(7);
+    left: mvw(73); */
+    width: 100%;
+    height: 100%;
+
+    background: none;
+
+    background-image: none;
+  }
+  .a1 {
+    width: mvw(64);
+    height: mvw(64);
+    bottom: 82%;
+    right: 42%;
+    transform: rotate(17deg);
+  }
+  .a2 {
+    width: mvw(41);
+    height: mvw(41);
+
+    top: mvw(-15);
+
+    left: 63%;
+    transform: rotate(13deg);
+  }
+
+  .a3 {
+    width: mvw(55);
+    height: mvw(55);
+    top: mvw(23);
+
+    right: mvw(-32);
+    transform: rotate(20deg);
+  }
+
+  .a4 {
+    width: mvw(24);
+    height: mvw(24);
+    bottom: 65%;
+    right: 34%;
+    transform: rotate(20deg);
+  }
+  .a5 {
+    width: mvw(48);
+    height: mvw(48);
+    bottom: 45%;
+    right: 42%;
+    transform: rotate(17deg);
+  }
+  .a6 {
+    width: mvw(55);
+    height: mvw(55);
+    bottom: 45%;
+    right: 42%;
+    transform: rotate(17deg);
+    bottom: 34%;
+    right: 15%;
+  }
+  .a7 {
+    width: mvw(41);
+    height: mvw(41);
+    bottom: 16%;
+    right: -4%;
+    transform: rotate(12deg);
+  }
+
+  .telegramVisualWrap {
+    flex: 0 0 auto;
+    width: 100%;
+    height: mvw(150);
+  }
+
+  .InfoBlock {
+    min-height: auto;
+    gap: mvw(16);
+  }
+
+  .InfoBlockIcon {
+    width: mvw(48);
+    height: mvw(48);
+    padding: mvw(12) mvw(11);
+    border-radius: mvw(48);
+  }
+
+  .InfoBlockIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .cardImage {
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(16);
+    min-height: mvw(200);
+  }
+
+  .cardTitleWhite {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .mobileSliderWrap {
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+
+    box-sizing: border-box;
+  }
+
+  .mobileSlider {
+    width: 100%;
+    padding: 0;
+  }
+
+  .mobileSlider :global(.swiper) {
+    width: 100%;
+    overflow: visible;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+
+  .mobileSlider :global(.swiper-wrapper) {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .mobileSlider :global(.swiper-slide) {
+    flex-shrink: 0;
+    display: block;
+    box-sizing: border-box;
+    width: auto !important;
+  }
+
+  .swiperSlide {
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  /* Мобільні стилі для слайдів */
+  .mobileSliderWrap .fullBlock {
+    width: mvw(292) !important;
+    height: mvw(372);
+    padding: mvw(16);
+    border-radius: mvw(16);
+    background: var(--white);
+    gap: mvw(12);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .mobileSliderWrap .halfBlockRow {
+    width: mvw(340);
+    height: auto;
+    flex-direction: column;
+    gap: mvw(12);
+    box-sizing: border-box;
+  }
+
+  .mobileSliderWrap .halfBlockRow .inventoryCard {
+    width: 100%;
+    height: mvw(180);
+    min-height: mvw(180);
+    max-height: mvw(180);
+    padding: mvw(16);
+    border-radius: mvw(16);
+    box-sizing: border-box;
+  }
+
+  .mobileSliderWrap .halfBlocklower {
+    width: mvw(340);
+    height: auto;
+    flex-direction: column;
+    gap: mvw(12);
+    box-sizing: border-box;
+  }
+
+  .mobileSliderWrap .halfBlock {
+    width: 100%;
+    height: mvw(180);
+    min-height: mvw(180);
+    max-height: mvw(180);
+    border-radius: mvw(16);
+    padding: mvw(16);
+    box-sizing: border-box;
+  }
+
+  .mobileSliderWrap .coursesBlock {
+    width: 100%;
+    height: mvw(180);
+    min-height: mvw(180);
+    max-height: mvw(180);
+    border-radius: mvw(16);
+    padding: mvw(16);
+    box-sizing: border-box;
+  }
+
+  .mobileSliderWrap .halfBlock .card,
+  .mobileSliderWrap .halfBlock .cardRight,
+  .mobileSliderWrap .coursesBlock .card,
+  .mobileSliderWrap .coursesBlock .cardRight {
+    width: 100%;
+    height: 100%;
+    /* padding: mvw(16); */
+    border-radius: mvw(16);
+    box-sizing: border-box;
+    background: none;
+
+    background-image: none;
+    /* background-image: url(/Frame1321319016.png); */
+  }
+
+  .halfBlock {
+    background-image: url(/Frame1321319017.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mobileSliderWrap .inventoryCardInner,
+  .mobileSliderWrap .telegramCardInner {
+    height: 100%;
+    gap: mvw(12);
+  }
+
+  .inventoryCard {
+    background-image: url(/Frame1321319018.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .mobileSliderWrap .inventoryVisualWrap {
+    height: auto;
+    flex: 0 0 auto;
+  }
+
+  .mobileSliderWrap .telegramVisualWrap {
+    height: auto;
+    flex: 0 0 auto;
+  }
+}
+
+/* Frame1321318677.png */

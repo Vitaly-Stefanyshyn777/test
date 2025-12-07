@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCartStore, selectCartTotal } from "@/store/cart";
 import { useCreateWcOrder } from "@/lib/useMutation";
 import { useWcPaymentGatewaysQuery } from "@/components/hooks/useWpQueries";
@@ -11,6 +11,7 @@ import DeliveryForm from "./DeliveryForm";
 import PaymentForm from "./PaymentForm";
 import CommentForm from "./CommentForm";
 import OrderSummary from "./OrderSummary";
+import OrderSummarySkeleton from "./OrderSummarySkeleton";
 import s from "./CheckoutSection.module.css";
 
 export default function CheckoutSection() {
@@ -18,6 +19,25 @@ export default function CheckoutSection() {
   const safeTotal = total || 0;
   const itemsMap = useCartStore((st) => st.items);
   const items = Object.values(itemsMap);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSummarySkeleton, setIsSummarySkeleton] = useState(true);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 1000);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Короткий скелетон для summaryCard, щоб уникнути ривка при першому рендері
+  useEffect(() => {
+    const timer = setTimeout(() => setIsSummarySkeleton(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Логування стану кошика (тільки для дебагу)
   // React.useEffect(() => {
@@ -57,16 +77,79 @@ export default function CheckoutSection() {
     paymentMethod: "Накладений платіж",
     comment: "",
   });
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    email?: string;
+    recipientFirstName?: string;
+    recipientLastName?: string;
+    recipientPhone?: string;
+    deliveryType?: string;
+    city?: string;
+    branch?: string;
+    house?: string;
+    building?: string;
+    apartment?: string;
+  }>({});
 
   const handleSubmit = async () => {
-    try {
-      // Валідація email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        alert("Будь ласка, введіть валідну email адресу");
-        return;
-      }
+    const newErrors: typeof errors = {};
 
+    // Валідація особистих даних
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Обов'язкове поле";
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Обов'язкове поле";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Обов'язкове поле";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Обов'язкове поле";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Невірний email";
+    }
+
+    // Валідація даних отримувача
+    if (hasDifferentRecipient) {
+      if (!formData.recipientFirstName.trim()) {
+        newErrors.recipientFirstName = "Обов'язкове поле";
+      }
+      if (!formData.recipientLastName.trim()) {
+        newErrors.recipientLastName = "Обов'язкове поле";
+      }
+      if (!formData.recipientPhone.trim()) {
+        newErrors.recipientPhone = "Обов'язкове поле";
+      }
+    }
+
+    // Валідація доставки
+    if (!deliveryType) {
+      newErrors.deliveryType = "Обов'язкове поле";
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = "Обов'язкове поле";
+    }
+    if (deliveryType === "courier") {
+      if (!formData.house.trim()) {
+        newErrors.house = "Обов'язкове поле";
+      }
+    } else {
+      if (!formData.branch.trim()) {
+        newErrors.branch = "Обов'язкове поле";
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    try {
       // console.log("[CheckoutSection] 🚀 Відправляю замовлення:", {
       //   formData,
       //   hasDifferentRecipient,
@@ -145,6 +228,40 @@ export default function CheckoutSection() {
 
       // console.log("[CheckoutSection] ✅ Замовлення створено:", result);
 
+      // WayForPay redirect if selected
+      if (paymentMethod === "wayforpay" && result?.id) {
+        try {
+          const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
+          const res = await fetch(
+            `${baseUrl}/wp-json/myplugin/v1/wayforpay?order_id=${result.id}`,
+            { cache: "no-store" }
+          );
+          if (!res.ok) throw new Error(`WayForPay payload ${res.status}`);
+          const payload = (await res.json()) as {
+            action: string;
+            fields: Record<string, string | number | string[]>;
+          };
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = payload.action;
+          Object.entries(payload.fields || {}).forEach(([key, val]) => {
+            const values = Array.isArray(val) ? (val as string[]) : [val];
+            values.forEach((v) => {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = key;
+              input.value = String(v);
+              form.appendChild(input);
+            });
+          });
+          document.body.appendChild(form);
+          form.submit();
+          return;
+        } catch (e) {
+          console.error("[CheckoutSection] WayForPay redirect failed", e);
+        }
+      }
+
       // Збереження даних для сторінки успіху
       localStorage.setItem(
         "orderData",
@@ -157,75 +274,133 @@ export default function CheckoutSection() {
         })
       );
 
-      // Перенаправлення на сторінку успіху
-      window.location.href = "/order-success";
+      // Перенаправлення на сторінку успіху з orderId в URL
+      window.location.href = `/order-success?orderId=${result.id}`;
     } catch (error) {
-      console.error(
-        "[CheckoutSection] ❌ Помилка створення замовлення:",
-        error
-      );
+      // Silent error handling
       alert("Помилка створення замовлення. Спробуйте ще раз.");
     }
   };
+
+  const checkboxAgreements = (
+    <div className={s.checkboxContainer}>
+      <div className={s.checkboxBlock}>
+        <label className={s.checkbox}>
+          <input type="checkbox" />
+          <span className={s.checkboxText}>Підписатись на e-mail розсилку</span>
+        </label>
+      </div>
+      <div className={s.checkboxBlock}>
+        <label className={s.checkbox}>
+          <input type="checkbox" />
+          <span className={s.checkboxText}>
+            Приймаю умови оферти, політики конфіденційності та заяви про обробку
+            персональних даних
+          </span>
+        </label>
+      </div>
+    </div>
+  );
 
   return (
     <>
       <CheckoutHeader />
       <div className={s.page}>
         <div className={s.container}>
-          <div className={s.left}>
-            <PersonalDataForm
-              formData={formData}
-              hasDifferentRecipient={hasDifferentRecipient}
-              setFormData={setFormData}
-              setHasDifferentRecipient={setHasDifferentRecipient}
-            />
+          {isMobile ? (
+            <>
+              {/* Мобільний порядок: titleFormBlock -> deliveryBlock -> paymentBlock -> commentBlock -> summaryCard */}
+              <div className={s.left}>
+                <PersonalDataForm
+                  formData={formData}
+                  hasDifferentRecipient={hasDifferentRecipient}
+                  setFormData={setFormData}
+                  setHasDifferentRecipient={setHasDifferentRecipient}
+                  errors={errors}
+                />
 
-            <DeliveryForm
-              deliveryType={deliveryType}
-              formData={formData}
-              setDeliveryType={setDeliveryType}
-              setFormData={setFormData}
-              setIsMapOpen={setIsMapOpen}
-            />
+                <DeliveryForm
+                  deliveryType={deliveryType}
+                  formData={formData}
+                  setDeliveryType={setDeliveryType}
+                  setFormData={setFormData}
+                  setIsMapOpen={setIsMapOpen}
+                  errors={errors}
+                />
 
-            <PaymentForm formData={formData} setFormData={setFormData} />
+                <PaymentForm formData={formData} setFormData={setFormData} />
 
-            <CommentForm formData={formData} setFormData={setFormData} />
+                <CommentForm formData={formData} setFormData={setFormData} />
 
-            <div className={s.buttonBlock}>
-              <button
-                className={s.primaryWide}
-                onClick={handleSubmit}
-                disabled={createOrderMutation.isPending}
-              >
-                {createOrderMutation.isPending
-                  ? "Обробка замовлення..."
-                  : "Підтвердити замовлення"}
-              </button>
-              <div className={s.checkboxBlock}>
-                <label className={s.checkbox}>
-                  <input type="checkbox" />
-                  <span className={s.checkboxText}>
-                    Підписатись на e-mail розсилку
-                  </span>
-                </label>
+                <div className={s.buttonBlock}>
+                  <button
+                    className={s.primaryWide}
+                    onClick={handleSubmit}
+                    disabled={createOrderMutation.isPending}
+                  >
+                    {createOrderMutation.isPending
+                      ? "Обробка замовлення..."
+                      : "Підтвердити замовлення"}
+                  </button>
+                  {checkboxAgreements}
+                </div>
               </div>
-              <div className={s.checkboxBlock}>
-                <label className={s.checkbox}>
-                  <input type="checkbox" />
-                  <span className={s.checkboxText}>
-                    Приймаю умови оферти, політики конфіденційності та заяви про
-                    обробку персональних даних
-                  </span>
-                </label>
+              <div className={s.right}>
+                {isSummarySkeleton ? (
+                  <OrderSummarySkeleton />
+                ) : (
+                  <OrderSummary total={safeTotal} />
+                )}
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              {/* Десктопний порядок: left -> right */}
+              <div className={s.left}>
+                <PersonalDataForm
+                  formData={formData}
+                  hasDifferentRecipient={hasDifferentRecipient}
+                  setFormData={setFormData}
+                  setHasDifferentRecipient={setHasDifferentRecipient}
+                  errors={errors}
+                />
 
-          <div className={s.right}>
-            <OrderSummary total={safeTotal} />
-          </div>
+                <DeliveryForm
+                  deliveryType={deliveryType}
+                  formData={formData}
+                  setDeliveryType={setDeliveryType}
+                  setFormData={setFormData}
+                  setIsMapOpen={setIsMapOpen}
+                  errors={errors}
+                />
+
+                <PaymentForm formData={formData} setFormData={setFormData} />
+
+                <CommentForm formData={formData} setFormData={setFormData} />
+
+                <div className={s.buttonBlock}>
+                  <button
+                    className={s.primaryWide}
+                    onClick={handleSubmit}
+                    disabled={createOrderMutation.isPending}
+                  >
+                    {createOrderMutation.isPending
+                      ? "Обробка замовлення..."
+                      : "Підтвердити замовлення"}
+                  </button>
+                  {checkboxAgreements}
+                </div>
+              </div>
+
+              <div className={s.right}>
+                {isSummarySkeleton ? (
+                  <OrderSummarySkeleton />
+                ) : (
+                  <OrderSummary total={safeTotal} />
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
       <CheckoutFooter />

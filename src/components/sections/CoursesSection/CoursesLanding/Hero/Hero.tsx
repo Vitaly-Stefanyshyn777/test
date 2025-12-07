@@ -7,12 +7,12 @@ import Link from "next/link";
 
 const Hero: React.FC = () => {
   return (
-    <section className={s.hero}>
+    <section className={s.infoSection}>
       <div className={s.container}>
         <div className={s.infoBlock}>
           <div className={s.imageContent}>
             <Image
-              src="/images/Frame-1321318490.png"
+              src="/images/Frame132131812611.png"
               alt="Як проходить навчання"
               width={500}
               height={600}
@@ -35,10 +35,9 @@ const Hero: React.FC = () => {
               </div>
 
               <p className={s.description}>
-                Авторська навчальна програма для тренерів, які хочуть працювати
-                за методикою BFB. Системне навчання, сертифікація, інвентар і
-                підтримка після курсу – усе, щоб почати новий напрям без зайвих
-                кроків.
+                Долучайся до спільноти, що змінює підхід до тренувань, і отримуй
+                не лише інвентар, а й методику, платформу, знання та людей, з
+                якими хочеться працювати
               </p>
             </div>
             <div className={s.buttonsContainer}>

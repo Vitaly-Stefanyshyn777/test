@@ -50,7 +50,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -73,7 +72,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 
   border: none;
@@ -92,7 +90,6 @@
 .cityInput::placeholder {
   color: #666;
   font-size: 13px;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
@@ -154,7 +151,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--violet);
   background: none;
   border: none;
@@ -173,7 +169,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #666;
   background: none;
   border: none;
@@ -203,7 +198,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: 2px solid #ccc;
+  border: 1px solid #b4bab6;
   border-radius: 3px;
   outline: none;
   transition: all 0.2s ease;
@@ -243,7 +238,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -335,7 +329,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -364,4 +357,65 @@
 .filterSection:last-of-type {
   border-bottom: none;
   margin-bottom: 0;
+}
+
+@media (max-width: 1000px) {
+  .filterSection {
+    padding: mvw(20) 0;
+    gap: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .sectionTitleContainer {
+    margin-bottom: mvw(12);
+  }
+
+  .sectionTitle {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(16);
+    line-height: 140%;
+    color: var(--black);
+  }
+
+  .sectionTitleContainer svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .checkboxGroup {
+    gap: mvw(14);
+    height: auto;
+    overflow-y: auto;
+    padding-right: mvw(8);
+    max-height: none;
+  }
+
+  .checkboxLabel {
+    gap: mvw(10);
+    padding: mvw(6) 0;
+  }
+
+  .checkboxInput {
+    width: mvw(20);
+    height: mvw(20);
+    min-width: mvw(20);
+    min-height: mvw(20);
+    border-radius: mvw(4);
+    border: mvw(1) solid #b4bab6;
+  }
+
+  .checkboxInput:checked::after {
+    width: mvw(4);
+    height: mvw(8);
+  }
+
+  .checkboxText {
+    font-size: mvw(14);
+  }
+
+  .placeholder {
+    font-size: mvw(14);
+  }
 }

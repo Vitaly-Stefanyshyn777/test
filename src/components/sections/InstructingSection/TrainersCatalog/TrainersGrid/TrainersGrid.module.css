@@ -104,3 +104,14 @@
 .activeDot:hover {
   background: var(--violet);
 }
+
+@media (max-width: 1000px) {
+  .trainersGridContainer {
+    width: 100%;
+  }
+
+  .trainersGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: mvw(12);
+  }
+}

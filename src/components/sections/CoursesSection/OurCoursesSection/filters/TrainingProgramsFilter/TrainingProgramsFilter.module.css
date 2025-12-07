@@ -50,7 +50,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -73,7 +72,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 
   border: none;
@@ -92,7 +90,6 @@
 .cityInput::placeholder {
   color: #666;
   font-size: 13px;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
@@ -101,31 +98,30 @@
   opacity: 0.7;
 }
 
-.checkboxGroup {
+.radioGroup {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-
-  max-height: 116px;
+  gap: 12px;
+  height: 6.04167vw;
   overflow-y: auto;
   padding-right: 8px;
 }
 
-.checkboxGroup::-webkit-scrollbar {
+.radioGroup::-webkit-scrollbar {
   width: 6px;
 }
 
-.checkboxGroup::-webkit-scrollbar-track {
+.radioGroup::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-.checkboxGroup::-webkit-scrollbar-thumb {
+.radioGroup::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
 }
 
-.checkboxGroup::-webkit-scrollbar-thumb:hover {
+.radioGroup::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
@@ -149,7 +145,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--violet);
   background: none;
   border: none;
@@ -168,7 +163,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #666;
   background: none;
   border: none;
@@ -182,63 +176,61 @@
   color: #333;
 }
 
-.checkboxLabel {
+.radioLabel {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
   font-size: 14px;
   color: #555;
+  transition: all 0.2s ease;
+  padding: 4px 0;
 }
 
-.checkboxInput {
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radioCircle {
   width: 20px;
   height: 20px;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  border: 2px solid #ccc;
-  border-radius: 3px;
-  outline: none;
-  transition: all 0.2s ease;
-  position: relative;
-  background-color: white;
+  border-radius: 50%;
+  border: 1.5px solid rgba(14, 14, 14, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+  flex-shrink: 0;
 }
 
-.checkboxInput:checked {
-  border-color: var(--violet);
-  background-color: var(--violet);
-}
-
-.checkboxInput:checked::after {
+.radioCircle::after {
   content: "";
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
-  width: 4px;
-  height: 8px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--violet);
+  transform: scale(0);
+  transition: transform 0.2s ease;
+  margin: auto;
 }
 
-.checkboxInput:hover {
+.radioInput:checked + .radioCircle {
   border-color: var(--violet);
 }
 
-.checkboxInput:active {
-  transform: scale(0.95);
+.radioInput:checked + .radioCircle::after {
+  transform: scale(1);
 }
 
-.checkboxText {
+.radioText {
   flex: 1;
   line-height: 1.4;
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -330,7 +322,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -359,4 +350,58 @@
 .filterSection:last-of-type {
   border-bottom: none;
   margin-bottom: 0;
+}
+
+@media (max-width: 1000px) {
+  .filterSection {
+    padding: mvw(20) 0;
+    gap: 0;
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  .sectionTitleContainer {
+    margin-bottom: mvw(12);
+  }
+
+  .sectionTitle {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(16);
+    line-height: 140%;
+    color: var(--black);
+  }
+
+  .sectionTitleContainer svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .radioGroup {
+    gap: mvw(14);
+    height: auto;
+    overflow-y: auto;
+    padding-right: mvw(8);
+  }
+
+  .radioLabel {
+    gap: mvw(12);
+    padding: mvw(6) 0;
+  }
+
+  .radioCircle {
+    width: mvw(20);
+    height: mvw(20);
+    border: mvw(1.5) solid rgba(14, 14, 14, 0.3);
+  }
+
+  .radioCircle::after {
+    width: mvw(15);
+    height: mvw(15);
+    margin: auto;
+  }
+
+  .radioText {
+    font-size: mvw(14);
+  }
 }

@@ -43,6 +43,7 @@ interface ProductsFilterProps {
   products: Product[];
   searchTerm: string;
   onApply?: (params: Record<string, unknown>) => void;
+  loading?: boolean;
 }
 
 const ProductsFilter = ({
@@ -51,6 +52,7 @@ const ProductsFilter = ({
   onReset,
   products,
   onApply,
+  loading = false,
 }: ProductsFilterProps) => {
   const handleFilterChange = (
     key: keyof FilterState,
@@ -131,14 +133,10 @@ const ProductsFilter = ({
       </div>
       <ButtonFilter
         onApply={() => {
-          console.log(
-            "[ProductsFilter] Apply clicked. URL generated via hook."
-          );
           if (onApply) onApply(wcFilters);
         }}
         onReset={() => {
           onReset();
-          console.log("[ProductsFilter] Reset clicked");
         }}
       />
     </div>

@@ -21,11 +21,16 @@ const TrainingProgramsFilter: React.FC<TrainingProgramsFilterProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const toggle = (opt: string) => {
-    const next = value.includes(opt)
-      ? value.filter((v) => v !== opt)
-      : [...value, opt];
-    onChange(next);
+  const handleRadioChange = (opt: string) => {
+    const isSelected = value.includes(opt);
+    // Toggle логіка: якщо вже вибрана, знімаємо вибір, інакше додаємо до вибраних
+    if (isSelected) {
+      // Якщо вже вибрана, знімаємо вибір
+      onChange(value.filter((v) => v !== opt));
+    } else {
+      // Якщо не вибрана, додаємо до вибраних (можна вибирати кілька опцій)
+      onChange([...value, opt]);
+    }
   };
 
   return (
@@ -40,18 +45,33 @@ const TrainingProgramsFilter: React.FC<TrainingProgramsFilterProps> = ({
         </span>
       </button>
       {isExpanded && (
-        <div className={styles.checkboxGroup}>
-          {options.map((opt) => (
-            <label key={opt} className={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={value.includes(opt)}
-                onChange={() => toggle(opt)}
-                className={styles.checkboxInput}
-              />
-              <span className={styles.checkboxText}>{opt}</span>
-            </label>
-          ))}
+        <div className={styles.radioGroup}>
+          {options.map((opt) => {
+            const inputId = `training-program-${opt
+              .toLowerCase()
+              .replace(/\s+/g, "-")}`;
+            const isSelected = value.includes(opt);
+            return (
+              <label
+                key={opt}
+                htmlFor={inputId}
+                className={`${styles.radioLabel} ${
+                  isSelected ? styles.selected : ""
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  id={inputId}
+                  name="training-program"
+                  checked={isSelected}
+                  onChange={() => handleRadioChange(opt)}
+                  className={styles.radioInput}
+                />
+                <span className={styles.radioCircle} aria-hidden="true" />
+                <span className={styles.radioText}>{opt}</span>
+              </label>
+            );
+          })}
         </div>
       )}
     </div>

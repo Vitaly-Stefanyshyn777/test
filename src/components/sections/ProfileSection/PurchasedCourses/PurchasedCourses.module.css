@@ -14,7 +14,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -137,7 +136,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -146,7 +144,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
 
   color: var(--black);
   opacity: 0.16;
@@ -164,7 +161,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -210,9 +206,114 @@
 }
 
 .error {
-  color: #dc2626;
+  color: var(--black);
 }
 
 .empty {
   color: #6b7280;
+}
+
+@media (max-width: 1000px) {
+  .purchasedCourses {
+    border-radius: mvw(12);
+    gap: mvw(20);
+    max-height: none;
+    background: var(--bg-color);
+  }
+
+  .title {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .divider {
+    height: 1px;
+    display: none;
+  }
+
+  .coursesList {
+    gap: mvw(8);
+    padding-right: 0;
+  }
+
+  .courseCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: mvw(12);
+    padding: mvw(16);
+    border-radius: mvw(16);
+    max-height: none;
+  }
+
+  .courseImageOverlay {
+    gap: mvw(12);
+    width: 100%;
+  }
+
+  .courseImageContainer {
+    gap: mvw(16);
+  }
+
+  .courseImage {
+    width: mvw(80);
+    height: mvw(60);
+    border-radius: mvw(8);
+  }
+
+  .courseInfo {
+    gap: mvw(8);
+    width: 100%;
+  }
+
+  .courseType {
+    padding: mvw(6) mvw(10);
+    border-radius: mvw(8);
+    gap: mvw(8);
+  }
+
+  .typeIcon {
+    font-size: mvw(12);
+  }
+
+  .typeText {
+    font-size: mvw(12);
+    line-height: 120%;
+  }
+
+  .courseTitle {
+    font-size: mvw(18);
+    line-height: 120%;
+  }
+
+  .courseDescription {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .courseActions {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: mvw(16);
+  }
+
+  .coursePrice {
+    font-size: mvw(24);
+    line-height: 120%;
+  }
+
+  .watchButton {
+    padding: mvw(12) mvw(20);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+    height: mvw(48);
+    white-space: nowrap;
+  }
+
+  .loading,
+  .error,
+  .empty {
+    padding: mvw(30);
+    font-size: mvw(14);
+  }
 }

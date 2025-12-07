@@ -5,9 +5,15 @@
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
-  display: block;
-  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
+}
+
+.productCardFluid {
+  width: 100%;
+  height: auto;
 }
 
 .cardImage {
@@ -15,12 +21,13 @@
   width: 100%;
   height: 251px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .productImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -29,9 +36,6 @@
 }
 
 .badges {
-  position: absolute;
-  top: 12px;
-  left: 12px;
   display: flex;
   /* flex-direction: column; */
   gap: 6px;
@@ -82,8 +86,8 @@
 
 .favoriteBtn {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 25px;
+  right: 25px;
   width: 48px;
   height: 48px;
   background: rgba(255, 255, 255, 0.9);
@@ -97,6 +101,12 @@
   z-index: 2;
   backdrop-filter: blur(4px);
   color: var(--violet);
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    transform: translateX(0.5px);
+  }
 }
 
 /* .favoriteBtn:hover {
@@ -105,23 +115,17 @@
 } */
 
 .favoriteActive {
-  background: var(--violet) !important;
-  color: #fff !important;
-}
-
-.favoriteActive svg {
-  fill: #fff !important;
-  stroke: #fff !important;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--violet);
 }
 
 .cardContent {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  justify-content: space-between;
   padding: 18px 24px 24px;
   width: 100%;
-  height: auto;
-  height: 100%;
+  flex: 1 1 auto;
 }
 
 .category {
@@ -129,7 +133,6 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -146,29 +149,19 @@
   width: 100%;
   height: auto;
   display: flex;
+  justify-content: space-between;
 }
 
 .subscriptionPrice {
-  width: 100%;
+  width: auto;
   height: auto;
   display: flex;
   flex-direction: column;
+  gap: 11px;
 }
 
 .subscriptionDiscount {
   margin: -2px 0 4px 0;
-}
-
-.subscriptionBadge {
-  background: #f5f0ff;
-  color: var(--violet);
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  display: inline-block;
-  line-height: 1.2;
-  font-family: var(--font-family);
 }
 
 .subscriptionPriceAuth {
@@ -211,9 +204,6 @@
 }
 
 .cartBtn {
-  position: absolute;
-  bottom: 18px;
-  right: 24px;
   background: var(--violet);
   border: none;
   display: flex;
@@ -225,6 +215,7 @@
   border-radius: 12px;
   width: 56px;
   height: 56px;
+  margin-left: auto; /* штовхаємо кнопку вправо у flex-рядку ціни */
   svg {
     width: 20px;
     height: 20px;
@@ -275,7 +266,6 @@
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   z-index: 3;
   box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
   border: none;
@@ -302,8 +292,6 @@
   transform: translate(-50%, -50%);
   background: rgba(255, 68, 68, 0.9);
 
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   z-index: 10;
   pointer-events: none;
 
@@ -352,10 +340,6 @@
 }
 
 /* Бейдж знижки з підпискою для продуктів без сертифікації */
-.productCard[data-category="78"] .subscriptionBadge {
-  opacity: 0.6;
-}
-
 /* Всі основні елементи картки для продуктів без сертифікації */
 .productCard[data-category="78"] .productName {
   opacity: 0.6;
@@ -375,4 +359,79 @@
 
 .productCard[data-category="78"] .cardImage {
   opacity: 0.6;
+}
+
+@media (max-width: 1000px) {
+  .productCard {
+    border-radius: mvw(12);
+    width: mvw(166);
+    min-height: mvw(208);
+  }
+  .productCardFluid {
+    width: 100%;
+    height: auto;
+  }
+  .cardImage {
+    height: mvw(120);
+  }
+  .badges {
+    top: mvw(8);
+    left: mvw(8);
+    gap: mvw(6);
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .newBadge,
+  .hitBadge,
+  .discountBadge {
+    padding: mvw(6);
+    border-radius: mvw(6);
+    font-size: mvw(12);
+  }
+  .newBadge {
+    border-radius: mvw(6);
+    padding: mvw(6);
+    width: mvw(55);
+    height: mvw(22);
+  }
+  .cardContent {
+    padding: mvw(12);
+    gap: mvw(10);
+    flex: 1 1 auto;
+  }
+  .productName {
+    font-size: mvw(12);
+    font-family: var(--font-family);
+    font-weight: 500;
+    line-height: 140%;
+    color: var(--black);
+  }
+  .pricing {
+    gap: mvw(6);
+    align-items: flex-start;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .currentPrice {
+    font-size: mvw(18);
+    font-family: var(--second-family);
+    font-weight: 600;
+    line-height: 100%;
+    color: var(--black);
+  }
+  .originalPrice {
+    font-size: mvw(14);
+    font-family: var(--second-family);
+    font-weight: 500;
+    line-height: 100%;
+    color: var(--grey-for-cards);
+  }
+
+  .productCard[data-category="78"]::after {
+    border-radius: mvw(12);
+    padding: mvw(8) mvw(12);
+
+    font-size: mvw(12);
+  }
 }

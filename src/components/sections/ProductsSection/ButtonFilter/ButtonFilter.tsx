@@ -16,15 +16,8 @@ export default function ButtonFilter({
   disabled = false,
 }: ButtonFilterProps) {
   const handleClick = () => {
-    console.log("[ButtonFilter] 🖱️ Клік по кнопці:", children);
-    console.log("[ButtonFilter] 🎨 Варіант кнопки:", variant);
-    console.log("[ButtonFilter] 🚫 Відключена:", disabled);
-
     if (!disabled) {
       onClick();
-      console.log("[ButtonFilter] ✅ Обробник викликано");
-    } else {
-      console.log("[ButtonFilter] ⚠️ Кнопка відключена, обробник не викликано");
     }
   };
 
@@ -40,11 +33,3 @@ export default function ButtonFilter({
     </button>
   );
 }
-
-
-
-
-
-
-
-

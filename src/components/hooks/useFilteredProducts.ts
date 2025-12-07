@@ -10,6 +10,9 @@ export interface ProductFilters {
   on_sale?: boolean;
   featured?: boolean;
   search?: string;
+  orderby?: "date" | "price" | "popularity" | "rating" | "title";
+  order?: "asc" | "desc";
+  per_page?: number;
 }
 
 export function useFilteredProducts(filters: ProductFilters = {}) {
@@ -50,14 +53,13 @@ export function useFilteredProducts(filters: ProductFilters = {}) {
             (todayNormalized.getTime() - createdDateNormalized.getTime()) /
               (1000 * 60 * 60 * 24)
           );
-          return daysDiff <= 14;
+          return daysDiff <= 30;
         });
 
         // debug logs removed
 
         return products;
       } catch (error) {
-        console.error("[useFilteredProducts] ❌ Помилка запиту:", error);
         throw error;
       }
     },

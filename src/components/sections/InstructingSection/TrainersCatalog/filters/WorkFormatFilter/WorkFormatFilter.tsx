@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./WorkFormatFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface WorkFormatFilterProps {
   value: string;
@@ -22,7 +24,6 @@ export const WorkFormatFilter = ({
 
   const loadFormats = useCallback(async () => {
     try {
-      console.log("[WorkFormatFilter] 🚀 Завантажую формати з API...");
       setLoading(true);
 
       // Отримуємо тренерів без фільтрів щоб витягти унікальні формати
@@ -53,10 +54,7 @@ export const WorkFormatFilter = ({
         setFormats(fallbackFormats);
       }
     } catch (error) {
-      console.error(
-        "[WorkFormatFilter] ❌ Помилка завантаження форматів:",
-        error
-      );
+      // Silent error handling
       setFormats(fallbackFormats);
     } finally {
       setLoading(false);
@@ -96,34 +94,45 @@ export const WorkFormatFilter = ({
         }`}
       >
         {loading ? (
-          <div className={styles.loadingText}>Завантаження...</div>
+          <div className={styles.radioGroup}>
+            {[...Array(2)].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Skeleton width={20} height={20} borderRadius={10} />
+                <Skeleton width={140} height={16} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className={styles.radioGroup}>
             {formats.map((format) => {
               const isSelected = value === format;
+              const inputId = `work-format-${format
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`;
               return (
                 <label
                   key={format}
+                  htmlFor={inputId}
                   className={`${styles.radioLabel} ${
                     isSelected ? styles.selected : ""
                   }`}
-                  onClick={() => {
-                    // Toggle behavior: if already selected, deselect; if not selected, select
-                    if (isSelected) {
-                      handleFormatChange(""); // Deselect
-                    } else {
-                      handleFormatChange(format); // Select
-                    }
-                  }}
                 >
                   <input
-                    type="radio"
+                    id={inputId}
+                    type="checkbox"
                     name="workFormat"
                     value={format}
                     checked={isSelected}
-                    onChange={() => {}} // Controlled by onClick
+                    onChange={() => {
+                      if (isSelected) {
+                        handleFormatChange(""); // скасувати вибір
+                      } else {
+                        handleFormatChange(format); // встановити
+                      }
+                    }}
                     className={styles.radioInput}
                   />
+                  <span className={styles.radioCircle} aria-hidden="true" />
                   <span className={styles.radioText}>{format}</span>
                 </label>
               );

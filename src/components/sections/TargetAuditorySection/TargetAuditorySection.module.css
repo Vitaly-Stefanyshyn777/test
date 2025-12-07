@@ -20,21 +20,11 @@
         height: 513px;
         border-radius: 32px;
         overflow: hidden;
-        background-image: url(../../../../public/images/bfb-fitness-img.jpg);
+        background-image: url(/images/Frame13213181262.png);
         background-size: contain;
 
-        p {
-          font-family: "Golos Text", sans-serif;
-          font-size: 38.756px;
-          font-style: normal;
-          font-weight: 400;
-          line-height: 1.4;
-          letter-spacing: -0.388px;
-          color: var(--white);
-
-          span {
-            font-family: "Plateia";
-          }
+        .logoIcon {
+          object-fit: contain;
         }
       }
 
@@ -50,7 +40,6 @@
           font-style: normal;
           font-weight: 500;
           line-height: 1.4;
-          letter-spacing: 0.96px;
           text-transform: uppercase;
           color: var(--text-black);
         }
@@ -73,7 +62,6 @@
             font-style: normal;
             font-weight: 500;
             line-height: 1.4;
-            letter-spacing: -0.16px;
             color: var(--text-black);
 
             svg {
@@ -101,7 +89,6 @@
         font-style: normal;
         font-weight: 500;
         line-height: 1.4;
-        letter-spacing: 0.96px;
         text-transform: uppercase;
         color: rgba(255, 254, 252, 0.6);
       }
@@ -114,7 +101,6 @@
         font-style: normal;
         font-weight: 500;
         line-height: 120%;
-        letter-spacing: -1.68px;
         color: var(--white);
 
         span {
@@ -141,7 +127,6 @@
           font-style: normal;
           font-weight: 500;
           line-height: 120%;
-          letter-spacing: -0.96px;
 
           span {
             width: 64px;
@@ -176,6 +161,157 @@
           color: var(--white);
 
           span {
+            background-color: var(--white);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .section {
+    padding-top: mvw(80);
+    padding-bottom: mvw(80);
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: mvw(16);
+
+      .leftBlock {
+        width: 100%;
+        gap: mvw(12);
+
+        .imgCont {
+          width: auto;
+          height: mvw(232);
+          border-radius: mvw(16);
+          background-size: cover;
+          background-position: center;
+
+          .logoIcon {
+            width: mvw(200);
+            height: auto;
+          }
+        }
+
+        .target {
+          padding: mvw(16);
+          border-radius: mvw(12);
+
+          p {
+            margin-bottom: mvw(12);
+            font-size: mvw(10);
+          }
+
+          ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: mvw(8);
+
+            li {
+              display: inline-flex;
+              align-items: center;
+              padding: mvw(6) mvw(8);
+              border-radius: mvw(20);
+              font-size: mvw(12);
+              gap: mvw(6);
+              background-color: var(--bg-color);
+              white-space: nowrap;
+
+              font-family: var(--font-family);
+              font-weight: 500;
+
+              line-height: 140%;
+              color: var(--black);
+
+              svg {
+                width: mvw(16);
+                height: mvw(16);
+              }
+            }
+          }
+        }
+      }
+
+      .rightBlock {
+        width: 100%;
+        padding: mvw(16);
+        border-radius: mvw(16);
+        background-size: cover;
+        background-position: center;
+        background-image: url(/images/Frame1321318124.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        .upperDescr {
+          margin-bottom: mvw(12);
+          font-size: mvw(10);
+          font-family: var(--font-family);
+          font-weight: 500;
+
+          line-height: 140%;
+
+          color: rgba(255, 254, 252, 0.6);
+        }
+
+        h2 {
+          width: 100%;
+          margin-bottom: mvw(16);
+          font-size: mvw(28);
+        }
+
+        ul {
+          display: flex;
+          flex-direction: column;
+          gap: mvw(8);
+
+          li {
+            width: 100%;
+            padding: mvw(16);
+            border-radius: mvw(16);
+            font-size: mvw(14);
+            line-height: 130%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: mvw(12);
+
+            span {
+              width: mvw(40);
+              height: mvw(40);
+              flex-shrink: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              svg {
+                width: mvw(20);
+                height: mvw(20);
+              }
+            }
+          }
+
+          /* варіанти карток як на макеті */
+          li.white {
+            background-color: var(--white);
+            color: var(--text-black);
+          }
+
+          li.white span {
+            background-color: var(--bg-color);
+          }
+
+          li.violet {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(249, 249, 249, 0.1);
+            backdrop-filter: blur(5px);
+            color: var(--white);
+          }
+
+          li.violet span {
             background-color: var(--white);
           }
         }

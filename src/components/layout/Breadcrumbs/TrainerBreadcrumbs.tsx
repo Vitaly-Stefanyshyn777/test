@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Breadcrumbs.module.css";
@@ -13,11 +13,38 @@ const TrainerBreadcrumbs: React.FC<TrainerBreadcrumbsProps> = ({
   trainerName,
 }) => {
   const pathname = usePathname();
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
 
   const isTrainerPage =
     pathname.includes("/trainers/") && pathname.split("/").length > 2;
 
+  // Відстеження стану модалки InstructingSlider
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkSliderState = () => {
+      setIsSliderOpen(
+        document.body.classList.contains("instructing-slider-open")
+      );
+    };
+
+    checkSliderState();
+
+    const observer = new MutationObserver(checkSliderState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   if (!isTrainerPage) {
+    return null;
+  }
+
+  // Приховуємо breadcrumbs, коли відкритий InstructingSlider
+  if (isSliderOpen) {
     return null;
   }
 

@@ -11,7 +11,7 @@ const ContactsPageSection: React.FC = () => {
     my_wlocation: [
       {
         hl_input_text_title: "Gym Fit Dance FLY",
-        hl_input_text_email: "bfb@gmail.com",
+        hl_input_text_email: "bfb.board.ukraine@gmail.com",
         hl_input_text_phone: "+38 (99) 999 99 99",
         hl_input_text_schedule_five: "09:00 - 22:00",
         hl_input_text_schedule_two: "10:00 - 20:00",

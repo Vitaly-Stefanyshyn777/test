@@ -53,3 +53,23 @@
   text-align: center;
   padding: 40px 20px;
 }
+
+@media (max-width: 1000px) {
+  .catalogContentBlock {
+    padding: mvw(24) mvw(16) mvw(80) mvw(16);
+  }
+  .catalogContentContainer {
+    padding: 0;
+  }
+  .catalogContent {
+    display: flex;
+    flex-direction: column;
+    gap: mvw(16);
+    margin-top: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .catalogContainer {
+    width: 100%;
+  }
+}

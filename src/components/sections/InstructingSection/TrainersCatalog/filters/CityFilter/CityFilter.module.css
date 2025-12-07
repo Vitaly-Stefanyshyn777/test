@@ -52,7 +52,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -76,7 +75,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 
   border: none;
@@ -93,9 +91,9 @@
 }
 
 .cityInput::placeholder {
+  opacity: 0.24;
   color: #666;
-  font-size: 13px;
-  letter-spacing: 0.5px;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
@@ -155,7 +153,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--violet);
   background: none;
   border: none;
@@ -174,7 +171,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #666;
   background: none;
   border: none;
@@ -204,7 +200,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  border: 2px solid #ccc;
+  border: 1px solid #b4bab6;
   border-radius: 3px;
   outline: none;
   transition: all 0.2s ease;
@@ -256,7 +252,6 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -348,7 +343,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -377,4 +371,139 @@
 .filterSection:last-of-type {
   border-bottom: none;
   margin-bottom: 0;
+}
+
+@media (max-width: 1000px) {
+  .filterSection {
+    padding: mvw(16);
+    border-bottom: mvw(1) solid rgba(14, 14, 14, 0.1);
+    margin-bottom: 0;
+    gap: 0;
+  }
+
+  .filterSection:last-of-type {
+    border-bottom: none;
+  }
+
+  .sectionTitle {
+    font-size: mvw(16);
+    font-weight: 500;
+    line-height: 140%;
+    margin-bottom: 0;
+  }
+
+  .sectionTitleContainer {
+    margin-bottom: mvw(16);
+    padding: 0;
+  }
+
+  .sectionTitleContainer svg {
+    width: mvw(16);
+    height: mvw(2);
+  }
+
+  .minusIcon {
+    width: mvw(20) !important;
+    height: mvw(2) !important;
+  }
+
+  .plusIcon {
+    width: mvw(20) !important;
+    height: mvw(20) !important;
+  }
+
+  .cityInputContainer {
+    margin-bottom: mvw(12);
+    height: mvw(48);
+    border-radius: mvw(6);
+    background: var(--bg-color);
+    padding: 0;
+    position: relative;
+  }
+
+  .cityInputContainer svg {
+    position: absolute;
+    left: mvw(12);
+    width: mvw(18);
+    height: mvw(18);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .cityInput {
+    padding: mvw(14) mvw(16) mvw(14) mvw(40);
+    border: none;
+    background: transparent;
+    font-size: mvw(16);
+    height: 100%;
+  }
+
+  .cityInput::placeholder {
+    opacity: 0.24;
+    color: rgba(14, 14, 14, 0.4);
+    font-size: mvw(16);
+  }
+
+  .checkboxGroup {
+    gap: 0;
+    width: mvw(343) !important;
+    max-height: mvw(116) !important;
+    height: auto;
+    min-height: mvw(116);
+    overflow-y: auto;
+    padding-right: mvw(8);
+  }
+
+  .checkboxLabel {
+    font-size: mvw(14);
+    padding: 0;
+    margin-bottom: mvw(12);
+    gap: mvw(20);
+  }
+
+  .checkboxLabel:last-child {
+    margin-bottom: 0;
+  }
+
+  .checkboxLabel.selected .checkboxText {
+    color: var(--violet);
+  }
+
+  .checkboxInput {
+    width: mvw(20);
+    height: mvw(20);
+    min-width: mvw(20);
+    min-height: mvw(20);
+    border-radius: mvw(4);
+  }
+
+  .checkboxText {
+    font-size: mvw(14);
+    font-weight: 400;
+    line-height: 140%;
+  }
+
+  .showMoreBtn,
+  .hideBtn {
+    font-size: mvw(14);
+    font-weight: 500;
+    line-height: 140%;
+    margin-top: mvw(8);
+  }
+
+  .hideBtn {
+    color: rgba(14, 14, 14, 0.4);
+  }
+
+  .checkboxInput:checked::after {
+    content: "";
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: mvw(4);
+    height: mvw(8);
+    border: solid white;
+    border-width: 0 2px 2px 0;
+  }
 }

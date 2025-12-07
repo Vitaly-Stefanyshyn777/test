@@ -129,11 +129,7 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 100%;
-  letter-spacing: -0.01em;
   color: var(--black);
-}
-
-.swiperContainer {
 }
 
 .swiper {
@@ -150,28 +146,45 @@
   flex-direction: column;
   gap: 8px;
   position: relative;
-  height: 300px;
+  min-height: 300px;
+  height: auto;
   width: 100%;
   border-radius: 24px;
   background: #f9f9f9;
+  overflow: hidden;
 }
 
 .arcWrap {
   position: absolute;
-  inset: 0;
-  left: 29px;
+  left: 11px;
+  top: 33px;
   pointer-events: none;
-  top: 73px;
+  z-index: 1;
+  max-width: calc(100% - 29px);
+  max-height: calc(100% - 73px);
+  overflow: hidden;
+}
+
+.arcWrap svg {
+  width: 100%;
+  height: auto;
+  max-width: 369px;
+  max-height: 178px;
 }
 
 .secondBlockWrap {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image: url(/images/Frame1321319223.png);
   background-size: cover;
   background-repeat: no-repeat;
-  width: 437px;
-  height: 300px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  contain: layout;
 }
 .thirdBlockWrap {
   position: absolute;
@@ -245,7 +258,6 @@
   font-weight: 600;
   font-size: 20px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -254,7 +266,6 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -266,11 +277,14 @@
   border-radius: 27px;
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   backdrop-filter: blur(10px);
   background: rgba(132, 38, 215, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .dotInner {
@@ -321,7 +335,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0;
 }
@@ -331,7 +344,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.7);
   margin: 0;
 }
@@ -387,13 +399,12 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: #8426d7;
 }
 
 .pauseBlock {
-  background-image: url(/images/Frame-1321318677.png);
+  background-image: url(/images/Frame-1321318102.png);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -420,7 +431,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0;
 }
@@ -430,7 +440,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.7);
   margin: 0;
 }
@@ -499,27 +508,28 @@
 
 .advantageCard {
   background: white;
+  position: relative;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
-
   border-radius: 32px;
   padding: 24px;
   gap: 24px;
-  height: 462px; 
+  height: 462px;
   width: 485px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-.advantageCard:hover {
+/* .advantageCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .advantageIcons {
-  position: relative; 
+  position: relative;
   width: 100%;
   height: 100%;
   z-index: 2;
@@ -577,7 +587,7 @@
   top: 63px;
   right: 94px;
   left: auto;
-  z-index: 3; 
+  z-index: 3;
 
   width: 58px;
   height: 58px;
@@ -603,7 +613,7 @@
 }
 
 .advantageIcon3 {
-  z-index: 3; 
+  z-index: 3;
 
   width: 58px;
   height: 58px;
@@ -617,7 +627,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  bottom: 49px;
+  bottom: -13.44792vw;
   left: 107px;
 
   svg {
@@ -633,10 +643,13 @@
 }
 
 .advantageImages {
-  position: absolute;
-  inset: 0;
-  z-index: 1; 
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  height: auto;
+  z-index: 1;
   background-color: #f9f9f9;
+  overflow: visible;
 }
 
 .advantageImage {
@@ -673,7 +686,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
 
   color: var(--black);
 }
@@ -683,7 +695,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -736,4 +747,358 @@
 
 .paginationBulletActive {
   background: #8b5cf6;
+}
+
+@media (max-width: 1000px) {
+  .advantagesSection {
+    padding: mvw(24) mvw(0) mvw(24) mvw(16);
+  }
+  .advantagesContainer {
+    padding: 0;
+    gap: mvw(16);
+  }
+  .advantagesHeader {
+    padding: 0 mvw(16);
+    gap: mvw(8);
+    align-items: center;
+  }
+  .advantagesSubtitle {
+    font-size: mvw(12);
+    text-align: left;
+  }
+  .advantagesTitle {
+    font-size: mvw(28);
+    line-height: 120%;
+    text-align: left;
+  }
+  .mobileSliderWrap {
+    width: 100%;
+    overflow: hidden;
+  }
+  .mobileSlider {
+    width: 100%;
+    padding: 0;
+  }
+  .mobileSlider :global(.swiper) {
+    width: 100%;
+    overflow: visible;
+    padding-left: mvw(16);
+    padding-right: mvw(16);
+    box-sizing: border-box;
+  }
+  .mobileSlider :global(.swiper-wrapper) {
+    display: flex;
+    width: 100%;
+  }
+  .mobileSlider :global(.swiper-slide) {
+    width: mvw(292) !important;
+    flex-shrink: 0;
+    display: block;
+    box-sizing: border-box;
+  }
+  .advantageCard {
+    width: mvw(292) !important;
+    height: mvw(360);
+    padding: mvw(16);
+    border-radius: mvw(16);
+    background: var(--white);
+    gap: mvw(12);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .advantageContent {
+    gap: mvw(8);
+  }
+  .advantageTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+  .advantageDescription {
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.6);
+  }
+  .advantageVisualContainer {
+    width: mvw(260);
+    height: mvw(212);
+    min-height: mvw(212);
+    border-radius: mvw(12);
+    background: var(--bg-color);
+    overflow: visible;
+    position: relative;
+  }
+  .advantageIcons {
+    gap: mvw(8);
+  }
+  .advantageIcon {
+    width: mvw(60);
+    height: mvw(60);
+  }
+  .advantageIcon svg {
+    width: mvw(40);
+    height: mvw(40);
+  }
+  .advantageImages {
+    width: mvw(260);
+    height: mvw(212);
+    border-radius: mvw(12);
+    gap: mvw(8);
+    box-sizing: border-box;
+    overflow: visible;
+    position: relative;
+  }
+  .advantageImage {
+    width: mvw(100);
+    height: mvw(100);
+    border-radius: mvw(12);
+  }
+  .secondBlockWrap {
+    width: mvw(260);
+    height: mvw(212);
+    position: relative;
+    background-image: url(/Frame1321318677.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: mvw(12);
+    overflow: hidden;
+  }
+  .thirdBlockWrap {
+    width: mvw(260);
+    height: mvw(212);
+    position: relative;
+    background-image: url(/images/Frame17321318677.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: mvw(12);
+    overflow: hidden;
+  }
+  .clockIconWrap3 {
+    width: mvw(100);
+    height: mvw(100);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .clockIconWrap svg {
+    width: mvw(100);
+    height: mvw(100);
+  }
+  .cardContentBlock4 {
+    position: relative;
+    width: 100%;
+    height: mvw(200);
+  }
+  .fullBlock4 {
+    /* width: 100%;
+    height: 100%; */
+    padding: mvw(8);
+    width: mvw(260);
+    height: mvw(212);
+    background: var(--bg-color);
+  }
+  .peopleGrid {
+    grid-template-columns: repeat(3, mvw(73));
+    grid-auto-rows: mvw(58);
+    gap: mvw(6);
+  }
+  .personAvatar,
+  .personCenter {
+    width: 100%;
+    height: 100%;
+    border-radius: mvw(6);
+  }
+  .overlayAvatar {
+    width: mvw(120);
+    height: mvw(120);
+    border-radius: mvw(60);
+  }
+  .plusIcon {
+    font-size: mvw(16);
+  }
+  .rhythmBlock {
+    width: 100%;
+    height: mvw(200);
+    position: relative;
+  }
+  .rhythmVisual {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .restIndicator {
+    /* border-radius: mvw(20); */
+    background: var(--white);
+
+    border-radius: mvw(48);
+    padding: mvw(12) mvw(16);
+    width: mvw(59);
+    height: mvw(43);
+  }
+  .restText {
+    font-size: mvw(16);
+    color: var(--violet);
+    font-weight: 600;
+  }
+  .pauseBlock {
+    width: 100%;
+    height: mvw(200);
+    position: relative;
+    border-radius: mvw(12);
+  }
+  .videoContainer {
+    width: 100%;
+    height: 100%;
+    border-radius: mvw(12);
+    overflow: hidden;
+  }
+  .videoPlayer {
+    width: mvw(64);
+    height: mvw(64);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .videoPlayer svg {
+    width: mvw(20);
+    height: mvw(25);
+  }
+  .advantageIcon1 {
+    border-radius: 105px;
+    /* top: 11.60417vw;
+    left: 19.25vw; */
+    top: mvw(43);
+    left: mvw(73);
+    width: mvw(120);
+    height: mvw(120);
+    svg {
+      width: mvw(53);
+      height: mvw(53);
+    }
+  }
+  .advantageImage2 {
+    border-radius: 105px;
+
+    width: mvw(68);
+    height: mvw(68);
+    bottom: mvw(29);
+    right: mvw(44);
+  }
+
+  .advantageIcon2 {
+    width: mvw(50);
+    height: mvw(50);
+    top: mvw(38);
+    left: auto;
+    right: mvw(50);
+    svg {
+      width: mvw(20);
+      height: mvw(20);
+    }
+  }
+  .advantageImage1 {
+    width: mvw(68);
+    height: mvw(68);
+
+    left: mvw(36);
+  }
+  .advantageIcon3 {
+    width: mvw(50);
+    height: mvw(50);
+    bottom: mvw(-167);
+    /* right: 34px; */
+    left: mvw(57);
+    svg {
+      width: mvw(20);
+      height: mvw(20);
+    }
+  }
+  .clockIconWrap {
+    position: absolute;
+    bottom: mvw(-10);
+    right: mvw(-12);
+
+    border-radius: mvw(64);
+
+    width: mvw(120);
+    height: mvw(120);
+    svg {
+      width: mvw(63);
+      height: mvw(63);
+    }
+  }
+  .arcWrap {
+    left: mvw(13);
+    top: 5.80208vw;
+    bottom: 0;
+    left: 5.51042vw;
+    right: 0;
+
+    top: mvw(20);
+    bottom: 0;
+    left: mvw(21);
+    right: 0;
+  }
+
+  .dotInner {
+    border-radius: 50%;
+    background: var(--violet);
+
+    border: mvw(1) solid #f9f9f9;
+    border-radius: mvw(27);
+    width: mvw(14);
+    height: mvw(14);
+  }
+  .dotCircle {
+    border-radius: mvw(16);
+    width: mvw(26);
+    height: mvw(26);
+    top: mvw(12);
+    right: mvw(10);
+  }
+  .infoBadge {
+    top: mvw(35);
+    left: mvw(50);
+  }
+  .infoBadgeOuter {
+    border-radius: mvw(10);
+    padding: mvw(6);
+    width: mvw(128);
+    height: mvw(76);
+    background: rgba(132, 38, 215, 0.2);
+  }
+  .infoBadgeInner {
+    border-radius: mvw(7);
+    padding: mvw(12);
+    width: mvw(116);
+    height: mvw(64);
+  }
+  .infoTitle {
+    font-family: var(--second-family);
+    font-weight: 600;
+    font-size: mvw(18);
+    line-height: 120%;
+    color: var(--black);
+  }
+  .infoSubtitle {
+    font-family: var(--second-family);
+    font-weight: 500;
+    font-size: mvw(12);
+    line-height: 120%;
+    text-align: right;
+    color: var(--black);
+  }
+  .advantageDescription {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.4);
+  }
 }

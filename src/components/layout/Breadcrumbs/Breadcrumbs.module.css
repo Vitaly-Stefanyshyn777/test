@@ -36,8 +36,7 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: -0.02em;
-  color: var(--black);
+  color: var(--breadcrumbs-link-color, var(--black));
 }
 
 .breadcrumbLink:hover {
@@ -85,14 +84,13 @@
   color: var(--white);
 }
 
-.breadcrumbs.onOurCourses .breadcrumbLink,
-.breadcrumbs.onOurCourses .breadcrumbText,
-.breadcrumbs.onOurCourses .separator {
+.breadcrumbs.onOurCourses,
+.breadcrumbs.onOurCourses,
+.breadcrumbs.onOurCourses {
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -105,7 +103,7 @@
 }
 
 .breadcrumbs.onCoursesLanding .breadcrumbLink {
-  color: var(--white);
+  --breadcrumbs-link-color: var(--white);
 }
 
 .breadcrumbs.onCoursesLanding .breadcrumbText {
@@ -117,8 +115,8 @@
   color: var(--white);
 }
 
-.breadcrumbs.onCoursesLanding .breadcrumbLink:hover {
-  color: var(--white);
+.breadcrumbs.onCoursesLanding {
+  --breadcrumbs-link-color: var(--white);
 }
 
 .breadcrumbs.onContacts .breadcrumbLink,
@@ -128,7 +126,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -147,7 +144,6 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 100%;
-  letter-spacing: -0.02em;
   color: var(--white);
 }
 
@@ -161,11 +157,124 @@
 
 @media (max-width: 1024px) {
   .breadcrumbs {
-    padding: 14px 0 14px 0;
-    padding-top: calc(100px + 14px);
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
   }
 
   .breadcrumbsContainer {
-    padding-left: 16px;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 1000px) {
+  .breadcrumbs {
+    position: relative;
+    top: 0;
+    padding: mvw(85) mvw(16) mvw(15);
+    z-index: 10;
+    display: flex;
+  }
+
+  .breadcrumbs.onCoursesLanding {
+    position: absolute;
+    top: 0;
+    padding: mvw(110) mvw(27) mvw(15);
+    left: 0;
+    right: 0;
+  }
+
+  /* Приховуємо breadcrumbs коли модалка InstructingSlider відкрита */
+  .breadcrumbs.hidden {
+    display: none !important;
+  }
+
+  /* Альтернативний варіант через :global() */
+  :global(body.instructing-slider-open) .breadcrumbs {
+    display: none !important;
+  }
+
+  .breadcrumbsContainer {
+    padding-left: 0;
+    max-width: 100%;
+  }
+
+  .breadcrumbList {
+    gap: mvw(6);
+    flex-wrap: wrap;
+  }
+
+  .breadcrumbItem {
+    gap: mvw(6);
+  }
+
+  .breadcrumbLink {
+    font-size: mvw(12);
+    line-height: 140%;
+    font-family: var(--font-family);
+    font-weight: 500;
+  }
+
+  .breadcrumbText {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .separator {
+    font-size: mvw(12);
+    margin: 0 mvw(2);
+    color: rgb(14 14 14 / 30%);
+  }
+
+  /* Стилі для breadcrumbs на сторінці профілю тренера (чорний текст на білому фоні) */
+  .breadcrumbs:not(.onTrainers):not(.onOurCourses):not(.onCoursesLanding):not(
+      .onContacts
+    ):not(.onAboutBfb)
+    .breadcrumbLink,
+  .breadcrumbs:not(.onTrainers):not(.onOurCourses):not(.onCoursesLanding):not(
+      .onContacts
+    ):not(.onAboutBfb)
+    .breadcrumbText,
+  .breadcrumbs:not(.onTrainers):not(.onOurCourses):not(.onCoursesLanding):not(
+      .onContacts
+    ):not(.onAboutBfb)
+    .separator {
+    color: var(--black) !important;
+  }
+
+  .breadcrumbs:not(.onTrainers):not(.onOurCourses):not(.onCoursesLanding):not(
+      .onContacts
+    ):not(.onAboutBfb)
+    .separator {
+    color: rgb(14 14 14 / 30%) !important;
+  }
+
+  .breadcrumbs:not(.onTrainers):not(.onOurCourses):not(.onCoursesLanding):not(
+      .onContacts
+    ):not(.onAboutBfb)
+    .breadcrumbText.active {
+    color: rgba(14, 14, 14, 0.3) !important;
+    font-weight: 600;
+    padding: mvw(4) mvw(8);
+    border-radius: mvw(6);
+  }
+
+  /* Стилі для breadcrumbs на сторінці about-bfb на мобілці */
+  .breadcrumbs.onAboutBfb .breadcrumbLink,
+  .breadcrumbs.onAboutBfb .breadcrumbText,
+  .breadcrumbs.onAboutBfb .separator {
+    color: var(--white) !important;
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .breadcrumbs.onAboutBfb .breadcrumbText.active {
+    opacity: 0.4 !important;
+  }
+
+  .breadcrumbs.onAboutBfb .separator {
+    color: var(--white) !important;
   }
 }

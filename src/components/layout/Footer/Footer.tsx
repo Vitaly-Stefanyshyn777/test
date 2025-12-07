@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import s from "./Footer.module.css";
 import {
@@ -9,6 +10,7 @@ import {
   InstagramIcon,
   FacebookIcon,
   TelegramIcon,
+  WhatsappIcon,
   PrivateIcon,
   ApplePayIcon,
   GooglePayIcon,
@@ -16,9 +18,26 @@ import {
   VisardIcon,
   MonoPayIcon,
 } from "../../Icons/Icons";
+import RegisterModal from "@/components/auth/RegisterModal/RegisterModal";
+import LoginModal from "@/components/auth/LoginModal/LoginModal";
+import { useAuthStore } from "@/store/auth";
+import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
+import { getContactData } from "@/lib/themeSettingsUtils";
+import { useMemo } from "react";
 
 const Footer = () => {
   const pathname = usePathname();
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const isLoginModalOpen = useAuthStore((s) => s.isLoginModalOpen);
+  const openLoginModal = useAuthStore((s) => s.openLoginModal);
+  const closeLoginModal = useAuthStore((s) => s.closeLoginModal);
+
+  // Отримуємо контактні дані з theme_settings
+  const { data: themeSettings } = useThemeSettingsQuery();
+  const contactData = useMemo(
+    () => getContactData(themeSettings),
+    [themeSettings]
+  );
 
   // Не показуємо футер на сторінках order-success та checkout
   if (pathname === "/order-success" || pathname === "/checkout") {
@@ -34,14 +53,30 @@ const Footer = () => {
               <LogoHeader />
             </div>
             <div className={s.brandNameContainer}>
-              <p className={s.brandNameLineOne}>B.F.B</p>
-              <p className={s.brandNameLineTwo}>Fitness</p>
+              <Image
+                src="/images/Frame-1321318176.svg"
+                alt="B.F.B Fitness"
+                width={166}
+                height={25}
+                style={{ width: "100%", height: "auto" }}
+                priority
+              />
             </div>
           </div>
         </div>
         <div className={s.authButtons}>
-          <button className={s.loginButton}>Вхід</button>
-          <button className={s.registerButton}>Реєстрація</button>
+          <button
+            className={s.loginButton}
+            onClick={openLoginModal}
+          >
+            Вхід
+          </button>
+          <button
+            className={s.registerButton}
+            onClick={() => setIsRegisterOpen(true)}
+          >
+            Реєстрація
+          </button>
         </div>
       </div>
       <div className={s.footerTop}>
@@ -55,28 +90,66 @@ const Footer = () => {
               <h3 className={s.sectionTitle}>КОНТАКТИ:</h3>
               <div className={s.contactInfo}>
                 <a
-                  href="tel:+380443338598"
+                  href={`tel:${contactData.phone.replace(/\s/g, "") || "+380954372575"}`}
                   className={`${s.contactLink} ${s.phoneLink}`}
                 >
-                  +38 (044) 333 85 98
+                  {contactData.phone || "+380 95 437 25 75"}
                 </a>
                 <a
-                  href="mailto:bfb@gmail.com"
+                  href={`mailto:${contactData.email || "bfb.board.ukraine@gmail.com"}`}
                   className={`${s.contactLink} ${s.mailLink}`}
                 >
-                  bfb@gmail.com
+                  {contactData.email || "bfb.board.ukraine@gmail.com"}
                 </a>
               </div>
               <div className={s.socialIcons}>
-                <button className={s.iconButton}>
-                  <InstagramIcon />
-                </button>
-                <button className={s.iconButton}>
-                  <FacebookIcon />
-                </button>
-                <button className={s.iconButton}>
-                  <TelegramIcon />
-                </button>
+                {contactData.socialLinks.length > 0 ? (
+                  contactData.socialLinks.map((social, index) => {
+                    const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+                      Instagram: InstagramIcon,
+                      Facebook: FacebookIcon,
+                      Telegram: TelegramIcon,
+                      WhatsApp: WhatsappIcon,
+                    };
+                    const Icon = iconMap[social.name] || null;
+                    if (!Icon) return null;
+                    return social.link ? (
+                      <a
+                        key={index}
+                        href={social.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={s.iconButton}
+                      >
+                        <Icon />
+                      </a>
+                    ) : (
+                      <button key={index} className={s.iconButton}>
+                        <Icon />
+                      </button>
+                    );
+                  })
+                ) : (
+                  <>
+                    <a
+                      href="https://www.instagram.com/bfb.official_ukraine?igsh=enFybWFmZGE3NG8z"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={s.iconButton}
+                    >
+                      <InstagramIcon />
+                    </a>
+                    <button className={s.iconButton}>
+                      <FacebookIcon />
+                    </button>
+                    <button className={s.iconButton}>
+                      <TelegramIcon />
+                    </button>
+                    <button className={s.iconButton}>
+                      <WhatsappIcon />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -85,10 +158,26 @@ const Footer = () => {
               <h3 className={s.sectionTitle}>АДРЕСА:</h3>
               <address className={s.address}>
                 <p className={s.addressText}>
-                  м. Мукачево, вул. Леся Курбаса 7
+                  {contactData.address || "Мукачево, вул. Духновича 40"}
                 </p>
-                <p className={s.scheduleItem}>Пн-Пт: 09:00 - 22:00</p>
-                <p className={s.scheduleItem}>Сб-Нд: 10:00 - 20:00</p>
+                {contactData.weekdays && (
+                  <p className={s.scheduleItem}>
+                    понеділок - пятниця: {contactData.weekdays}
+                  </p>
+                )}
+                {contactData.weekends && (
+                  <p className={s.scheduleItem}>
+                    субота - неділя: {contactData.weekends}
+                  </p>
+                )}
+                {!contactData.weekdays && !contactData.weekends && (
+                  <>
+                    <p className={s.scheduleItem}>
+                      понеділок - пятниця: 09:00 - 22:00
+                    </p>
+                    <p className={s.scheduleItem}>субота - неділя: 10:00 - 20:00</p>
+                  </>
+                )}
               </address>
             </div>
           </div>
@@ -104,12 +193,12 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li className={s.navItem}>
-                  <Link href="/about" className={s.navLink}>
+                  <Link href="/about-bfb" className={s.navLink}>
                     Про BFB
                   </Link>
                 </li>
                 <li className={s.navItem}>
-                  <Link href="/coaches" className={s.navLink}>
+                  <Link href="/courses-landing" className={s.navLink}>
                     Про Інструкторство
                   </Link>
                 </li>
@@ -125,7 +214,7 @@ const Footer = () => {
               <h3 className={s.sectionTitle}>ПОСЛУГИ & ТОВАРИ</h3>
               <ul className={s.navList}>
                 <li className={s.navItem}>
-                  <Link href="/coaches" className={s.navLink}>
+                  <Link href="/trainers" className={s.navLink}>
                     Каталог тренерів
                   </Link>
                 </li>
@@ -135,12 +224,12 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li className={s.navItem}>
-                  <Link href="/online" className={s.navLink}>
+                  <Link href="/courses" className={s.navLink}>
                     Онлайн тренування
                   </Link>
                 </li>
                 <li className={s.navItem}>
-                  <Link href="/programs" className={s.navLink}>
+                  <Link href="/our-courses" className={s.navLink}>
                     Навчальні програми
                   </Link>
                 </li>
@@ -179,30 +268,60 @@ const Footer = () => {
           <p className={s.copyright}>©2024 BFB. All Rights Reserved.</p>
         </div>
         <div className={s.paymentMethods}>
-          <Link href="/payment/privat24" className={s.paymentMethod}>
+          <a
+            href="https://www.privat24.ua/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
             <PrivateIcon />
-          </Link>
-          <Link href="/payment/applepay" className={s.paymentMethod}>
+          </a>
+          <a
+            href="https://www.apple.com/apple-pay/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
             <ApplePayIcon />
-          </Link>
-          <Link href="/payment/googlepay" className={s.paymentMethod}>
+          </a>
+          <a
+            href="https://pay.google.com/about/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
             <GooglePayIcon />
-          </Link>
-          <Link href="/payment/mastercard" className={s.paymentMethod}>
-            <MastercardIcon />
-          </Link>
-          <Link href="/payment/visa" className={s.paymentMethod}>
+          </a>
+          <a
+            href="https://www.visa.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
             <VisardIcon />
-          </Link>
-          <Link href="/payment/monopay" className={s.paymentMethod}>
+          </a>
+          <a
+            href="https://www.mastercard.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
+            <MastercardIcon />
+          </a>
+          <a
+            href="https://www.monobank.ua/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.paymentMethod}
+          >
             <MonoPayIcon />
-          </Link>
+          </a>
         </div>
 
         <p className={s.credits}>
           Сайт розроблено агентами:{" "}
           <a
-            href="https://beforeafter.agency"
+            href="https://before-after.agency/"
             target="_blank"
             rel="noopener noreferrer"
             className={s.creditsLink}
@@ -211,6 +330,11 @@ const Footer = () => {
           </a>
         </p>
       </div>
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+      />
+      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
     </footer>
   );
 };

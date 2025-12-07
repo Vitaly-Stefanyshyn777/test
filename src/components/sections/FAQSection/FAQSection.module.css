@@ -31,7 +31,7 @@
 
 .leftColumn {
   display: flex;
-  gap: 40px;
+  /* gap: 40px; */
 }
 
 .titleContainer {
@@ -78,14 +78,18 @@
   position: relative;
   width: 100%;
   max-width: 893px;
+  /* aspect-ratio: 893 / 542; */
+  border-radius: 16px;
+  overflow: hidden;
+  height: 542px;
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 28.22917vw;
   border-radius: 16px;
   object-fit: cover;
-  height: 542px;
+  display: block;
 }
 
 .rightColumn {
@@ -166,12 +170,13 @@
 .answerContainer {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
+  transition: max-height 0.25s ease-out, padding 0.25s ease-out;
 }
 
 .answerContainer.open {
-  max-height: 200px;
+  max-height: 600px;
   padding: 0 24px 24px;
+  transition: max-height 0.3s ease-in, padding 0.3s ease-in;
 }
 
 .answer {
@@ -265,3 +270,106 @@
     padding: 0 16px 16px;
   }
 } */
+
+@media (max-width: 1000px) {
+  .faqSection {
+    padding: mvw(24) 0;
+  }
+
+  .container {
+    padding: 0 mvw(16);
+  }
+
+  .contentBlock {
+    gap: mvw(32);
+  }
+
+  .contentTextBlock {
+    gap: mvw(8);
+    width: 100%;
+  }
+
+  .subtitle {
+    font-size: mvw(14);
+    text-align: left;
+    color: var(--violet);
+  }
+
+  .title {
+    font-size: mvw(28);
+    line-height: 120%;
+    text-align: left;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+    gap: mvw(16);
+  }
+
+  .leftColumn {
+    gap: 0;
+    width: 100%;
+  }
+
+  .imageContainer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .heroImage {
+    width: 100%;
+    height: auto;
+    border-radius: mvw(16);
+    object-fit: cover;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+
+  .faqList {
+    gap: mvw(12);
+  }
+
+  .faqItem {
+    border-radius: mvw(12);
+  }
+
+  .faqButton {
+    padding: mvw(16);
+    border-radius: mvw(12);
+    gap: mvw(12);
+  }
+
+  .question {
+    font-size: mvw(16);
+    line-height: 140%;
+    flex: 1;
+    text-align: left;
+  }
+
+  .chevron {
+    width: mvw(48);
+    height: mvw(48);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chevron svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
+
+  .answerContainer.open {
+    padding: 0 mvw(12) mvw(16);
+    max-height: 1000px;
+  }
+
+  .answer {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+}

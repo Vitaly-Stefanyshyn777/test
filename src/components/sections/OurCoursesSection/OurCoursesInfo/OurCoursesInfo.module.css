@@ -50,7 +50,6 @@
   font-size: 14px;
   width: fit-content;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .title {
@@ -90,7 +89,6 @@
 .detailsBtn:hover {
   background: var(--black);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
 }
 
 .courseImage {
@@ -117,7 +115,6 @@
   font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .features {

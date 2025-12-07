@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./PersonalData.module.css";
 import { UserIcon, PlusIcon } from "@/components/Icons/Icons";
-import { uploadMedia, MediaUploadData } from "@/lib/bfbApi";
+import ProfilePhotoSectionSkeleton from "./ProfilePhotoSectionSkeleton";
+import { uploadCoachMedia } from "@/lib/bfbApi";
 import { useAuthStore } from "@/store/auth";
 
 type Props = {
@@ -32,27 +33,51 @@ export default function ProfilePhotoSection({
       setUploading(true);
       setError(null);
 
-      const uploadData: MediaUploadData = {
-        file,
-        fieldType: "img_link_data_avatar",
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[AvatarUpload] start", {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          field_type: "img_link_data_avatar",
+        });
+      }
+
+      // Використовуємо кастомний ендпоїнт для збереження аватару у мета
+      const result = await uploadCoachMedia({
         token,
-      };
+        fieldType: "img_link_data_avatar",
+        files: [file],
+      });
 
-      const result = await uploadMedia(uploadData);
+      const uploadedUrl =
+        result?.files?.[0]?.url || result?.current_field_value || null;
 
-      if (result.success && result.url) {
-        // Create a File object with the uploaded URL for the parent component
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[AvatarUpload] response", result);
+        console.log("[AvatarUpload] resolvedUrl", uploadedUrl);
+      }
+
+      if (uploadedUrl) {
+        // Створюємо File-обʼєкт з доданою url-властивістю для батьківського компонента
         const uploadedFile = new File([file], file.name, { type: file.type });
-        Object.defineProperty(uploadedFile, "url", { value: result.url });
+        Object.defineProperty(uploadedFile, "url", { value: uploadedUrl });
         onChange(uploadedFile);
+      } else {
+        setError("Сервер не повернув URL завантаженого зображення");
       }
     } catch (e) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[AvatarUpload] error", e);
+      }
       setError("Не вдалося завантажити фото");
-      console.error("Upload error:", e);
     } finally {
       setUploading(false);
     }
   };
+
+  if (uploading) {
+    return <ProfilePhotoSectionSkeleton />;
+  }
 
   return (
     <div className={styles.section}>
@@ -60,13 +85,20 @@ export default function ProfilePhotoSection({
         <div className={styles.profilePhotoBlock}>
           <div className={styles.profilePhoto}>
             {profileImage ? (
-              <Image
+              // Використовуємо нативний <img> замість Next/Image, щоб уникнути блокувань
+              // доменів/CSP у локальному середовищі
+              <img
+                key={profileImage}
                 src={profileImage}
                 alt="Profile"
                 width={120}
                 height={120}
                 className={styles.profileImage}
                 style={{ objectFit: "cover" }}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    "/images/avatar1.png";
+                }}
               />
             ) : (
               <div className={styles.placeholderPhoto}>
@@ -98,7 +130,9 @@ export default function ProfilePhotoSection({
             {uploading ? "Завантаження..." : "Змінити фото"}
           </label>
           <button
-            className={styles.removePhotoBtn}
+            className={`${styles.removePhotoBtn} ${
+              profileImage ? styles.removePhotoBtnActive : ""
+            }`}
             onClick={onRemove}
             disabled={uploading}
           >

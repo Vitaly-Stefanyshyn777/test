@@ -77,10 +77,18 @@
   color: var(--white);
 }
 
-.statusButton.watched {
-  background-color: #f0f9ff;
-  border-color: #8b5cf6;
-  color: #8b5cf6;
+/* Watched state: black background, white text and icon */
+.statusButtonWatched {
+  background: var(--black);
+  color: var(--white);
+}
+.statusButtonWatched .statusIcon,
+.statusButtonWatched .statusText {
+  color: var(--white);
+}
+.statusButtonWatched .statusIcon svg {
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 .statusIcon {
@@ -99,7 +107,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   transition: color 0.35s ease;
 }
@@ -112,6 +119,14 @@
   color: var(--white);
 } */
 
+.videoWithButtonBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
 .videoContainer {
   position: relative;
   width: 100%;
@@ -122,9 +137,9 @@
   transition: transform 0.2s ease;
 }
 
-.videoContainer:hover {
+/* .videoContainer:hover {
   transform: scale(1.02);
-}
+} */
 
 .videoThumbnail {
   position: relative;
@@ -154,10 +169,10 @@
   transition: all 0.2s ease;
 }
 
-.videoContainer:hover .playButton {
+/* .videoContainer:hover .playButton {
   transform: translate(-50%, -50%) scale(1.1);
   background-color: #ffffff;
-}
+} */
 
 .playIcon {
   font-size: 24px;
@@ -194,9 +209,9 @@
   transition: background-color 0.2s ease;
 }
 
-.closeButton:hover {
+/* .closeButton:hover {
   background-color: rgba(0, 0, 0, 0.9);
-}
+} */
 
 .videoPlayer {
   width: 100%;
@@ -232,6 +247,120 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1000px) {
+  .videoInstruction {
+    gap: mvw(16);
+    border-radius: mvw(16);
+  }
+
+  .header {
+    flex-direction: column;
+    gap: mvw(16);
+    align-items: flex-start;
+  }
+
+  .textContent {
+    gap: mvw(12);
+  }
+
+  .title {
+    font-size: mvw(22);
+    line-height: 120%;
+    font-weight: 600;
+  }
+
+  .description {
+    font-size: mvw(14);
+    line-height: 140%;
+    font-weight: 500;
+  }
+
+  .statusContainer {
+    width: 100%;
+    margin-top: mvw(16);
+  }
+
+  .statusButton {
+    width: 100%;
+    height: mvw(60);
+    padding: mvw(19) mvw(20);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    gap: mvw(12);
+    background: #ededed;
+
+    /* width: 343px;
+    height: 60px; */
+  }
+
+  .statusIcon {
+    font-size: mvw(14);
+  }
+
+  .statusText {
+    font-size: mvw(15);
+    line-height: 140%;
+  }
+
+  .videoWithButtonBlock {
+    gap: mvw(8);
+    border-radius: mvw(12);
+    overflow: visible;
+  }
+
+  .videoWithButtonBlock .videoContainer {
+    height: mvw(200);
+    border-radius: mvw(12);
+    overflow: hidden;
+  }
+
+  .videoWithButtonBlock .statusContainer {
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .videoWithButtonBlock .statusButton {
+    border-radius: 0;
+
+    border-radius: mvw(16);
+    padding: mvw(19) mvw(20);
+
+    height: mvw(60);
+  }
+
+  .playButton {
+    width: mvw(60);
+    height: mvw(60);
+  }
+
+  .playIcon {
+    font-size: mvw(20);
+  }
+
+  .closeButton {
+    width: mvw(32);
+    height: mvw(32);
+    top: mvw(12);
+    right: mvw(12);
+    font-size: mvw(14);
+  }
+
+  .loadingSpinner {
+    width: mvw(32);
+    height: mvw(32);
+    border-width: mvw(3);
+    margin-bottom: mvw(12);
+  }
+
+  .loadingText {
+    font-size: mvw(14);
+  }
 }

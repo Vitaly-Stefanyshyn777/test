@@ -9,7 +9,6 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -29,6 +28,7 @@
 
   border-radius: 24px;
   padding: 52px;
+  background: var(--white);
 }
 
 .title {
@@ -36,7 +36,6 @@
   font-weight: 600;
   font-size: 36px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -45,6 +44,33 @@
   flex-direction: column;
   /* width: 100%; */
   /* gap: 16px; */
+}
+
+/* Додаємо скрол тільки коли показані всі модулі */
+.modulesListScrollable {
+  max-height: 606px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px; /* Відступ для скролбару */
+}
+
+/* Стилізація скролбару */
+.modulesListScrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modulesListScrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modulesListScrollable::-webkit-scrollbar-thumb {
+  background: var(--violet);
+  border-radius: 10px;
+}
+
+.modulesListScrollable::-webkit-scrollbar-thumb:hover {
+  background: #5a2db0;
 }
 
 .module {
@@ -91,7 +117,6 @@
   font-weight: 600;
   font-size: 22px;
   line-height: 120%;
-  letter-spacing: -0.02em;
   text-align: center;
   color: var(--black);
 }
@@ -107,7 +132,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--black);
   opacity: 0.4;
@@ -177,7 +201,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -215,10 +238,6 @@
   min-width: fit-content;
 
   padding: 12px;
-}
-
-.topicTag:hover {
-  background: #e0e0e0;
 }
 
 .topicText {
@@ -288,7 +307,6 @@
   border-radius: 24px;
   text-align: center;
   flex: 1;
-  border: 1px solid #e5e7eb;
 }
 
 .statsCardRight .statIcon {
@@ -346,7 +364,6 @@
   font-weight: 600;
   font-size: 70px;
   line-height: 120%;
-  letter-spacing: 0.02em;
   color: var(--white);
 }
 
@@ -357,7 +374,6 @@
   font-weight: 500;
   font-size: 18px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   text-align: center;
   color: var(--white);
 }
@@ -375,7 +391,6 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--black);
 }
@@ -424,7 +439,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.6;
   flex: 1;
@@ -451,4 +465,181 @@
   color: var(--black);
   text-align: center;
   padding: 40px 20px;
+}
+
+@media (max-width: 1000px) {
+  .program {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .content {
+    gap: mvw(24);
+    flex-direction: column-reverse;
+  }
+
+  .leftColumn {
+    padding: 0;
+    border-radius: 0;
+    gap: mvw(24);
+    max-width: 100%;
+    background: var(--white);
+    padding: mvw(16);
+    border-radius: mvw(24);
+  }
+
+  .title {
+    font-size: mvw(24);
+    line-height: 120%;
+  }
+
+  .moduleButton {
+    padding: mvw(20) 0;
+  }
+
+  .moduleTitle {
+    font-size: mvw(18);
+    line-height: 120%;
+    text-align: left;
+  }
+
+  .lessonsCount {
+    font-size: mvw(14);
+  }
+
+  .lessonsCountContainer {
+    gap: mvw(12);
+  }
+
+  .chevron {
+    width: mvw(24);
+    height: mvw(24);
+  }
+
+  .chevron svg {
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .moduleDescription {
+    padding: 0 0 mvw(20) 0;
+    gap: mvw(30);
+  }
+
+  .moduleDescriptionText {
+    font-size: mvw(16);
+    opacity: 0.6;
+  }
+
+  .topicsSection {
+    gap: mvw(12);
+  }
+
+  .topicsSection h4 {
+    font-size: mvw(12);
+  }
+
+  .topicsGrid {
+    gap: mvw(8);
+  }
+
+  .topicTag {
+    padding: mvw(12);
+    border-radius: mvw(8);
+    background: var(--bg-color);
+  }
+
+  .topicText {
+    font-size: mvw(14);
+  }
+
+  .showAllButton {
+    width: 100%;
+    padding: mvw(16) mvw(24);
+    font-size: mvw(16);
+    border-radius: mvw(16);
+  }
+
+  .rightColumn {
+    padding: mvw(12);
+    border-radius: mvw(16);
+    gap: mvw(24);
+  }
+
+  .statsCardBlock {
+    gap: mvw(8);
+  }
+
+  .statsCard,
+  .statsCardRight {
+    padding: mvw(24) mvw(20);
+    border-radius: mvw(16);
+  }
+
+  .statBlock {
+    gap: mvw(40);
+  }
+
+  .statIcon {
+    width: mvw(50);
+    height: mvw(50);
+    border-radius: mvw(28);
+    padding: mvw(10);
+  }
+
+  .statIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .statNumber {
+    font-size: mvw(48);
+  }
+
+  .statLabel {
+    font-size: mvw(12);
+  }
+
+  .statItemBlock {
+    gap: mvw(12);
+  }
+
+  .statItem {
+    gap: mvw(8);
+  }
+
+  .learningOutcomes {
+    gap: mvw(24);
+  }
+
+  .learningOutcomes h3 {
+    font-size: mvw(12);
+  }
+
+  .learningList {
+    gap: mvw(12);
+  }
+
+  .learningItem {
+    gap: mvw(12);
+  }
+
+  .learningIcon {
+    width: mvw(20);
+    height: mvw(20);
+  }
+
+  .learningIcon svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .learningText {
+    font-size: mvw(14);
+  }
+
+  .modulesListScrollable {
+    max-height: none;
+  }
 }

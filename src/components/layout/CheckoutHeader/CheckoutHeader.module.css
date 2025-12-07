@@ -57,22 +57,20 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 16px;
-  text-decoration: none;
-  color: #0e0e0e;
-  font-size: 20px;
-  font-weight: 700;
+  justify-content: center;
 }
 
-.logo svg {
-  width: 50px;
-  height: 50px;
-}
-
-.logo a {
+.logoLink {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.logoLink:hover {
+  opacity: 0.8;
 }
 
 .logoText {
@@ -80,7 +78,6 @@
   font-family: var(--font7);
   font-weight: 500;
   font-size: 30px;
-  letter-spacing: -0.04em;
   color: #000;
 }
 
@@ -88,18 +85,29 @@
   font-family: var(--font7);
   font-weight: 700;
   font-size: 32px;
-  letter-spacing: -0.04em;
   color: #000;
 }
 
-.LogoIcon {
-  width: 32px;
-  height: 32px;
+.logoTextGroup {
   display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.LogoIcon {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #0e0e0e;
   stroke: var(--black);
+}
+
+.LogoIcon img,
+.LogoIcon svg {
+  width: 48px;
+  height: 48px;
 }
 
 .right {
@@ -127,7 +135,6 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 130%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -141,10 +148,95 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
+  text-decoration: none;
+  transition: opacity 0.3s ease;
 }
 
 .phoneLink:hover {
-  color: #8426d7;
+  opacity: 0.8;
+}
+
+.mobileLayout {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobileLeft,
+.mobileRight {
+  display: flex;
+  align-items: center;
+  gap: mvw(12);
+}
+
+.mobileLogo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileLogo .LogoIcon {
+  width: mvw(34);
+  height: mvw(43);
+}
+
+.mobileLogo .LogoIcon img {
+  width: mvw(34);
+  height: mvw(43);
+}
+
+.mobileRight .contacts {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.mobileRight .contactText {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: mvw(10);
+  line-height: 130%;
+  color: var(--black);
+}
+
+.mobileRight .phoneLink {
+  font-size: mvw(14);
+}
+
+@media (max-width: 1000px) {
+  .header {
+    padding: mvw(12) mvw(16);
+  }
+
+  .headerContent {
+    position: relative;
+    min-height: mvw(52);
+  }
+
+  .left,
+  .right,
+  .logo {
+    display: none;
+  }
+
+  .mobileLayout {
+    display: flex;
+  }
+
+  .contacts {
+    gap: mvw(2);
+  }
+
+  .exitBtn {
+    padding: mvw(8) mvw(10);
+  }
+
+  .exitBtn svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
 }

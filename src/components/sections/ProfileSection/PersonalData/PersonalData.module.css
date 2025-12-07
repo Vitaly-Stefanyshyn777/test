@@ -19,7 +19,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -28,7 +27,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -62,7 +60,6 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -71,7 +68,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -202,8 +198,20 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--white);
+}
+
+.removePhotoBtnActive {
+  border-radius: 15px;
+  padding: 16px 24px;
+  width: 173px;
+  height: 54px;
+  background: var(--black);
+  border-color: transparent;
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .removePhotoBtn:hover {
@@ -267,8 +275,17 @@
 
 .wrapperBlock {
   display: flex;
-
   gap: 12px;
+  width: 100%;
+}
+
+.wrapperBlock > * {
+  flex: 1;
+  width: 100%;
+}
+
+.wrapperBlockSingle {
+  max-width: 542px;
 }
 
 .input:focus {
@@ -297,16 +314,197 @@
   font-family: var(--font-family);
   font-weight: 600;
   font-size: 16px;
-  transition: all 0.2s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 
   height: 66px;
 }
 
 .saveBtn:hover {
-  background: #7c3aed;
+  background: var(--black);
   transform: translateY(-1px);
 }
 
 .saveBtn:active {
   transform: translateY(0);
+}
+
+@media (max-width: 1000px) {
+  .personalData {
+    border-radius: mvw(12);
+    gap: mvw(24);
+    overflow: visible;
+  }
+
+  .header {
+    gap: mvw(8);
+    border-radius: mvw(12);
+    padding: mvw(16);
+    height: mvw(160);
+    background: var(--bg-color);
+    display: none;
+  }
+
+  .backBtn {
+    gap: mvw(8);
+    border-radius: mvw(12);
+    padding: mvw(12) mvw(16);
+    height: auto;
+    font-size: mvw(14);
+    margin-bottom: mvw(8);
+    display: flex;
+  }
+
+  .backBtn svg {
+    width: mvw(16);
+    height: mvw(16);
+  }
+
+  .title {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .description {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .form {
+    gap: mvw(24);
+  }
+
+  .section {
+    gap: mvw(20);
+  }
+
+  .sectionTitle {
+    font-size: mvw(16);
+    line-height: 140%;
+  }
+
+  .fileInfo {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .profilePhotoSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: mvw(16);
+    border-radius: mvw(12);
+
+    padding: mvw(16);
+
+    /* height: mvw(160); */
+  }
+
+  .profilePhotoBlock {
+    width: 100%;
+    gap: mvw(12);
+  }
+
+  .profilePhoto {
+    width: mvw(60);
+    height: mvw(60);
+    border-radius: 50%;
+  }
+
+  .placeholderPhoto {
+    width: mvw(60);
+    height: mvw(60);
+    border-radius: 50%;
+  }
+
+  .placeholderIcon {
+    width: mvw(24);
+    height: mvw(24);
+  }
+
+  .sectionHeader {
+    flex: 1;
+    gap: mvw(6);
+  }
+
+  .photoActions {
+    width: 100%;
+    flex-direction: row;
+    gap: mvw(8);
+    align-items: center;
+  }
+
+  .changePhotoBtn {
+    flex: 1;
+    padding: mvw(12) mvw(20);
+    font-size: mvw(14);
+    border-radius: mvw(12);
+    justify-content: center;
+    height: mvw(52);
+    gap: mvw(8);
+  }
+
+  .btnIcon {
+    font-size: mvw(14);
+  }
+
+  .btnIcon svg {
+    width: mvw(12);
+    height: mvw(12);
+  }
+
+  .removePhotoBtn {
+    flex: 1;
+    padding: mvw(12) mvw(20);
+    font-size: mvw(14);
+    border-radius: mvw(12);
+    justify-content: center;
+    height: mvw(52);
+  }
+
+  .inputGroup {
+    gap: mvw(12);
+  }
+
+  .wrapperBlock {
+    flex-direction: column;
+    gap: mvw(12);
+  }
+
+  .inputContainer {
+    width: 100%;
+  }
+
+  .inputIconWrapper {
+    left: mvw(12);
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .inputIcon {
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .input {
+    padding: mvw(16) mvw(16) mvw(16) mvw(40);
+    border-radius: mvw(12);
+    font-size: mvw(14);
+    max-width: 100%;
+  }
+
+  .divider {
+    height: 1px;
+    display: none;
+  }
+
+  .saveSection {
+    justify-content: center;
+  }
+
+  .saveBtn {
+    width: 100%;
+    padding: mvw(16) mvw(24);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    height: mvw(48);
+  }
 }

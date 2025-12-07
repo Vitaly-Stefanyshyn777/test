@@ -7,6 +7,7 @@ interface ProductFilters {
   colors: string[];
   sizes: string[];
   certification: string;
+  workoutTypes: string[];
   category: string;
   search: string;
 }
@@ -18,6 +19,7 @@ export const useProducts = () => {
     colors: [],
     sizes: [],
     certification: "",
+    workoutTypes: [],
     category: "",
     search: "",
   });
@@ -33,6 +35,7 @@ export const useProducts = () => {
       colors: [],
       sizes: [],
       certification: "",
+      workoutTypes: [],
       category: "",
       search: "",
     });

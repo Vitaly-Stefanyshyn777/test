@@ -35,7 +35,6 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -53,7 +52,37 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.6;
+}
+
+@media (max-width: 1000px) {
+  .trainerCard {
+    border-radius: mvw(12);
+  }
+
+  .cardImage {
+    height: mvw(160);
+  }
+
+  .cardContent {
+    padding: mvw(12) mvw(16);
+    height: auto;
+    gap: mvw(8);
+  }
+
+  .location {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
+
+  .trainerName {
+    font-size: mvw(16);
+    line-height: 140%;
+  }
+
+  .specialization {
+    font-size: mvw(12);
+    line-height: 140%;
+  }
 }

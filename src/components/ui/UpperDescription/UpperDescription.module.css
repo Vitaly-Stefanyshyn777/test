@@ -9,3 +9,15 @@
   line-height: 1.4;
   color: #8426d7;
 }
+
+@media (max-width: 1024px) {
+  .upperDescr {
+    font-size: mvw(14);
+    font-family: var(--font-family);
+    font-weight: 600;
+
+    line-height: 140%;
+    text-align: center;
+    color: var(--violet);
+  }
+}

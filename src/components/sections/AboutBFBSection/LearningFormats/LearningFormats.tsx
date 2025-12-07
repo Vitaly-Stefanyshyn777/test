@@ -50,32 +50,42 @@ const onlineResults = [
 
 export default function LearningFormats() {
   const [courses, setCourses] = useState<MainCoursePost[]>([]);
-  const [, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         setError(null);
         const data = await fetchMainCourses();
-        console.log("[MainCourses] response:", data);
         setCourses(data);
-      } catch {
+      } catch (error) {
+        console.error("[LearningFormats] Помилка завантаження:", error);
         setError("Не вдалося завантажити курси формату");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     })();
   }, []);
 
   const offline = useMemo(() => {
-    return courses.find((c) => String(c.acf?.Is_online) !== "1");
+    return courses.find((c) => String(c.Is_online ?? c.acf?.Is_online) !== "1");
   }, [courses]);
+
   const online = useMemo(() => {
-    return courses.find((c) => String(c.acf?.Is_online) === "1");
+    return courses.find((c) => String(c.Is_online ?? c.acf?.Is_online) === "1");
   }, [courses]);
+
+  const parseMoney = (v: unknown): number | undefined => {
+    if (v === null || v === undefined) return undefined;
+    const s = String(v)
+      .replace(/[^0-9,\.]/g, "")
+      .replace(",", ".");
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : undefined;
+  };
   const splitIntoTwo = (
     items: Benefit[],
     leftCount = Math.ceil(items.length / 2)
@@ -85,6 +95,20 @@ export default function LearningFormats() {
 
   const [offlineCol1] = splitIntoTwo(offlineAll, 3);
   const [onlineCol1] = splitIntoTwo(onlineBenefitsTop);
+
+  // Допоміжна функція для отримання опису курсу
+  const getCourseDescription = (course: MainCoursePost | undefined): string => {
+    if (!course) return "Дані відсутні";
+
+    // Перевіряємо About_course (масив, який приходить з бекенду)
+    if (Array.isArray(course.About_course) && course.About_course.length > 0) {
+      return course.About_course.join(" ");
+    }
+
+    // Fallback на статичний текст
+    return "";
+  };
+
   return (
     <section className={s.section}>
       <div className={s.container}>
@@ -95,7 +119,15 @@ export default function LearningFormats() {
 
         <div className={s.cards}>
           <div className={s.card}>
-            <div className={s.cardImage1}>
+            <div
+              className={s.cardImage1}
+              style={{
+                backgroundImage:
+                  offline?.Image || offline?.acf?.Image
+                    ? `url(${offline?.Image || offline?.acf?.Image})`
+                    : undefined,
+              }}
+            >
               <h3 className={s.cardBadge}>ОФЛАЙН КУРС BFB</h3>
             </div>
 
@@ -104,9 +136,8 @@ export default function LearningFormats() {
                 <div className={s.cardListBlock}>
                   <div className={s.cardListTitle}>Про курс:</div>
                   <p className={s.cardListText}>
-                    {offline?.acf?.About?.trim()
-                      ? offline.acf.About
-                      : "Дані є, але пусті (About офлайн)"}
+                    {getCourseDescription(offline) ||
+                      "Дані є, але пусті (About офлайн)"}
                   </p>
                 </div>
                 <div className={s.cardListBlock}>
@@ -173,16 +204,36 @@ export default function LearningFormats() {
               <div className={s.cardFooter}>
                 <div className={s.priceWrap}>
                   <span className={s.priceFrom}>від</span>
-                  <span className={s.price}>
-                    {offline?.acf?.Price
-                      ? String(offline.acf.Price) + "₴"
-                      : "—"}
-                  </span>
-                  <span className={s.priceOld}>
-                    {offline?.acf?.Price_old
-                      ? String(offline.acf.Price_old) + "₴"
-                      : "—"}
-                  </span>
+                  {(() => {
+                    const current = parseMoney(
+                      offline?.Price ?? offline?.acf?.Price
+                    );
+                    const old = parseMoney(
+                      offline?.Discount ?? offline?.acf?.Price_old
+                    );
+                    return (
+                      <>
+                        <span className={s.price}>
+                          <span className={s.priceValue}>
+                            {typeof current === "number"
+                              ? Math.round(current)
+                              : "—"}
+                          </span>
+                          {typeof current === "number" ? (
+                            <span className={s.priceCurrency}>₴</span>
+                          ) : null}
+                        </span>
+                        {old && current && old > current ? (
+                          <span className={s.priceOld}>
+                            <span className={s.priceOldValue}>
+                              {Math.round(old)}
+                            </span>
+                            <span className={s.priceOldCurrency}>₴</span>
+                          </span>
+                        ) : null}
+                      </>
+                    );
+                  })()}
                 </div>
                 <button
                   className={s.button}
@@ -195,7 +246,15 @@ export default function LearningFormats() {
           </div>
 
           <div className={s.card}>
-            <div className={s.cardImage2}>
+            <div
+              className={s.cardImage2}
+              style={{
+                backgroundImage:
+                  online?.Image || online?.acf?.Image
+                    ? `url(${online?.Image || online?.acf?.Image})`
+                    : undefined,
+              }}
+            >
               <h3 className={s.cardBadge}>ОНЛАЙН КУРС BFB</h3>
             </div>
 
@@ -204,9 +263,8 @@ export default function LearningFormats() {
                 <div className={s.cardListBlock}>
                   <div className={s.cardListTitle}>Про курс:</div>
                   <p className={s.cardListText}>
-                    {online?.acf?.About?.trim()
-                      ? online.acf.About
-                      : "Дані є, але пусті (About онлайн)"}
+                    {getCourseDescription(online) ||
+                      "Дані є, але пусті (About онлайн)"}
                   </p>
                 </div>
                 <div className={s.cardListBlock}>
@@ -274,14 +332,36 @@ export default function LearningFormats() {
               <div className={s.cardFooter}>
                 <div className={s.priceWrap}>
                   <span className={s.priceFrom}>від</span>
-                  <span className={s.price}>
-                    {online?.acf?.Price ? String(online.acf.Price) + "₴" : "—"}
-                  </span>
-                  <span className={s.priceOld}>
-                    {online?.acf?.Price_old
-                      ? String(online.acf.Price_old) + "₴"
-                      : "—"}
-                  </span>
+                  {(() => {
+                    const current = parseMoney(
+                      online?.Price ?? online?.acf?.Price
+                    );
+                    const old = parseMoney(
+                      online?.Discount ?? online?.acf?.Price_old
+                    );
+                    return (
+                      <>
+                        <span className={s.price}>
+                          <span className={s.priceValue}>
+                            {typeof current === "number"
+                              ? Math.round(current)
+                              : "—"}
+                          </span>
+                          {typeof current === "number" ? (
+                            <span className={s.priceCurrency}>₴</span>
+                          ) : null}
+                        </span>
+                        {old && current && old > current ? (
+                          <span className={s.priceOld}>
+                            <span className={s.priceOldValue}>
+                              {Math.round(old)}
+                            </span>
+                            <span className={s.priceOldCurrency}>₴</span>
+                          </span>
+                        ) : null}
+                      </>
+                    );
+                  })()}
                 </div>
                 <button
                   className={s.button}

@@ -40,13 +40,23 @@
   font-weight: 700;
   font-size: 48px;
   line-height: 100%;
-  letter-spacing: -0.01em;
+  color: var(--black);
+  transition: color 0.3s ease;
+}
+
+.title:hover {
   color: var(--black);
 }
 
 .coursesSlider {
   position: relative;
   width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
 }
 
 .swiper {
@@ -97,9 +107,9 @@
 }
 
 .allCoursesBtn:hover {
-  background: #6d47e5;
+  background: var(--black);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(122, 90, 248, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .loading,
@@ -113,4 +123,48 @@
 
 .error {
   color: #ef4444;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    padding: 0 mvw(16);
+    gap: mvw(32);
+  }
+  .eyebrow {
+    font-size: mvw(14);
+  }
+  .title {
+    font-size: mvw(28);
+    line-height: 120%;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: mvw(8);
+  }
+  .swiper {
+    padding: 0;
+  }
+  .allCoursesBtn {
+    width: 100%;
+    height: mvw(50);
+    border-radius: mvw(16);
+    padding: 0;
+    font-size: mvw(16);
+  }
+
+  .allCoursesBtn {
+    border-radius: mvw(16);
+    padding: mvw(16) mvw(24);
+    width: mvw(144);
+    height: mvw(46);
+    font-family: var(--third-family);
+    font-weight: 700;
+    font-size: mvw(14);
+    line-height: 100%;
+    color: #fff;
+  }
+  .headerLeft {
+    align-items: center;
+    justify-content: center;
+  }
 }

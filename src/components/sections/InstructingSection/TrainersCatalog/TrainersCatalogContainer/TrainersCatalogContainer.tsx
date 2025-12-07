@@ -4,6 +4,7 @@ import styles from "./TrainersCatalogContainer.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import TrainersGrid from "../TrainersGrid/TrainersGrid";
 import { useCoachesQuery } from "@/components/hooks/useCoachesQuery";
+import TrainersCatalogContainerSkeleton from "./TrainersCatalogContainerSkeleton";
 
 interface Props {
   block: {
@@ -16,13 +17,6 @@ interface Props {
 
 const TrainersCatalogContainer = ({ filteredPosts }: Props) => {
   const { data: coaches = [], isLoading, isError } = useCoachesQuery();
-
-  console.log("[TrainersCatalogContainer] 📊 Стан компонента:", {
-    coachesCount: coaches.length,
-    filteredPostsCount: filteredPosts?.length || 0,
-    isLoading,
-    isError,
-  });
 
   const [sortBy] = useState("name");
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,17 +58,6 @@ const TrainersCatalogContainer = ({ filteredPosts }: Props) => {
     image: c.image ?? "",
   }));
 
-  console.log("[TrainersCatalogContainer] 🎯 Тренери для сітки:", {
-    trainersForGridCount: trainersForGrid.length,
-    firstTrainer: trainersForGrid[0]
-      ? {
-          id: trainersForGrid[0].id,
-          name: trainersForGrid[0].name,
-          location: trainersForGrid[0].location,
-        }
-      : "Немає тренерів",
-  });
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -84,14 +67,17 @@ const TrainersCatalogContainer = ({ filteredPosts }: Props) => {
 
   // pagination handled via SliderNav
 
+  if (isLoading) {
+    return <TrainersCatalogContainerSkeleton />;
+  }
+
   return (
     <div className={styles.catalogContainer}>
       <div className={styles.mainContent}>
         {isError && (
           <div className={styles.error}>Не вдалося завантажити тренерів</div>
         )}
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {!isLoading && !isError && <TrainersGrid trainers={trainersForGrid} />}
+        {!isError && <TrainersGrid trainers={trainersForGrid} />}
         {totalPages > 1 && (
           <SliderNav
             activeIndex={activeIndex}

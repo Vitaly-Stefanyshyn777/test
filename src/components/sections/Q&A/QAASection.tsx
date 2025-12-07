@@ -4,45 +4,13 @@ import { СhevronIcon } from "../../Icons/Icons";
 import styles from "./QAASection.module.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFAQByCategoryWithLogging, type FaqItem } from "@/lib/bfbApi";
+import QAASectionSkeleton from "./QAASectionSkeleton";
 
 interface QAAItem {
   id: number;
   question: string;
   answer: string;
 }
-
-const staticFaqData: QAAItem[] = [
-  {
-    id: 1,
-    question: "Чи можу я купити борд, якщо ще не проходив(-ла) навчання?",
-    answer:
-      "Так, ви можете придбати борд незалежно від проходження навчання. Однак ми рекомендуємо спочатку пройти базовий курс для безпечного та ефективного використання обладнання.",
-  },
-  {
-    id: 2,
-    question: "Які умови доставки?",
-    answer:
-      "Ми пропонуємо безкоштовну доставку по Україні для замовлень від 1500 грн. Доставка здійснюється протягом 1-3 робочих днів. Для міжнародних замовлень умови уточнюються індивідуально.",
-  },
-  {
-    id: 3,
-    question: "Чи підходить борд для домашнього використання?",
-    answer:
-      "Абсолютно! BFB борди спеціально розроблені для домашнього використання. Вони компактні, безпечні та не потребують додаткового обладнання. В комплекті йде детальна інструкція з вправами.",
-  },
-  {
-    id: 4,
-    question: "З якого віку можна займатися на борді?",
-    answer:
-      "Борди підходять для осіб від 16 років. Для дітей молодшого віку рекомендуємо занятся під наглядом дорослих або інструктора. Максимальна вага користувача - 120 кг.",
-  },
-  {
-    id: 5,
-    question: "Чи витримує борд велику вагу?",
-    answer:
-      "Так, наші борди витримують навантаження до 120 кг. Вони виготовлені з високоякісних матеріалів та пройшли всі необхідні тести на міцність та безпеку.",
-  },
-];
 
 interface QAASectionProps {
   categoryId?: number;
@@ -57,7 +25,7 @@ const QAASection: React.FC<QAASectionProps> = ({
   categoryType,
 }) => {
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
-  const [qaItems, setQaItems] = useState<QAAItem[]>(staticFaqData);
+  const [qaItems, setQaItems] = useState<QAAItem[]>([]);
 
   // Визначаємо ID категорії на основі типу
   const getCategoryId = () => {
@@ -65,15 +33,15 @@ const QAASection: React.FC<QAASectionProps> = ({
 
     switch (categoryType) {
       case "main":
-        return 69;
+        return 69; // Головна
       case "boards":
-        return 70;
+        return 70; // Борди
       case "course":
-        return 71; // Майбутня категорія
+        return 90; // Курси
       case "training":
-        return 72; // Майбутня категорія
+        return 91; // Навчання
       case "coach":
-        return 73; // Майбутня категорія
+        return 92; // Тренерство
       default:
         return undefined;
     }
@@ -93,9 +61,9 @@ const QAASection: React.FC<QAASectionProps> = ({
       case "course":
         return "Курси";
       case "training":
-        return "Тренування";
+        return "Навчання";
       case "coach":
-        return "Тренери";
+        return "Тренерство";
       default:
         return undefined;
     }
@@ -103,24 +71,35 @@ const QAASection: React.FC<QAASectionProps> = ({
 
   const effectiveCategoryName = getCategoryName();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["qaa", effectiveCategoryId, categoryType],
     queryFn: () => fetchFAQByCategoryWithLogging(effectiveCategoryId),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+    enabled: effectiveCategoryId !== undefined, // Не виконуємо запит, якщо категорія не визначена
   });
 
   useEffect(() => {
     if (!data) return;
     if (Array.isArray(data) && data.length > 0) {
-      const mapped: QAAItem[] = (data as FaqItem[]).map((it) => ({
-        id: it.id,
-        question: it.title?.rendered || "",
-        answer: (it.content?.rendered || "").replace(/<[^>]*>/g, ""),
-      }));
+      const mapped: QAAItem[] = (data as FaqItem[]).map((it) => {
+        // Використовуємо нові поля: acf.question та acf.answer
+        const answer = it.acf?.answer || it.content?.rendered || "";
+        const cleanAnswer = answer.replace(/<[^>]*>/g, "");
+
+        const question = it.acf?.question || it.title?.rendered || "";
+
+        return {
+          id: it.id,
+          question,
+          answer: cleanAnswer,
+        };
+      });
+
       setQaItems(mapped);
     } else {
-      setQaItems(staticFaqData);
+      // Якщо немає даних - показуємо порожній список
+      setQaItems([]);
     }
   }, [data]);
 
@@ -130,16 +109,16 @@ const QAASection: React.FC<QAASectionProps> = ({
     );
   };
 
+  if (isLoading) {
+    return <QAASectionSkeleton />;
+  }
+
   return (
     <section className={styles.faqSection}>
       <div className={styles.container}>
         <div className={styles.contentBlock}>
           <div className={styles.contentTextBlock}>
-            <h2 className={styles.title}>
-              {effectiveCategoryName
-                ? `Часті питання: ${effectiveCategoryName}`
-                : "Часті питання та відповіді"}
-            </h2>
+            <h2 className={styles.title}>Часті питання та відповіді</h2>
           </div>
 
           <div className={styles.content}>

@@ -7,8 +7,10 @@ import type { SwiperRef } from "swiper/react";
 import { useProductsByCategory } from "@/components/hooks/useFilteredProducts";
 import ProductCard from "../ProductCard/ProductCard";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
+import ProductsShowcaseSkeleton from "./ProductsShowcaseSkeleton";
 import s from "./ProductsShowcase.module.css";
 import { fetchWcCategories } from "@/lib/bfbApi";
+import { normalizeImageUrl } from "@/lib/imageUtils";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -18,6 +20,21 @@ const ProductsShowcase: React.FC = () => {
   const [inventoryCategories, setInventoryCategories] = useState<
     Array<{ id: number; name: string; slug: string; image?: { src?: string } }>
   >([]);
+  const swiperRef = useRef<SwiperRef>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [fallbackProducts, setFallbackProducts] = useState<
+    Array<{
+      id: number | string;
+      name: string;
+      price?: number | string;
+      regularPrice?: number | string;
+      image?: string;
+      categories?: Array<{ id: number; name: string; slug: string }>;
+      dateCreated?: string;
+    }>
+  >([]);
+  
   useEffect(() => {
     (async () => {
       try {
@@ -43,35 +60,41 @@ const ProductsShowcase: React.FC = () => {
       }
     })();
   }, []);
+  
   // Отримуємо продукти категорії 30 ("Товари для спорту") напряму через WC v3
   const {
     data: courses = [],
     isLoading,
+    isFetching,
+    isPending,
     isError,
   } = useProductsByCategory("30");
-  const swiperRef = useRef<SwiperRef>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [fallbackProducts, setFallbackProducts] = useState<
-    Array<{
-      id: number | string;
-      name: string;
-      price?: number | string;
-      regularPrice?: number | string;
-      image?: string;
-      categories?: Array<{ id: number; name: string; slug: string }>;
-      dateCreated?: string;
-    }>
-  >([]);
 
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1000px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    if (mql.addEventListener) mql.addEventListener("change", update);
+    else mql.addListener(update);
+    return () => {
+      if (mql.removeEventListener) mql.removeEventListener("change", update);
+      else mql.removeListener(update);
+    };
+  }, []);
+  
   const list = useMemo(
     () => (Array.isArray(courses) ? courses : []),
     [courses]
   );
   // Дані вже відфільтровані на етапі запиту; можна напряму відображати
   const displayedCourses = list.length > 0 ? list : fallbackProducts;
+  const hasSlider = displayedCourses.length > 5;
+
+  const useSlider = hasSlider && !isMobile;
 
   type ShowcaseItem = {
     id: number | string;
+    slug?: string;
     name: string;
     price?: number | string;
     regularPrice?: number | string;
@@ -83,15 +106,17 @@ const ProductsShowcase: React.FC = () => {
   const normalizedShowcase: ShowcaseItem[] = useMemo(() => {
     return (displayedCourses as Array<Record<string, unknown>>).map((p) => ({
       id: (p as { id: number | string }).id,
+      slug: (p as { slug?: string }).slug,
       name: (p as { name: string }).name,
       price: (p as { price?: number | string }).price,
       regularPrice:
         (p as { regularPrice?: number | string }).regularPrice ??
         (p as { regular_price?: number | string }).regular_price,
-      image:
+      image: normalizeImageUrl(
         (p as { image?: string }).image ??
-        ((p as { images?: Array<{ src?: string }> }).images?.[0]?.src ||
-          undefined),
+          ((p as { images?: Array<{ src?: string }> }).images?.[0]?.src ||
+            undefined)
+      ),
       categories: (
         p as {
           categories?: Array<{ id: number; name: string; slug: string }>;
@@ -117,7 +142,7 @@ const ProductsShowcase: React.FC = () => {
           name: p.name,
           price: p.price,
           regularPrice: p.regular_price,
-          image: p.images?.[0]?.src,
+          image: normalizeImageUrl(p.images?.[0]?.src),
           categories: p.categories || [],
           dateCreated: p.date_created,
         }));
@@ -133,6 +158,15 @@ const ProductsShowcase: React.FC = () => {
   useEffect(() => {
     // debug removed
   }, [displayedCourses.length]); // Залежить тільки від довжини масиву
+
+  // Показуємо скелетон якщо завантажується або дані ще не завантажені
+  // Перевіряємо всі можливі стани завантаження та наявність даних
+  const hasData = Array.isArray(courses) && courses.length > 0;
+  const shouldShowSkeleton = isPending || isLoading || (!hasData && isFetching);
+  
+  if (shouldShowSkeleton) {
+    return <ProductsShowcaseSkeleton />;
+  }
 
   const handlePrev = () => {
     if (swiperRef.current?.swiper) {
@@ -180,22 +214,6 @@ const ProductsShowcase: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <section className={s.section}>
-        <div className={s.container}>
-          <div className={s.header}>
-            <div className={s.headerLeft}>
-              <p className={s.eyebrow}>Інвентар</p>
-              <h2 className={s.title}>Товари для спорту </h2>
-            </div>
-          </div>
-          <div className={s.loading}>Завантаження курсів...</div>
-        </div>
-      </section>
-    );
-  }
-
   if (isError) {
     return (
       <section className={s.section}>
@@ -203,7 +221,9 @@ const ProductsShowcase: React.FC = () => {
           <div className={s.header}>
             <div className={s.headerLeft}>
               <p className={s.eyebrow}>Інвентар навчання</p>
-              <h2 className={s.title}>Товари для спорту </h2>
+              <Link href="/products" className={s.title}>
+                Товари для спорту{" "}
+              </Link>
             </div>
           </div>
           <div className={s.error}>Не вдалося завантажити курси</div>
@@ -217,73 +237,105 @@ const ProductsShowcase: React.FC = () => {
       <div className={s.container}>
         <div className={s.header}>
           <div className={s.headerLeft}>
-            <p className={s.eyebrow}>Початок навчання</p>
-            <h2 className={s.title}>Почни свій шлях з BFB тут</h2>
+            <p className={s.eyebrow}>Інвентар</p>
+            <Link href="/products" className={s.title}>
+              Товари для спорту
+            </Link>
           </div>
           <div className={s.headerRight}>
-            <SliderNav
-              activeIndex={activeIndex}
-              dots={displayedCourses.length}
-              onPrev={handlePrev}
-              onNext={handleNext}
-              onDotClick={handleDotClick}
-            />
+            {useSlider && (
+              <SliderNav
+                activeIndex={activeIndex}
+                dots={displayedCourses.length}
+                onPrev={handlePrev}
+                onNext={handleNext}
+                onDotClick={handleDotClick}
+              />
+            )}
           </div>
         </div>
 
         <div className={s.coursesSlider}>
-          <Swiper
-            ref={swiperRef}
-            modules={[Navigation, Pagination]}
-            spaceBetween={16}
-            slidesPerView={5}
-            slidesPerGroup={1}
-            loop={true}
-            allowSlideNext={true}
-            allowSlidePrev={true}
-            onSlideChange={(sw) => {
-              const realIndex = sw.realIndex;
-              setActiveIndex(realIndex);
-            }}
-            onSwiper={() => {}}
-            breakpoints={{
-              768: {
-                slidesPerView: 3,
-                spaceBetween: 16,
-              },
-              1024: {
-                slidesPerView: 5,
-                spaceBetween: 16,
-              },
-            }}
-            className={s.swiper}
-          >
-            {normalizedShowcase.map((product) => (
-              <SwiperSlide key={String(product.id)} className={s.slide}>
-                <ProductCard
-                  id={String(product.id)}
-                  name={product.name}
-                  price={
-                    typeof product.price === "string"
-                      ? parseFloat(product.price)
-                      : product.price || 0
-                  }
-                  originalPrice={
-                    typeof product.regularPrice === "string"
-                      ? parseFloat(product.regularPrice)
-                      : product.regularPrice || undefined
-                  }
-                  image={product.image}
-                  categories={product.categories}
-                  dateCreated={product.dateCreated}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {useSlider ? (
+            <Swiper
+              ref={swiperRef}
+              modules={[Navigation, Pagination]}
+              spaceBetween={16}
+              slidesPerView={5}
+              slidesPerGroup={1}
+              loop={true}
+              allowSlideNext={true}
+              allowSlidePrev={true}
+              onSlideChange={(sw) => {
+                const realIndex = sw.realIndex;
+                setActiveIndex(realIndex);
+              }}
+              onSwiper={() => {}}
+              breakpoints={{
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 16,
+                },
+                1024: {
+                  slidesPerView: 5,
+                  spaceBetween: 16,
+                },
+              }}
+              className={s.swiper}
+            >
+              {normalizedShowcase.map((product) => (
+                <SwiperSlide key={String(product.id)} className={s.slide}>
+                  <ProductCard
+                    id={String(product.id)}
+                    slug={product.slug}
+                    name={product.name}
+                    price={
+                      typeof product.price === "string"
+                        ? parseFloat(product.price)
+                        : product.price || 0
+                    }
+                    originalPrice={
+                      typeof product.regularPrice === "string"
+                        ? parseFloat(product.regularPrice)
+                        : product.regularPrice || undefined
+                    }
+                    image={product.image}
+                    categories={product.categories}
+                    dateCreated={product.dateCreated}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className={s.grid}>
+              {normalizedShowcase.map((product) => (
+                <div key={String(product.id)} className={s.slide}>
+                  <ProductCard
+                    id={String(product.id)}
+                    slug={product.slug}
+                    name={product.name}
+                    price={
+                      typeof product.price === "string"
+                        ? parseFloat(product.price)
+                        : product.price || 0
+                    }
+                    originalPrice={
+                      typeof product.regularPrice === "string"
+                        ? parseFloat(product.regularPrice)
+                        : product.regularPrice || undefined
+                    }
+                    image={product.image}
+                    categories={product.categories}
+                    dateCreated={product.dateCreated}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={s.footer}>
-          <Link href="/courses" className={s.allCoursesBtn}>
+          <Link href="/products" className={s.allCoursesBtn}>
             До усіх товарів
           </Link>
         </div>

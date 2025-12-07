@@ -75,7 +75,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.03em;
   color: var(--white);
 }
 
@@ -84,7 +83,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(255, 254, 252, 0.8);
 }
 
@@ -152,7 +150,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.03em;
   color: var(--white);
 }
 
@@ -161,7 +158,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(255, 254, 252, 0.8);
 }
 .founderCard {
@@ -219,7 +215,7 @@
   height: 736px;
   padding: 60px;
   /* image30.png */
-  background-image: url(/images/image30.png);
+  /* background-image: url(/images/image30.png); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -247,7 +243,6 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 100%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -278,7 +273,6 @@
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
   opacity: 0.9;
 }
 
@@ -341,7 +335,6 @@
   font-weight: 600;
   font-size: 40px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -351,24 +344,185 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .founderContainer {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
-  .achievementsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
+@media (max-width: 1000px) {
   .founderSection {
-    padding: 60px 0;
+    background: #f9fafb;
+  }
+  .founderContainer {
+    padding: 0 mvw(16);
+    flex-direction: column;
+    gap: mvw(12);
+  }
+  .missionCard {
+    order: 1;
+  }
+  .achievements {
+    order: 2;
+  }
+  .founderLeft {
+    order: 3;
+    max-width: 100%;
+    gap: mvw(16);
+    display: flex;
+    flex-direction: column;
+  }
+  .founderCard {
+    order: 1;
+    padding: mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(16);
+    max-height: none;
+    height: auto;
+    min-height: mvw(200);
+    background-size: cover;
+    background-position: center;
+  }
+  .founderMission {
+    order: 2;
+  }
+  .founderAboutMe {
+    padding: mvw(12) mvw(16);
+    border-radius: mvw(20);
+    gap: mvw(8);
+    /* display: none; */
+  }
+  .founderAboutMeIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+  .founderAboutMeNickname {
+    font-size: mvw(14);
+  }
+  .foundermission {
+    padding: mvw(16);
+    border-radius: mvw(16);
+    max-width: 100%;
+    max-height: none;
+    gap: mvw(8);
+    display: flex;
+    flex-direction: column;
+  }
+  .founderAboutMeTitle {
+    font-size: mvw(20);
+  }
+  .founderAboutMeText {
+    font-size: mvw(14);
+  }
+  .founderMission {
+    height: mvw(200);
+    border-radius: mvw(16);
+    padding: mvw(16);
+    gap: mvw(8);
+    display: flex;
+  }
+  .founderMissionIcons {
+    top: mvw(12);
+    left: mvw(12);
+    gap: mvw(8);
+  }
+  .founderMissionIcon {
+    padding: mvw(12);
+    border-radius: mvw(50);
+  }
+  .founderMissionIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+  .founderMissionContent {
+    padding: mvw(16);
+    border-radius: mvw(16);
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: mvw(8);
+  }
+  .founderMissionTitle {
+    font-size: mvw(20);
+  }
+  .founderMissionText {
+    font-size: mvw(14);
+  }
+  .missionCard {
+    width: 100%;
+    height: mvw(200);
+    padding: mvw(16) mvw(87);
+    border-radius: mvw(16);
+    align-items: flex-end;
+    justify-content: flex-end;
+    /* background-image: url(/images/Frame-1321319179.png); */
+    background-position: initial;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .missionCardContent {
+    gap: mvw(8);
+    align-items: flex-start;
+    align-items: center;
+  }
+  .missionTitle {
+    font-size: mvw(14);
+    text-align: left;
+  }
+  .missionText {
+    font-size: mvw(28);
+    line-height: 100%;
+    text-align: left;
+
+    font-weight: 700;
+  }
+  .achievements {
+    gap: mvw(8);
+  }
+  .achievementCard {
+    padding: mvw(12) mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(12);
+    max-width: 100%;
+    height: mvw(64);
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .achievementIcon {
+    padding: mvw(12);
+    border-radius: mvw(50);
+    flex-shrink: 0;
+  }
+  .achievementIcon svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
+  .achievementNumberDescription {
+    flex-direction: column;
+    gap: 0;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .achievementNumberDescription .achievementNumber {
+    display: none;
+  }
+
+  .achievementDescription {
+    font-size: mvw(14);
+    line-height: 140%;
+    color: var(--black);
+    flex: 1;
+  }
+
+  /* inline number when combined into one <p> on mobile */
+  .achievementNumberInline {
+    font-family: var(--second-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    color: var(--black);
+    margin-right: mvw(3);
+    display: inline;
   }
 }

@@ -2,6 +2,7 @@
 import React from "react";
 import { useUserProfile } from "./useUserProfile";
 import UserProfileHeader from "./UserProfileHeader";
+import UserProfileSkeleton from "./UserProfileSkeleton";
 
 interface UserProfileProps {
   name?: string;
@@ -10,11 +11,9 @@ interface UserProfileProps {
   notificationsCount?: number;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({
-  avatar = "/images/avatar1.png",
-}) => {
-  const { isHydrated, isReady, displayName, email } = useUserProfile();
-  if (!isHydrated || !isReady) return null;
+const UserProfile: React.FC<UserProfileProps> = () => {
+  const { isHydrated, isReady, displayName, email, avatar } = useUserProfile();
+  if (!isHydrated || !isReady) return <UserProfileSkeleton />;
   return (
     <UserProfileHeader
       displayName={displayName}

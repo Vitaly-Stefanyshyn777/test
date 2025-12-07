@@ -58,6 +58,9 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
                   </div>
                   <div className={s.color}>
                     {it.color || "Колір не вказано"}
+                    {(it.sku || it.id) && (
+                      <span className={s.colorCode}> • {it.sku || it.id}</span>
+                    )}
                   </div>
                 </div>
                 <div className={s.controlsBlock}>
@@ -117,8 +120,10 @@ export default function OrderSummary({ total }: OrderSummaryProps) {
       <div className={s.rowStrong}>
         <span className={s.titleTotal}>Разом</span>
         <span className={s.costValuePrice}>
-          <span className={s.costValue}>{safeTotal.toLocaleString()}</span>
-          <span className={s.costValue}>₴</span>
+          <span className={s.costValueNumber}>
+            {safeTotal.toLocaleString()}
+          </span>
+          <span className={s.costValueCurrency}>₴</span>
         </span>
       </div>
     </div>

@@ -6,7 +6,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 30px;
 }
 
 .content {
@@ -39,7 +39,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 
@@ -48,7 +47,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--black);
   opacity: 0.6;
 }
@@ -70,7 +68,6 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 140%;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--black);
 }
@@ -141,7 +138,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -151,7 +147,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.6);
 }
 
@@ -169,8 +164,8 @@
 .imageContainer {
   position: relative;
   border-radius: 16px;
-  max-width: 500px;
-  width: 100%;
+
+  width: 500px;
   height: 100%;
   display: flex;
   align-items: stretch;
@@ -198,7 +193,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   display: flex;
 }
@@ -226,11 +220,17 @@
 
   backdrop-filter: blur(15px);
   background: rgba(255, 254, 252, 0.15);
+  transition: all 0.3s;
 }
 
 .instagramIcon svg {
   width: 22px;
   height: 22px;
+  color: var(--white);
+}
+
+.instagramCard:hover {
+  background: var(--violet);
 }
 
 .instagramContent {
@@ -249,7 +249,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -287,4 +286,157 @@
   color: var(--black);
   text-align: center;
   padding: 40px 20px;
+}
+
+@media (max-width: 1000px) {
+  .instructor {
+    width: 100%;
+  }
+
+  .container {
+    gap: mvw(32);
+  }
+
+  .content {
+    flex-direction: column;
+    gap: mvw(8);
+    flex-direction: column-reverse;
+  }
+
+  .leftColumn {
+    width: 100%;
+    gap: mvw(8);
+  }
+
+  .sliderTitle {
+    font-size: mvw(24);
+    line-height: 120%;
+  }
+
+  .titleTextBlock {
+    padding: mvw(8);
+    border-radius: mvw(16);
+    gap: mvw(16);
+  }
+
+  .title {
+    font-size: mvw(20);
+    line-height: 140%;
+  }
+
+  .description {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .titleBlock {
+    gap: mvw(12);
+  }
+
+  .tagsBlock {
+    gap: mvw(12);
+  }
+
+  .tagsBlockTitle {
+    font-size: mvw(12);
+  }
+
+  .tags {
+    gap: mvw(8);
+  }
+
+  .tag {
+    padding: mvw(10);
+    height: mvw(32);
+    border-radius: mvw(8);
+    font-size: mvw(12);
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: mvw(12);
+  }
+
+  .statCard {
+    width: 100%;
+    height: auto;
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(16);
+    gap: mvw(16);
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .statIcon {
+    width: mvw(40);
+    height: mvw(40);
+    border-radius: mvw(32);
+  }
+
+  .statIcon svg {
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .statContent {
+    gap: mvw(4);
+    align-items: flex-start;
+    width: mvw(178);
+  }
+
+  .statNumber {
+    font-size: mvw(20);
+    text-align: left;
+    width: 100%;
+  }
+
+  .statLabel {
+    font-size: mvw(14);
+    text-align: left;
+    width: 100%;
+  }
+
+  .rightColumn {
+    width: 100%;
+    height: auto;
+    border-radius: mvw(16);
+  }
+
+  .imageContainer {
+    border-radius: mvw(16);
+    height: auto;
+    min-height: mvw(215);
+    width: 100%;
+  }
+
+  .instructorImage {
+    border-radius: mvw(16);
+  }
+
+  .instagramSection {
+    top: mvw(16);
+    left: mvw(16);
+  }
+
+  .instagramCard {
+    padding: mvw(12) mvw(16);
+    width: auto;
+    height: auto;
+    border-radius: mvw(24);
+    gap: mvw(8);
+  }
+
+  .instagramIcon svg {
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .instagramText {
+    font-size: mvw(14);
+  }
+
+  .sliderSection {
+    margin-top: mvw(16);
+    gap: mvw(16);
+  }
 }

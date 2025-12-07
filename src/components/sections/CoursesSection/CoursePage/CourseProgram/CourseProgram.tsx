@@ -10,6 +10,7 @@ import {
 import styles from "./CourseProgram.module.css";
 import { useCourseQuery } from "@/components/hooks/useWpQueries";
 import { CourseData } from "@/lib/bfbApi";
+import CourseProgramSkeleton from "./CourseProgramSkeleton";
 
 interface CourseModule {
   id: number;
@@ -20,7 +21,7 @@ interface CourseModule {
 }
 
 interface CourseProgramProps {
-  courseId?: number;
+  courseId?: string | number;
 }
 
 const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
@@ -28,6 +29,7 @@ const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
 
   // Динамічні модулі курсу з API
   const [modules, setModules] = useState<CourseModule[]>([]);
+  const [showAll, setShowAll] = useState(false);
 
   // Завантажуємо модулі з API
   React.useEffect(() => {
@@ -57,14 +59,16 @@ const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
     );
   };
 
+  // Визначаємо які модулі показувати
+  const displayedModules = showAll ? modules : modules.slice(0, 4);
+  const hasMoreModules = modules.length > 4;
+
+  const handleShowMore = () => {
+    setShowAll(true);
+  };
+
   if (isLoading) {
-    return (
-      <section className={styles.program}>
-        <div className={styles.content}>
-          <div className={styles.loading}>Завантаження програми курсу...</div>
-        </div>
-      </section>
-    );
+    return <CourseProgramSkeleton />;
   }
 
   if (error || !course) {
@@ -79,13 +83,22 @@ const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
     );
   }
 
+  // Якщо немає модулів, не показуємо секцію
+  if (!course.course_data.Course_program || modules.length === 0) {
+    return null;
+  }
+
   return (
     <section className={styles.program}>
       <div className={styles.content}>
         <div className={styles.leftColumn}>
           <h2 className={styles.title}>Програма курсу</h2>
-          <div className={styles.modulesList}>
-            {modules.map((module) => (
+          <div
+            className={`${styles.modulesList} ${
+              showAll ? styles.modulesListScrollable : ""
+            }`}
+          >
+            {displayedModules.map((module) => (
               <div
                 key={module.id}
                 className={`${styles.module} ${
@@ -143,7 +156,11 @@ const CourseProgram: React.FC<CourseProgramProps> = ({ courseId = 169 }) => {
               </div>
             ))}
           </div>
-          <button className={styles.showAllButton}>Показати ще</button>
+          {hasMoreModules && !showAll && (
+            <button className={styles.showAllButton} onClick={handleShowMore}>
+              Показати ще
+            </button>
+          )}
         </div>
 
         <div className={styles.rightColumn}>

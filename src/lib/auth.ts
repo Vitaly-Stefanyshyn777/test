@@ -1,4 +1,4 @@
-import api from "./api";
+import api, { adminRequest } from "./api";
 import axios from "axios";
 
 const adminApi = axios.create({
@@ -55,22 +55,26 @@ export const login = async (
   credentials: LoginCredentials
 ): Promise<LoginResponse> => {
   try {
-    const response = await api.post(
-      "/api/proxy?path=" + encodeURIComponent("/wp-json/jwt-auth/v1/token"),
-      {
+    // Використовуємо адмінський канал через проксі: якщо немає кукі — інтерцептор зробить /api/admin-login і ретрайнеться
+    const response = await adminRequest({
+      method: "POST",
+      url:
+        "/api/proxy?path=" +
+        encodeURIComponent("/wp-json/jwt-auth/v1/token"),
+      data: {
         username: credentials.username,
         password: credentials.password,
-      }
-    );
+      },
+    });
 
     try {
       await fetch("/api/set-user-cookie", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: response.data.token }),
+        body: JSON.stringify({ token: (response.data as LoginResponse).token }),
       });
     } catch {}
-    return response.data;
+    return response.data as LoginResponse;
   } catch (error) {
     throw error;
   }
@@ -86,6 +90,12 @@ export const register = async (
     first_name: credentials.first_name,
     last_name: credentials.last_name,
     roles: credentials.roles || ["bfb_coach"],
+    // Додаємо acf для збереження phone (для консистентності з PersonalData)
+    acf: {
+      phone: credentials.phone,
+      telegram: "",
+      instagram: "",
+    },
     meta: {
       phone: credentials.phone,
       input_text_position: "Фітнес тренер",
@@ -107,27 +117,13 @@ export const register = async (
   };
 
   try {
-    const adminLoginResponse = await adminApi.post(
-      "/api/proxy?path=" + encodeURIComponent("/wp-json/jwt-auth/v1/token"),
-      {
-        username: "admin_bfb",
-        password: "$3cmi4(IiXYnfNB3q6",
-      }
-    );
-
-    const adminToken = adminLoginResponse.data.token;
-
-    const { data } = await adminApi.post(
-      "/api/proxy?path=" + encodeURIComponent("/wp-json/wp/v2/users"),
-      registerData,
-      {
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
-      }
-    );
-
-    return data;
+    // Через адмінський канал: проксі підтягне Authorization з httpOnly кукі (bfb_admin_jwt)
+    const response = await adminRequest({
+      method: "POST",
+      url: "/api/proxy?path=" + encodeURIComponent("/wp-json/wp/v2/users"),
+      data: registerData,
+    });
+    return response.data as UserResponse;
   } catch (error) {
     throw error;
   }
@@ -147,29 +143,31 @@ type WPUserMe = {
   slug?: string;
   avatar?: string;
   avatar_urls?: Record<string, string>;
+  meta?: Record<string, unknown>;
 };
 
-export const getMyProfile = async (): Promise<WPUserMe | null> => {
+export const getMyProfile = async (token?: string | null): Promise<WPUserMe | null> => {
   try {
-    let token: string | null = null;
-    if (typeof window !== "undefined") {
-      token =
-        localStorage.getItem("bfb_token") ||
-        localStorage.getItem("bfb_token_old");
-      if (!token) return null;
+    // Спочатку пробуємо використати токен з параметра, потім з localStorage
+    let authToken: string | null = token || null;
+    
+    if (!authToken && typeof window !== "undefined") {
+      try {
+        authToken = localStorage.getItem("bfb_token");
+      } catch {}
     }
 
     const response = await api.get("/api/proxy", {
       params: { path: "/wp-json/wp/v2/users/me?context=edit" },
-      headers: token
+      headers: authToken
         ? {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
           }
         : undefined,
     });
     if (process.env.NODE_ENV !== "production") {
       console.debug("[auth.getMyProfile] OK", {
-        hasToken: !!token,
+        hasToken: !!authToken,
         status: response.status,
       });
     }

@@ -13,24 +13,26 @@ interface FilterState {
   colors: string[];
   sizes: string[];
   certification: string[];
-  workoutTypes?: string[];
+  workoutTypes: string[];
 }
 
 interface Product {
   id: string;
   name: string;
   price: string;
-  regularPrice: string;
-  salePrice: string;
-  onSale: boolean;
-  image: string;
-  categories: Array<{
+  regularPrice?: string;
+  salePrice?: string;
+  onSale?: boolean;
+  image?: string;
+  categories?: Array<{
     id: number;
     name: string;
     slug: string;
   }>;
-  stockStatus: string;
+  stockStatus?: string;
 }
+
+type CoursesFiltersVariant = "default" | "modal";
 
 interface CoursesFiltersProps {
   filters: FilterState;
@@ -39,6 +41,7 @@ interface CoursesFiltersProps {
   products: Product[];
   searchTerm: string;
   onApplyCategories?: (categoryIds: number[]) => void;
+  variant?: CoursesFiltersVariant;
 }
 
 const CoursesFilters = ({
@@ -46,7 +49,9 @@ const CoursesFilters = ({
   onFiltersChange,
   onReset,
   onApplyCategories,
+  variant = "default",
 }: CoursesFiltersProps) => {
+  const isModalVariant = variant === "modal";
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<WooCommerceCategory[]>([]);
   const [childrenByGroup, setChildrenByGroup] = useState<
@@ -65,11 +70,7 @@ const CoursesFilters = ({
     (async () => {
       try {
         setLoading(true);
-        console.log(
-          "[CoursesFilters] 🚀 Завантажую категорії курсів (parent=72)..."
-        );
         const cats = await fetchCourseCategories();
-        console.log("[CoursesFilters] ✅ Груп (parent=72):", cats.length);
         setCategories(cats);
 
         // Завантажуємо підкатегорії для кожної групи
@@ -80,19 +81,9 @@ const CoursesFilters = ({
               { cache: "no-store" }
             );
             if (!res.ok) {
-              console.warn(
-                "[CoursesFilters] ⚠️ Не вдалося завантажити підкатегорії для",
-                g.id,
-                g.name,
-                res.status
-              );
               return [g.id, [] as WooCommerceCategory[]] as const;
             }
             const children = (await res.json()) as WooCommerceCategory[];
-            console.log(
-              `[CoursesFilters] 👇 ${g.name} → підкатегорій:`,
-              children.length
-            );
             return [g.id, children] as const;
           })
         );
@@ -107,15 +98,9 @@ const CoursesFilters = ({
           if (res61.ok) {
             const list61 = (await res61.json()) as WooCommerceCategory[];
             setTrainingPickTypeChildren(list61);
-            console.log(
-              "[CoursesFilters] ✅ Тренування/Оберіть тип (61) →",
-              list61.length
-            );
-          } else {
-            console.warn("[CoursesFilters] ⚠️ Не вдалося завантажити дітей 61");
           }
         } catch {
-          console.warn("[CoursesFilters] ⚠️ Помилка завантаження дітей 61");
+          // Silent error handling
         }
 
         // Підвантажуємо гілку Тренування → Тип тренування (id=56)
@@ -127,36 +112,34 @@ const CoursesFilters = ({
           if (res56.ok) {
             const list56 = (await res56.json()) as WooCommerceCategory[];
             setTrainingTypeChildren(list56);
-            console.log(
-              "[CoursesFilters] ✅ Тренування/Тип тренування (56) →",
-              list56.length
-            );
-          } else {
-            console.warn("[CoursesFilters] ⚠️ Не вдалося завантажити дітей 56");
           }
         } catch {
-          console.warn("[CoursesFilters] ⚠️ Помилка завантаження дітей 56");
+          // Silent error handling
         }
-      } catch (e) {
-        console.error(
-          "[CoursesFilters] ❌ Помилка завантаження категорій курсів",
-          e
-        );
+      } catch {
+        // Silent error handling
       } finally {
         setLoading(false);
       }
     })();
   }, []);
 
-  // Побудова мапи name -> id для простого зіставлення існуючими компонентами (які працюють зі строками)
+  // Побудова мапи name -> id з даних API
+  // Використовуємо тільки дані з API - якщо категорії немає в API, вона не буде доступна для фільтрації
   const nameToIdMap = useMemo(() => {
     const map = new Map<string, number>();
-    // Мапимо саме підкатегорії як опції
+    
+    // Мапимо підкатегорії з усіх груп
     Object.values(childrenByGroup).forEach((arr) =>
       arr.forEach((c) => map.set(c.name, c.id))
     );
+    
+    // Мапимо категорії з "Оберіть тип тренування" (parent = 61)
     trainingPickTypeChildren.forEach((c) => map.set(c.name, c.id));
+    
+    // Мапимо категорії з "Тип тренування" (parent = 56)
     trainingTypeChildren.forEach((c) => map.set(c.name, c.id));
+
     return map;
   }, [childrenByGroup, trainingPickTypeChildren, trainingTypeChildren]);
 
@@ -175,14 +158,18 @@ const CoursesFilters = ({
       ...(filters.certification || []),
       ...((filters.workoutTypes as string[]) || []),
     ];
+    
+    // Конвертуємо назви в ID, використовуючи тільки дані з API
+    // Якщо назва не знайдена в API - просто пропускаємо її
     const categoryIds = selectedNames
       .map((name) => nameToIdMap.get(name))
       .filter((v): v is number => typeof v === "number");
 
-    console.log("[CoursesFilters] 📦 Обрані категорії (names):", selectedNames);
-    console.log("[CoursesFilters] 🔢 Обрані категорії (ids):", categoryIds);
-
-    onApplyCategories?.(categoryIds);
+    if (onApplyCategories) {
+      onApplyCategories(categoryIds);
+    } else {
+      console.warn("[CoursesFilters] ⚠️ onApplyCategories не передано!");
+    }
   };
 
   // Нормалізація назв: без двокрапок, пробілів та в нижньому регістрі
@@ -236,25 +223,13 @@ const CoursesFilters = ({
     ["Тренування вдома", 4],
   ]);
 
-  // Логування для дебагу
-  React.useEffect(() => {
-    console.log("[CoursesFilters] 🔍 Debug data:", {
-      trainingPickTypeChildren,
-      trainingPickTypeChildrenLength: trainingPickTypeChildren?.length,
-      options: (trainingPickTypeChildren || [])
-        .slice()
-        .sort(
-          (a, b) =>
-            (pickTypeOrder.get(a.name) ?? 99) -
-            (pickTypeOrder.get(b.name) ?? 99)
-        )
-        .map((c) => c.name),
-      filters: filters.workoutTypes,
-    });
-  }, [trainingPickTypeChildren, filters.workoutTypes]);
-
+  // Debug data
   return (
-    <div className={styles.filterContainer}>
+    <div
+      className={`${styles.filterContainer} ${
+        isModalVariant ? styles.modalVariant : ""
+      }`}
+    >
       <div className={styles.filterSidebar}>
         <TrainingTypeFilter
           value={filters.sizes}
@@ -267,6 +242,7 @@ const CoursesFilters = ({
                 (trainingTypeOrder.get(b.name) ?? 99)
             )
             .map((c) => ({ key: c.name, label: c.name }))}
+          loading={loading}
         />
 
         <CertificationFilter
@@ -275,15 +251,12 @@ const CoursesFilters = ({
             handleFilterChange("certification", vals)
           }
           options={[]}
+          loading={loading}
         />
 
         <WorkoutTypeFilter
           value={filters.workoutTypes || []}
           onChange={(vals: string[]) => {
-            console.log(
-              "[CoursesFilters] 🏋️ WorkoutTypeFilter onChange:",
-              vals
-            );
             handleFilterChange("workoutTypes", vals);
           }}
           options={(trainingPickTypeChildren || [])
@@ -294,10 +267,17 @@ const CoursesFilters = ({
                 (pickTypeOrder.get(b.name) ?? 99)
             )
             .map((c) => c.name)}
+          loading={loading}
         />
       </div>
 
-      <ButtonFilter onApply={handleApply} onReset={onReset} loading={loading} />
+      {!isModalVariant && (
+        <ButtonFilter
+          onApply={handleApply}
+          onReset={onReset}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };

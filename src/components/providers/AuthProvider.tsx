@@ -19,30 +19,24 @@ export default function AuthProvider({
     (async () => {
       try {
         if (typeof window === "undefined") {
-          console.log(
-            "🔐 [AuthProvider] SSR режим, пропускаю встановлення кукі"
-          );
           return;
         }
         if (token) {
-          console.log("🔐 [AuthProvider] Токен змінився, встановлюю кукі:", {
-            hasToken: !!token,
-            tokenLength: token.length,
-          });
           const response = await fetch("/api/set-user-cookie", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token }),
           });
-          console.log("🔐 [AuthProvider] set-user-cookie відповідь:", {
-            status: response.status,
-            ok: response.ok,
-          });
-        } else {
-          console.log("🔐 [AuthProvider] Токен відсутній, не встановлюю кукі");
+
+          // Синхронізуємо токен у localStorage для клієнтських запитів axios
+          try {
+            localStorage.setItem("bfb_token", token);
+            // лишаємо сумісність зі старими ключами
+            localStorage.setItem("bfb_token_old", token);
+          } catch {}
         }
       } catch (error) {
-        console.error("🔐 [AuthProvider] Помилка встановлення кукі:", error);
+        // Silent error handling
       }
     })();
   }, [token]);

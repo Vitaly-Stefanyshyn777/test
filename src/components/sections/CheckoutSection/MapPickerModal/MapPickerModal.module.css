@@ -155,7 +155,6 @@
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.3;
 }
@@ -262,7 +261,6 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 .panelDivider {
@@ -337,7 +335,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.02em;
   color: #cac9c9;
 
   width: 100%;
@@ -385,14 +382,12 @@
   font-family: var(--font-family);
   font-weight: 500;
   font-size: 16px;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 .itemMeta {
   font-family: var(--font-family);
   font-weight: 400;
   font-size: 14px;
-  letter-spacing: -0.02em;
   color: var(--black);
   opacity: 0.3;
 }
@@ -596,4 +591,206 @@
   color: var(--black);
   text-align: center;
   padding: 40px 20px;
+}
+
+@media (max-width: 1000px) {
+  .backdrop {
+    padding: mvw(40) 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: mvw(20) mvw(20) 0 0;
+    display: flex;
+    flex-direction: column;
+    width: mvw(343);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    border-radius: mvw(12);
+  }
+
+  .modal::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  .body {
+    flex-direction: column;
+    flex: 1.2;
+    min-height: 0;
+    gap: mvw(8);
+  }
+
+  .mapBox {
+    flex: 1;
+    min-height: 0;
+    border-radius: mvw(12);
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  .locationClose {
+    top: mvw(16);
+    right: mvw(16);
+    width: mvw(40);
+    height: mvw(40);
+    border-radius: mvw(10);
+    background: #f2f2f2;
+  }
+
+  .locationClose svg {
+    width: mvw(14);
+    height: mvw(14);
+  }
+
+  .sidePanel {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(12);
+    background: var(--white);
+    box-shadow: none;
+    border-top: 1px solid #eee;
+    order: -1;
+    overflow-y: auto;
+    gap: mvw(16);
+  }
+
+  .panelTitle {
+    font-size: mvw(20);
+    padding: 0 mvw(40) 0 0;
+    width: mvw(180);
+  }
+
+  .panelDivider {
+    width: 100%;
+    /* margin: mvw(12) 0; */
+  }
+
+  .tabs {
+    gap: mvw(16);
+  }
+
+  .tab {
+    font-size: mvw(20);
+    color: var(--black);
+  }
+
+  .tabActive {
+    font-size: mvw(20);
+  }
+
+  .search {
+    padding: mvw(14) mvw(16) mvw(14) mvw(50);
+    border-radius: mvw(10);
+    font-size: mvw(14);
+    color: var(--black);
+    opacity: 0.5;
+    background: var(--bg-color);
+
+    border: none;
+  }
+
+  .searchIcon {
+    right: mvw(274);
+    width: mvw(20);
+    height: mvw(20);
+    opacity: 0.2;
+  }
+
+  .list {
+    gap: mvw(8);
+    max-height: none;
+  }
+
+  .listItem {
+    padding: mvw(12);
+    border-radius: mvw(12);
+    gap: mvw(12);
+  }
+
+  .npIcon {
+    flex-shrink: 0;
+  }
+
+  .itemText {
+    gap: mvw(4);
+    flex: 1;
+    min-width: 0;
+  }
+
+  .itemTitle {
+    font-size: mvw(14);
+  }
+
+  .itemMeta {
+    font-size: mvw(12);
+  }
+
+  .loading {
+    padding: mvw(20);
+    font-size: mvw(14);
+  }
+
+  .emptyState {
+    padding: mvw(20);
+    font-size: mvw(14);
+  }
+
+  .backButton {
+    padding: mvw(12) mvw(16);
+    border-radius: mvw(8);
+    font-size: mvw(14);
+    margin-top: mvw(12);
+  }
+
+  .locationPermission {
+    top: mvw(8);
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - mvw(32));
+    max-width: mvw(343);
+    padding: mvw(16) mvw(16) mvw(16) mvw(16);
+    border-radius: mvw(12);
+    gap: mvw(12);
+  }
+
+  .locationIcon {
+    width: mvw(40);
+    height: mvw(40);
+    border-radius: mvw(8);
+    padding: mvw(12);
+  }
+
+  .locationIcon svg {
+    width: mvw(16);
+    height: mvw(20);
+  }
+
+  .locationTitle {
+    font-size: mvw(16);
+  }
+
+  .locationSubtitle {
+    font-size: mvw(12);
+  }
+
+  .locationPermissionClose {
+    top: mvw(12);
+    right: mvw(12);
+    width: mvw(24);
+    height: mvw(24);
+  }
+
+  .locationPermissionClose svg {
+    width: mvw(10);
+    height: mvw(10);
+  }
 }

@@ -28,7 +28,17 @@ export interface CoachApi {
     hl_input_text_schedule_five?: string;
     hl_input_text_schedule_two?: string;
     hl_input_text_address?: string;
+    hl_input_text_coord_lat?: string;
+    hl_input_text_coord_ln?: string;
+    coord_lat?: string;
+    coord_lng?: string;
+    latitude?: string | number;
+    longitude?: string | number;
+    lat?: string | number;
+    lng?: string | number;
   }>;
+  meta?: Record<string, unknown>;
+  avatar_urls?: Record<string, string>;
 }
 
 export interface CoachUiItem {
@@ -74,6 +84,7 @@ export const getCoachesFirstPage = async (): Promise<{
       params: {
         roles: "bfb_coach",
         per_page: 100,
+        context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
       },
       headers: { "x-internal-admin": "1" },
     });
@@ -179,6 +190,7 @@ export const getCoachesPage = async (page: number): Promise<CoachApi[]> => {
       roles: "bfb_coach",
       per_page: 100,
       page: page,
+      context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
     },
     headers: { "x-internal-admin": "1" },
   });
@@ -265,6 +277,7 @@ export const getCoachesFiltered = async (
       page: page,
       countries: countries,
       cities: cities,
+      context: "edit", // Додаємо context=edit, щоб отримати first_name та last_name
     },
     headers: { "x-internal-admin": "1" },
   });
@@ -282,7 +295,14 @@ export const mapCoachToUi = (item: CoachApi): CoachUiItem => {
     avatar: item.avatar,
   });
 
+  const topLevelAvatar = ensureString(
+    (item as unknown as { img_link_data_avatar?: string })?.img_link_data_avatar
+  ).trim();
+  const metaAvatar = ensureString(
+    (item.meta as { img_link_data_avatar?: string })?.img_link_data_avatar
+  ).trim();
   const rawAvatar = ensureString(item.avatar).trim();
+  const gravatar96 = ensureString(item.avatar_urls?.["96"]);
   const isLikelyImageUrl = (url: string): boolean => {
     if (!url) return false;
     if (url.includes("wp-admin")) return false; // це явно не картинка
@@ -304,9 +324,10 @@ export const mapCoachToUi = (item: CoachApi): CoachUiItem => {
     }
   };
 
-  const avatarValue = isLikelyImageUrl(rawAvatar)
-    ? rawAvatar
-    : "/placeholder.png";
+  const prioritized = [topLevelAvatar, metaAvatar, rawAvatar, gravatar96].find(
+    (url) => url && isLikelyImageUrl(url)
+  );
+  const avatarValue = prioritized || "/placeholder.png";
 
   const city = joinToString(item.location_city);
   const country = joinToString(item.location_country);
@@ -325,10 +346,13 @@ export const mapCoachToUi = (item: CoachApi): CoachUiItem => {
       }))
     : [];
 
+  const fullName = `${item.first_name ?? ""} ${item.last_name ?? ""}`.trim();
+
   const mapped = {
     id: String(item.id),
-    name:
-      item.name || `${item.first_name ?? ""} ${item.last_name ?? ""}`.trim(),
+    // SSOT: завжди віддаємо пріоритет first_name + last_name з user,
+    // а title/name з CPT використовуємо лише як fallback
+    name: fullName || item.name || "",
     location: locationsValue,
     specialization: specializationValue,
     image: avatarValue,

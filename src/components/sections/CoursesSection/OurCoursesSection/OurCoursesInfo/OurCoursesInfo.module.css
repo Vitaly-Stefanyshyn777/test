@@ -38,6 +38,11 @@
   flex: 1;
   position: relative;
 }
+
+.imageContentTwo {
+  flex: 1;
+  position: relative;
+}
 .badgeBlock {
   /* width: 100%; */
   width: 842px;
@@ -58,11 +63,15 @@
 
 .title {
   font-family: var(--third-family);
-  font-weight: 800;
-  font-size: 2.5rem;
+
   line-height: 1.2;
   color: var(--black);
   margin: 0;
+
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 120%;
+  color: var(--black);
 }
 
 .description {
@@ -70,7 +79,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -96,7 +104,6 @@
 .detailsBtn:hover {
   background: var(--black);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
 }
 
 .courseImage {
@@ -107,15 +114,29 @@
   height: 586px;
 }
 
+.courseImagetwo {
+  width: 100%;
+  height: auto;
+  border-radius: 32px;
+  object-fit: cover;
+  height: 586px;
+}
+
 .imageOverlay {
   position: absolute;
-  bottom: 20px;
+  bottom: 40%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.3);
-  padding: 8px 16px;
+
   border-radius: 8px;
-  backdrop-filter: blur(4px);
+
+  font-family: "Plateia", sans-serif;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 140%;
+  color: var(--white);
+  width: 254px;
+  height: 54px;
 }
 
 .overlayText {
@@ -124,7 +145,12 @@
   font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+}
+
+.overlayIcon {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .features {
@@ -154,6 +180,10 @@
   border-radius: 65px;
   fill: #f9f9f9;
   backdrop-filter: blur(20px);
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 .featureContent {
   width: 100%;
@@ -177,6 +207,178 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
+}
+
+@media (max-width: 1000px) {
+  .infoSection {
+    background: var(--bg-color);
+  }
+
+  .container {
+    padding: mvw(40) mvw(16) mvw(40) mvw(16);
+  }
+
+  .mobileSliderWrap {
+    width: 100%;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .mobileSlider {
+    width: 100%;
+    padding: 0;
+  }
+
+  .mobileSlider :global(.swiper) {
+    width: 100%;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .mobileSlider :global(.swiper-wrapper) {
+    display: flex;
+    width: 100%;
+  }
+
+  .mobileSlider :global(.swiper-slide) {
+    width: 100% !important;
+    flex-shrink: 0;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .swiperSlide {
+    width: 100%;
+  }
+
+  .blocksContainer {
+    gap: mvw(16);
+  }
+
+  .infoBlock {
+    flex-direction: column;
+    gap: mvw(16);
+    width: 100%;
+    display: flex;
+  }
+
+  .textContent {
+    width: 100%;
+    padding: mvw(20) mvw(16);
+    border-radius: mvw(16);
+    height: auto;
+    gap: mvw(16);
+    order: 2;
+  }
+
+  .badgeBlock {
+    width: 100%;
+    gap: mvw(12);
+  }
+
+  .badge {
+    font-size: mvw(14);
+    line-height: 135%;
+    text-align: left;
+  }
+
+  .title {
+    font-size: mvw(24);
+    line-height: 120%;
+    text-align: left;
+  }
+
+  .description {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+
+  .detailsBtn {
+    padding: mvw(16) mvw(24);
+    border-radius: mvw(16);
+    font-size: mvw(14);
+    width: 100%;
+    text-align: center;
+  }
+
+  .imageContent {
+    width: 100%;
+    order: -1;
+  }
+
+  .imageContentTwo {
+    width: 100%;
+    order: -1;
+  }
+
+  .courseImage {
+    width: mvw(343);
+    height: mvw(139);
+    border-radius: mvw(16);
+    object-fit: cover;
+  }
+
+  .courseImagetwo {
+    width: mvw(343);
+    height: mvw(240p);
+    border-radius: mvw(16);
+    object-fit: cover;
+  }
+
+  .imageOverlay {
+    bottom: mvw(12);
+    padding: mvw(6) mvw(12);
+    border-radius: mvw(6);
+    position: absolute;
+    top: 46%;
+  }
+
+  .overlayText {
+    font-size: mvw(12);
+  }
+
+  .overlayIcon {
+    max-width: mvw(100);
+    max-height: mvw(32);
+  }
+
+  .features {
+    gap: mvw(12);
+  }
+
+  .feature {
+    gap: mvw(12);
+  }
+
+  .featureIcon {
+    width: mvw(40);
+    height: mvw(40);
+    border-radius: mvw(65);
+    font-size: mvw(16);
+    flex-shrink: 0;
+  }
+
+  .featureIcon svg {
+    width: mvw(18);
+    height: mvw(18);
+  }
+
+  .featureContent h3 {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(16);
+    line-height: 140%;
+    color: var(--black);
+    margin: 0;
+  }
+
+  .featureContent p {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.4);
+    margin: 0;
+  }
 }

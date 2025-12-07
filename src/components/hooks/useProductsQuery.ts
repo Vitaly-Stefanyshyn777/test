@@ -15,8 +15,14 @@ export function useProductsQuery() {
   return useQuery(productsQuery());
 }
 
-export function useProductQuery(id: string) {
-  return useQuery(productQuery(id));
+export function useProductQuery(slugOrId: string) {
+  // Не виконуємо запит, якщо slug порожній або "skip"
+  const shouldFetch = !!slugOrId && slugOrId.trim() !== "" && slugOrId !== "skip";
+  
+  return useQuery({
+    ...productQuery(slugOrId),
+    enabled: shouldFetch, // Не виконуємо запит, якщо slug порожній
+  });
 }
 
 export function useProductsWithFiltersQuery(filters: Record<string, unknown>) {

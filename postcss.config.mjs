@@ -16,7 +16,7 @@ const plugins = {
   },
   "postcss-px-to-viewport-8-media-screen": {
     unitToConvert: "px",
-    viewportWidth: 1920,          // дефолт для десктопа
+    viewportWidth: 1920, // дефолт для десктопа
     unitPrecision: 5,
     propList: ["*"],
     viewportUnit: "vw",
@@ -30,7 +30,7 @@ const plugins = {
     landscape: false,
     // 👇 ключове — тут описуєш, яка ширина для якого @media
     mediaScreen: {
-      "(max-width: 1024px)": 375, 
+      "(max-width: 1024px)": 375,
       "(max-width: 480px)": 375,
       "(max-width: 430px)": 375,
     },

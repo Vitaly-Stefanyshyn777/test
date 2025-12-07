@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import s from "./Bonuses.module.css";
 import {
@@ -14,6 +14,11 @@ import {
   CertificateIcon2,
   BulbIcon,
 } from "@/components/Icons/Icons";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { A11y } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
+import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 
 const bonusesData = [
   {
@@ -60,6 +65,23 @@ const bonusesData = [
 ];
 
 const Bonuses: React.FC = () => {
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [activeMobile, setActiveMobile] = useState(0);
+  const mobileSwiperRef = useRef<SwiperType | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 1000);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  if (isMobile === null) {
+    return null;
+  }
+
   const renderVisual = (visual: string) => {
     const peopleImages = [
       "/images/treners7.png",
@@ -184,6 +206,7 @@ const Bonuses: React.FC = () => {
                   src={src}
                   alt={`Avatar ${i + 1}`}
                   fill
+                  sizes="40px"
                   className={s.avatarImg}
                 />
               </div>
@@ -196,6 +219,95 @@ const Bonuses: React.FC = () => {
     }
   };
 
+  // Створюємо слайди для мобілки
+  const slide1 = (
+    <div className={s.fullBlock}>
+      <div className={s.cardContent}>
+        <h3 className={s.cardTitle}>{bonusesData[0].title}</h3>
+        <p className={s.cardText1}>{bonusesData[0].description}</p>
+      </div>
+      <div className={s.cardAvatarWrap}>
+        <div className={s.cardHeader}>
+          {renderVisual(bonusesData[0].visual)}
+        </div>
+      </div>
+    </div>
+  );
+
+  const inventoryCardContent = (
+    <div className={`${s.card} ${s.inventoryCard}`}>
+      <div className={s.inventoryCardInner}>
+        <div className={`${s.cardContent} ${s.inventoryText}`}>
+          <h3 className={s.cardTitle}>{bonusesData[1].title}</h3>
+          <p className={s.cardText2}>{bonusesData[1].description}</p>
+        </div>
+        <div className={s.inventoryVisualWrap}>
+          {renderVisual(bonusesData[1].visual)}
+        </div>
+      </div>
+    </div>
+  );
+
+  const slide2 = (
+    <div className={s.halfBlockRow}>
+      {isMobile ? (
+        inventoryCardContent
+      ) : (
+        <div className={`${s.halfBlock} ${s.inventoryBlock}`}>
+          {inventoryCardContent}
+        </div>
+      )}
+      <div className={`${s.halfBlock} ${s.telegramBlock}`}>
+        <div className={`${s.card} ${s.telegramCard}`}>
+          <div className={s.telegramCardInner}>
+            <div className={`${s.cardContent} ${s.telegramText}`}>
+              <div className={s.InfoBlock}>
+                <div className={s.InfoBlockIcon}>
+                  <TelegramIcon />
+                </div>
+
+                <div className={s.InfoBlockText}>
+                  <h3 className={s.cardTitle}>{bonusesData[3].title}</h3>
+                  <p className={s.cardText3}>{bonusesData[3].description}</p>
+                </div>
+              </div>
+            </div>
+            <div className={s.telegramVisualWrap}>
+              {renderVisual("avatar-network")}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const slide3 = (
+    <div className={s.halfBlocklower}>
+      <div className={`${s.coursesBlock} ${s.telegramBlock}`}>
+        <div className={`${s.cardRight} ${s.telegramCard}`}>
+          <div className={s.cardHeader}>
+            {renderVisual(bonusesData[2].visual)}
+          </div>
+          <div className={s.cardContent}>
+            <h3 className={s.cardTitle}>{bonusesData[2].title}</h3>
+            <p className={s.cardText4}>{bonusesData[2].description}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className={s.halfBlock}>
+        <div className={`${s.card} ${s.cardImage}`}>
+          {renderVisual(bonusesData[5].visual)}
+          <div className={s.cardContent}>
+            <h3 className={s.cardTitleWhite}>{bonusesData[5].title}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const mobileSlides = [slide1, slide2, slide3];
+
   return (
     <section className={s.section}>
       <div className={s.container}>
@@ -204,85 +316,58 @@ const Bonuses: React.FC = () => {
           <h2 className={s.title}>Що ви отримаєте як тренер BFB?</h2>
         </div>
 
-        <div className={s.flexContainer}>
-          <div className={s.cardContentBlock}>
-            <div className={s.fullBlock}>
-              <div className={s.cardContent}>
-                <h3 className={s.cardTitle}>{bonusesData[0].title}</h3>
-                <p className={s.cardText}>{bonusesData[0].description}</p>
-              </div>
-              <div className={s.cardAvatarWrap}>
-                <div className={s.cardHeader}>
-                  {renderVisual(bonusesData[0].visual)}
-                </div>
-              </div>
+        {isMobile ? (
+          <>
+            <div className={s.mobileSliderWrap}>
+              <Swiper
+                modules={[A11y]}
+                slidesPerView="auto"
+                spaceBetween={16}
+                allowTouchMove={true}
+                simulateTouch={true}
+                touchRatio={1}
+                resistanceRatio={0.85}
+                watchOverflow={true}
+                centeredSlides={false}
+                longSwipes={true}
+                longSwipesRatio={0.2}
+                threshold={5}
+                speed={350}
+                grabCursor={true}
+                className={s.mobileSlider}
+                onSwiper={(swiper) => {
+                  mobileSwiperRef.current = swiper;
+                }}
+                onSlideChange={(swiper) => {
+                  setActiveMobile(swiper.activeIndex || 0);
+                }}
+              >
+                {mobileSlides.map((slide, idx) => (
+                  <SwiperSlide key={idx} className={s.swiperSlide}>
+                    {slide}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
-
-            <div className={s.halfBlockRow}>
-              <div className={`${s.halfBlock} ${s.inventoryBlock}`}>
-                <div className={`${s.card} ${s.inventoryCard}`}>
-                  <div className={s.inventoryCardInner}>
-                    <div className={`${s.cardContent} ${s.inventoryText}`}>
-                      <h3 className={s.cardTitle}>{bonusesData[1].title}</h3>
-                      <p className={s.cardText}>{bonusesData[1].description}</p>
-                    </div>
-                    <div className={s.inventoryVisualWrap}>
-                      {renderVisual(bonusesData[1].visual)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className={`${s.halfBlock} ${s.telegramBlock}`}>
-                <div className={`${s.card} ${s.telegramCard}`}>
-                  <div className={s.telegramCardInner}>
-                    <div className={`${s.cardContent} ${s.telegramText}`}>
-                      <div className={s.InfoBlock}>
-                        <div className={s.InfoBlockIcon}>
-                          <TelegramIcon />
-                        </div>
-
-                        <div className={s.InfoBlockText}>
-                          <h3 className={s.cardTitle}>
-                            {bonusesData[3].title}
-                          </h3>
-                          <p className={s.cardText}>
-                            {bonusesData[3].description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={s.telegramVisualWrap}>
-                      {renderVisual("avatar-network")}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className={s.sliderNavOutside}>
+              <SliderNav
+                activeIndex={activeMobile}
+                dots={mobileSlides.length}
+                onPrev={() => mobileSwiperRef.current?.slidePrev()}
+                onNext={() => mobileSwiperRef.current?.slideNext()}
+                onDotClick={(idx) => mobileSwiperRef.current?.slideTo(idx)}
+              />
             </div>
-
-            <div className={s.halfBlocklower}>
-              <div className={`${s.halfBlock} ${s.telegramBlock}`}>
-                <div className={`${s.cardRight} ${s.telegramCard}`}>
-                  <div className={s.cardHeader}>
-                    {renderVisual(bonusesData[2].visual)}
-                  </div>
-                  <div className={s.cardContent}>
-                    <h3 className={s.cardTitle}>{bonusesData[2].title}</h3>
-                    <p className={s.cardText}>{bonusesData[2].description}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={s.halfBlock}>
-                <div className={`${s.card} ${s.cardImage}`}>
-                  {renderVisual(bonusesData[5].visual)}
-                  <div className={s.cardContent}>
-                    <h3 className={s.cardTitleWhite}>{bonusesData[5].title}</h3>
-                  </div>
-                </div>
-              </div>
+          </>
+        ) : (
+          <div className={s.flexContainer}>
+            <div className={s.cardContentBlock}>
+              {slide1}
+              {slide2}
+              {slide3}
             </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

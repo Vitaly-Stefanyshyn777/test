@@ -1,80 +1,98 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { СhevronIcon } from "../../Icons/Icons";
 import styles from "./FAQSection.module.css";
 import { fetchFAQByCategoryWithLogging, FaqItem } from "@/lib/bfbApi";
 import { useQuery } from "@tanstack/react-query";
+import FAQSectionSkeleton from "./FAQSectionSkeleton";
 
-// Fallback data for when API fails
-const fallbackFAQData = [
-  {
-    id: 1,
-    question: "Чи можу я купити борд, якщо ще не проходив(-ла) навчання?",
-    answer:
-      "Так, ви можете придбати борд незалежно від проходження навчання. Однак ми рекомендуємо спочатку пройти базовий курс для безпечного та ефективного використання обладнання.",
-  },
-  {
-    id: 2,
-    question: "Які умови доставки?",
-    answer:
-      "Ми пропонуємо безкоштовну доставку по Україні для замовлень від 1500 грн. Доставка здійснюється протягом 1-3 робочих днів. Для міжнародних замовлень умови уточнюються індивідуально.",
-  },
-  {
-    id: 3,
-    question: "Чи підходить борд для домашнього використання?",
-    answer:
-      "Абсолютно! BFB борди спеціально розроблені для домашнього використання. Вони компактні, безпечні та не потребують додаткового обладнання. В комплекті йде детальна інструкція з вправами.",
-  },
-  {
-    id: 4,
-    question: "З якого віку можна займатися на борді?",
-    answer:
-      "Борди підходять для осіб від 16 років. Для дітей молодшого віку рекомендуємо занятся під наглядом дорослих або інструктора. Максимальна вага користувача - 120 кг.",
-  },
-  {
-    id: 5,
-    question: "Чи витримує борд велику вагу?",
-    answer:
-      "Так, наші борди витримують навантаження до 120 кг. Вони виготовлені з високоякісних матеріалів та пройшли всі необхідні тести на міцність та безпеку.",
-  },
-];
+interface FAQSectionProps {
+  /** ID категорії FAQ. Якщо не вказано, визначається автоматично на основі pathname */
+  categoryId?: number;
+}
 
-const FAQSection = () => {
+const FAQSection: React.FC<FAQSectionProps> = ({ categoryId: propCategoryId }) => {
+  const pathname = usePathname();
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
   const [faqData, setFaqData] = useState<FaqItem[]>([]);
-  const [isUsingFallback, setIsUsingFallback] = useState(false);
+
+  // Визначаємо категорію FAQ на основі поточної сторінки або переданого пропса
+  const getFaqCategoryId = (): number => {
+    // Якщо категорія передана як пропс, використовуємо її
+    if (propCategoryId !== undefined) {
+      return propCategoryId;
+    }
+
+    // Інакше визначаємо на основі pathname
+    if (pathname?.includes("/products")) {
+      return 70; // Борди
+    }
+    if (pathname?.includes("/courses-landing")) {
+      return 92; // Тренерство
+    }
+    if (pathname?.startsWith("/courses/")) {
+      return 91; // Навчання (для конкретних курсів)
+    }
+    if (pathname?.includes("/courses")) {
+      return 90; // Курси
+    }
+    return 69; // Головна (за замовчуванням)
+  };
+
+  const categoryId = getFaqCategoryId();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["faq"],
-    queryFn: () => fetchFAQByCategoryWithLogging(),
+    queryKey: ["faq", categoryId],
+    queryFn: () => fetchFAQByCategoryWithLogging(categoryId),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+  });
+
+  // Fallback до категорії 69 (Головна) якщо основна категорія порожня
+  const { data: fallbackData } = useQuery({
+    queryKey: ["faq", 69],
+    queryFn: () => fetchFAQByCategoryWithLogging(69),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    enabled:
+      categoryId !== 69 &&
+      data !== undefined &&
+      Array.isArray(data) &&
+      data.length === 0,
   });
 
   useEffect(() => {
     if (!data) return;
     if (Array.isArray(data) && data.length > 0) {
-      setFaqData(data);
-      setIsUsingFallback(false);
+      // Фільтруємо FAQ - показуємо всі які мають title
+      const validFaq = data.filter((item) => item.title?.rendered);
+
+      setFaqData(validFaq);
+    } else if (
+      fallbackData &&
+      Array.isArray(fallbackData) &&
+      fallbackData.length > 0
+    ) {
+      // Використовуємо fallback дані з категорії 69 (Головна)
+      const validFallback = fallbackData.filter((item) => item.title?.rendered);
+      setFaqData(validFallback);
     } else {
-      setFaqData(
-        fallbackFAQData.map((item) => ({
-          id: item.id,
-          title: { rendered: item.question },
-          content: { rendered: item.answer },
-        }))
-      );
-      setIsUsingFallback(true);
+      // Якщо немає даних навіть у fallback - показуємо порожній список
+      setFaqData([]);
     }
-  }, [data]);
+  }, [data, fallbackData]);
 
   const toggleItem = (id: number) => {
-    console.log("[FAQSection] 🔄 Перемикаю FAQ елемент:", id);
     setExpandedItems((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
+
+  if (isLoading) {
+    return <FAQSectionSkeleton />;
+  }
 
   return (
     <section className={styles.faqSection}>
@@ -82,12 +100,7 @@ const FAQSection = () => {
         <div className={styles.contentBlock}>
           <div className={styles.contentTextBlock}>
             <p className={styles.subtitle}>Відповіді від Ліки</p>
-            <h2 className={styles.title}>Часті питання та відповіді</h2>
-            {isUsingFallback && (
-              <div className={styles.fallbackIndicator}>
-                <p>📋 Використовуються базові питання</p>
-              </div>
-            )}
+            <h2 className={styles.title}>Питання та відповіді</h2>
           </div>
 
           <div className={styles.content}>
@@ -95,24 +108,16 @@ const FAQSection = () => {
               <div className={styles.titleContainer}></div>
               <div className={styles.imageContainer}>
                 <Image
-                  src="/images/Frame 1321318485.png"
+                  src="/images/Frame132131848543.png"
                   alt="Дівчина на балансборді"
                   width={562}
                   height={465}
                   className={styles.heroImage}
-                  onLoad={() =>
-                    console.log(
-                      "[FAQSection] 🖼️ Зображення завантажено успішно"
-                    )
-                  }
-                  onError={(e) => {
-                    console.error(
-                      "[FAQSection] ❌ Помилка завантаження зображення:",
-                      e
-                    );
-                    console.log(
-                      "[FAQSection] 🔄 Спробую альтернативне зображення"
-                    );
+                  onLoad={() => {
+                    // Image loaded
+                  }}
+                  onError={() => {
+                    // Silent error handling
                   }}
                   priority={false}
                 />
@@ -121,12 +126,6 @@ const FAQSection = () => {
 
             <div className={styles.rightColumn}>
               <div className={styles.faqList}>
-                {isLoading && (
-                  <div className={styles.loading}>
-                    <p>Завантаження FAQ...</p>
-                  </div>
-                )}
-
                 {isError && (
                   <div className={styles.error}>
                     <p>Не вдалося завантажити FAQ</p>
@@ -139,44 +138,55 @@ const FAQSection = () => {
                   </div>
                 )}
 
-                {faqData.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`${styles.faqItem} ${
-                      expandedItems.includes(item.id) ? styles.expanded : ""
-                    }`}
-                  >
-                    <button
-                      className={styles.faqButton}
-                      onClick={() => toggleItem(item.id)}
-                      aria-expanded={expandedItems.includes(item.id)}
-                    >
-                      <span className={styles.question}>
-                        {item.title?.rendered || "Питання"}
-                      </span>
-                      <span
-                        className={`${styles.chevron} ${
-                          expandedItems.includes(item.id) ? styles.rotated : ""
-                        }`}
-                      >
-                        <СhevronIcon />
-                      </span>
-                    </button>
+                {faqData.map((item) => {
+                  // Використовуємо нові поля: acf.answer та acf.question
+                  const answerContent =
+                    item.acf?.answer || item.content?.rendered || "";
 
+                  const questionText =
+                    item.acf?.question || item.title?.rendered || "Питання";
+
+                  return (
                     <div
-                      className={`${styles.answerContainer} ${
-                        expandedItems.includes(item.id) ? styles.open : ""
+                      key={item.id}
+                      className={`${styles.faqItem} ${
+                        expandedItems.includes(item.id) ? styles.expanded : ""
                       }`}
                     >
+                      <button
+                        className={styles.faqButton}
+                        onClick={() => toggleItem(item.id)}
+                        aria-expanded={expandedItems.includes(item.id)}
+                      >
+                        <span className={styles.question}>
+                          {questionText}
+                        </span>
+                        <span
+                          className={`${styles.chevron} ${
+                            expandedItems.includes(item.id)
+                              ? styles.rotated
+                              : ""
+                          }`}
+                        >
+                          <СhevronIcon />
+                        </span>
+                      </button>
+
                       <div
-                        className={styles.answer}
-                        dangerouslySetInnerHTML={{
-                          __html: item.content?.rendered || "Відповідь",
-                        }}
-                      />
+                        className={`${styles.answerContainer} ${
+                          expandedItems.includes(item.id) ? styles.open : ""
+                        }`}
+                      >
+                        <div
+                          className={styles.answer}
+                          dangerouslySetInnerHTML={{
+                            __html: answerContent,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

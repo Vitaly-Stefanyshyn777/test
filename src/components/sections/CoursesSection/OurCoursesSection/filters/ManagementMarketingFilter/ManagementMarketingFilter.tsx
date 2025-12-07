@@ -45,19 +45,23 @@ const ManagementMarketingFilter: React.FC<ManagementMarketingFilterProps> = ({
       {isExpanded && (
         <div className={styles.checkboxGroup}>
           {normalized.length === 0 ? (
-            <div className={styles.placeholder}>Дані скоро з’являться</div>
+            <div className={styles.placeholder}>Дані скоро з'являться</div>
           ) : (
-            normalized.map((opt) => (
-              <label key={opt.key} className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={value.includes(opt.key)}
-                  onChange={() => toggle(opt.key)}
-                  className={styles.checkboxInput}
-                />
-                <span className={styles.checkboxText}>{opt.label}</span>
-              </label>
-            ))
+            normalized.map((opt) => {
+              const inputId = `management-${opt.key.toLowerCase().replace(/\s+/g, '-')}`;
+              return (
+                <label key={opt.key} htmlFor={inputId} className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    id={inputId}
+                    checked={value.includes(opt.key)}
+                    onChange={() => toggle(opt.key)}
+                    className={styles.checkboxInput}
+                  />
+                  <span className={styles.checkboxText}>{opt.label}</span>
+                </label>
+              );
+            })
           )}
         </div>
       )}

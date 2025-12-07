@@ -7,6 +7,9 @@ import styles from "./ProductsShowcase.module.css";
 import type { Product } from "@/lib/products";
 import { PlusIcon } from "../Icons/Icons";
 import { fetchWcCategories } from "@/lib/bfbApi";
+import Badge from "@/components/ui/Badge/Badge";
+import BadgeContainer from "@/components/ui/Badge/BadgeContainer";
+import ProductsShowcaseSkeleton from "./ProductsShowcaseSkeleton";
 
 interface ProductsShowcaseProps {
   title: string;
@@ -24,9 +27,15 @@ export function ProductsShowcase({
     name: string;
     slug: string;
     image?: { src?: string };
+    date_created?: string;
+    date_created_gmt?: string;
+    date_modified?: string;
+    date_modified_gmt?: string;
   };
 
   const [categories, setCategories] = useState<InventoryCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Вже встановлено в true
+  const [showAll, setShowAll] = useState(false);
   const [hasNewInCategory, setHasNewInCategory] = useState<
     Record<number, boolean>
   >({});
@@ -35,14 +44,40 @@ export function ProductsShowcase({
   useEffect(() => {
     (async () => {
       try {
+        // isLoading вже true з початкового стану, не потрібно встановлювати знову
         const cats = (await fetchWcCategories({
           parent: 85, // Інвентар
           per_page: 50,
         })) as InventoryCategory[];
-        // Показуємо рівно стільки, скільки реально існує дочірніх категорій
-        setCategories((cats || []).filter(Boolean));
+        // Фільтруємо та сортуємо: найновіші категорії першими
+        const filtered = (cats || []).filter(Boolean);
+        const sorted = filtered.sort((a, b) => {
+          // Використовуємо date_modified або date_created, якщо доступні
+          const dateA =
+            a.date_modified ||
+            a.date_modified_gmt ||
+            a.date_created ||
+            a.date_created_gmt ||
+            "";
+          const dateB =
+            b.date_modified ||
+            b.date_modified_gmt ||
+            b.date_created ||
+            b.date_created_gmt ||
+            "";
+
+          if (!dateA && !dateB) return 0;
+          if (!dateA) return 1; // Категорії без дати в кінець
+          if (!dateB) return -1;
+
+          // Сортуємо від новіших до старіших
+          return new Date(dateB).getTime() - new Date(dateA).getTime();
+        });
+        setCategories(sorted);
       } catch {
         setCategories([]);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -72,7 +107,7 @@ export function ProductsShowcase({
               const days = Math.floor(
                 (today.getTime() - created.getTime()) / msInDay
               );
-              return [cat.id, days <= 14] as const;
+              return [cat.id, days <= 30] as const;
             } catch {
               return [cat.id, false] as const;
             }
@@ -100,6 +135,32 @@ export function ProductsShowcase({
     return map[categoryParam] || title;
   })();
 
+  const visibleCategories = (() => {
+    if (!categories || categories.length === 0) return [] as InventoryCategory[];
+    
+    // Сортуємо: категорії з новинками першими
+    const sorted = [...categories].sort((a, b) => {
+      const aHasNew = hasNewInCategory[a.id] || false;
+      const bHasNew = hasNewInCategory[b.id] || false;
+      
+      // Якщо одна категорія має новинку, а інша ні - та з новинкою першою
+      if (aHasNew && !bHasNew) return -1;
+      if (!aHasNew && bHasNew) return 1;
+      
+      // Якщо обидві мають або не мають новинку - зберігаємо поточний порядок (за датою)
+      return 0;
+    });
+    
+    if (!showAll && sorted.length > 6) return sorted.slice(0, 6);
+    return sorted;
+  })();
+
+  const shouldShowMore = categories.length > 6 && !showAll;
+
+  if (isLoading) {
+    return <ProductsShowcaseSkeleton />;
+  }
+
   return (
     <section className={styles.wrapper}>
       <div className={styles.header}>
@@ -107,7 +168,7 @@ export function ProductsShowcase({
       </div>
 
       <div className={styles.scroller}>
-        {categories.map((cat) => (
+        {visibleCategories.map((cat) => (
           <Link
             key={cat.id}
             href={`/products?category=${cat.slug}`}
@@ -115,10 +176,12 @@ export function ProductsShowcase({
           >
             <div className={styles.thumb}>
               {hasNewInCategory[cat.id] && (
-                <span className={styles.badge}>Новинка</span>
+                <BadgeContainer>
+                  <Badge variant="new" className={styles.badge} />
+                </BadgeContainer>
               )}
               <Image
-                src={cat.image?.src || "/placeholder.svg"}
+                src={cat.image?.src || "/images/inventory-placeholder.png"}
                 alt={cat.name}
                 fill
                 sizes="(max-width: 600px) 50vw, 320px"
@@ -130,18 +193,21 @@ export function ProductsShowcase({
             </div>
           </Link>
         ))}
-        <Link
-          href={moreHref}
-          className={`${styles.card} ${styles.moreCard}`}
-          aria-label="Більше товарів"
-        >
-          <div className={styles.moreInner}>
-            <span className={styles.plus}>
-              <PlusIcon />
-            </span>
-            <span className={styles.moreText}>Більше</span>
-          </div>
-        </Link>
+        {shouldShowMore && (
+          <button
+            type="button"
+            className={`${styles.card} ${styles.moreCard}`}
+            aria-label="Більше товарів"
+            onClick={() => setShowAll(true)}
+          >
+            <div className={styles.moreInner}>
+              <span className={styles.plus}>
+                <PlusIcon />
+              </span>
+              <span className={styles.moreText}>Більше</span>
+            </div>
+          </button>
+        )}
       </div>
     </section>
   );

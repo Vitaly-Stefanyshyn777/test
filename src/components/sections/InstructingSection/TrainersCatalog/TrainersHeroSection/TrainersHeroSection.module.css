@@ -9,7 +9,7 @@
   display: flex;
   position: relative;
   overflow: hidden;
-  justify-content: space-around;
+  justify-content: center;
   width: 98.75vw;
   height: 582px;
 
@@ -31,6 +31,7 @@
 
 .heroContentBlock {
   align-items: center;
+  text-align: center;
   gap: 1.66667vw;
   display: flex;
   flex-direction: column;
@@ -62,7 +63,6 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 140%;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -72,7 +72,6 @@
   font-weight: 800;
   font-size: 72px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--white);
 }
@@ -82,7 +81,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -183,4 +181,90 @@
 
 .navDot:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    width: 100%;
+    height: auto;
+    min-height: mvw(300);
+    border-radius: 0;
+    margin: 0;
+    margin-top: mvw(-60);
+    padding: mvw(24) mvw(16);
+    padding-top: mvw(84);
+    background-color: #9f57ff;
+    background-image: url(/images/trainersBackground.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 1;
+  }
+
+  .heroContainer {
+    width: 100%;
+  }
+
+  .heroContent {
+    gap: mvw(24);
+    width: 100%;
+  }
+
+  .heroContentBlock {
+    gap: mvw(16);
+
+    text-align: center;
+  }
+
+  .roiBanner {
+    gap: mvw(8);
+    padding: mvw(10) mvw(14);
+    height: auto;
+    border-radius: mvw(8);
+  }
+
+  .roiIcon {
+    font-size: mvw(16);
+  }
+
+  .roiIcon svg {
+    width: mvw(20);
+    height: mvw(18);
+  }
+
+  .roiText {
+    font-size: mvw(12);
+    line-height: 140%;
+
+    font-family: var(--font-family);
+    font-weight: 600;
+
+    line-height: 140%;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .heroTitle {
+    font-size: mvw(28);
+    line-height: 110%;
+    text-align: left;
+
+    font-family: var(--second-family);
+    font-weight: 700;
+
+    line-height: 120%;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--white);
+  }
+
+  .heroDescription {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: mvw(14);
+    line-height: 140%;
+    text-align: center;
+    color: var(--white);
+  }
 }

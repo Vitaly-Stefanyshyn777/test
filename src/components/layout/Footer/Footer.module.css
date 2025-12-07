@@ -64,6 +64,7 @@
   gap: 16px;
   height: 52px;
   width: auto;
+  /* display: none; */
 }
 
 .loginButton,
@@ -73,6 +74,14 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
+}
+
+.loginButton:hover,
+.loginButton:focus-visible,
+.registerButton:hover,
+.registerButton:focus-visible {
+  background: #0e0e0e;
+  color: #ffffff;
 }
 
 .loginButton {
@@ -120,6 +129,7 @@
   text-decoration: none;
   opacity: 0.9;
   transition: opacity 0.25s ease, color 0.25s ease;
+  margin-bottom: 24px;
   color: #ffffff;
 }
 
@@ -130,8 +140,8 @@
   font-weight: 700;
   font-size: 36px;
   line-height: 110%;
-  letter-spacing: -0.02em;
   color: var(--white);
+  margin-bottom: 24px;
 }
 
 .mailLink {
@@ -167,6 +177,7 @@
   border-radius: 16px;
   width: 58px;
   height: 58px;
+  color: var(--white);
   svg {
     width: 24px;
     height: 24px;
@@ -175,8 +186,12 @@
 
 .iconButton:hover,
 .iconButton:focus-visible {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  background: #ffffff;
+}
+
+.iconButton:hover svg,
+.iconButton:focus-visible svg {
+  color: #8426d7;
 }
 
 .address {
@@ -231,14 +246,14 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #fff;
 }
 
 .navLink:hover,
 .navLink:focus-visible {
-  color: #ffd700;
   opacity: 1;
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
 }
 
 .footerBottom {
@@ -299,12 +314,22 @@
   height: 47px;
   display: flex;
   gap: 27px;
+  align-items: center;
 }
 
 .brandNameContainer {
+  width: 166px;
+  height: 25px;
   display: flex;
   gap: 10px;
   align-items: center;
+
+  img {
+    width: 166px;
+    height: 25px;
+    object-fit: contain;
+    display: block;
+  }
 }
 
 .brandNameLineOne {
@@ -335,4 +360,215 @@
   height: 2px;
   background: rgba(249, 249, 249, 0.15);
   margin: 53px 0;
+}
+
+@media (max-width: 1000px) {
+  .footer {
+    border-radius: mvw(16);
+    padding: mvw(56) mvw(16);
+    width: mvw(375);
+    height: mvw(auto);
+    background-color: #9f57ff;
+    background-image: none;
+  }
+  .logoContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: mvw(23);
+  }
+  .logo {
+    font-size: mvw(20);
+    gap: mvw(8);
+  }
+  .logoIcon {
+    width: mvw(70);
+    height: mvw(70);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logoIcon svg {
+    width: mvw(55);
+    height: mvw(55);
+  }
+  .brandLinkContainer {
+    width: 100%;
+    height: 100%;
+    gap: mvw(20);
+  }
+  .brandNameContainer {
+    display: flex;
+    gap: mvw(10);
+    align-items: center;
+    width: mvw(176);
+    height: mvw(22);
+  }
+  .brandNameContainer img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .brandNameLineOne {
+    font-size: mvw(20);
+    font-weight: 700;
+    color: var(--white);
+  }
+  .brandNameLineTwo {
+    font-size: mvw(20);
+    font-weight: 700;
+    color: var(--white);
+  }
+  .authButtons {
+    width: 100%;
+    gap: mvw(12);
+    height: auto;
+    height: mvw(54);
+    display: none;
+  }
+  .loginButton,
+  .registerButton {
+    flex: none;
+    padding: mvw(12) mvw(16);
+
+    font-size: mvw(14);
+    font-weight: 500;
+    width: mvw(75);
+    border-radius: mvw(16);
+  }
+  .loginButton {
+    /* background: var(--violet); */
+    color: var(--white);
+    border-radius: mvw(16);
+  }
+  .registerButton {
+    background: var(--white);
+    color: var(--violet);
+    width: mvw(130);
+  }
+  .footerTop {
+    /* margin-top: mvw(24); */
+  }
+  .divider {
+    width: 100%;
+    margin: mvw(40) 0;
+  }
+  .footerMain {
+    flex-direction: column;
+    gap: mvw(24);
+  }
+  .contactsContainer {
+    flex-direction: column;
+    gap: mvw(24);
+  }
+  .contactsSection {
+    width: 100%;
+    height: auto;
+  }
+  .sectionTitle {
+    font-size: mvw(14);
+    margin-bottom: mvw(26);
+    color: rgba(255, 254, 252, 0.56);
+  }
+  .contactInfo {
+    margin-bottom: mvw(20);
+  }
+  .phoneLink {
+    font-size: mvw(24);
+    margin-bottom: mvw(16);
+  }
+  .mailLink {
+    font-size: mvw(16);
+  }
+  .socialIcons {
+    gap: mvw(12);
+  }
+  .iconButton {
+    width: mvw(58);
+    height: mvw(58);
+    border-radius: mvw(16);
+    border: mvw(2) solid rgba(255, 254, 252, 0.3);
+    color: var(--white);
+  }
+  .iconButton svg {
+    width: mvw(24);
+    height: mvw(24);
+    color: var(--white);
+  }
+  .addressSection {
+    width: 100%;
+  }
+  .addressText {
+    font-size: mvw(18);
+    margin-bottom: mvw(8);
+  }
+  .scheduleItem {
+    font-size: mvw(14);
+    margin-bottom: mvw(12);
+    opacity: 0.6;
+  }
+  .navigationSections {
+    flex-direction: column;
+    gap: mvw(24);
+    width: 100%;
+  }
+  .navSection {
+    width: 100%;
+    height: auto;
+  }
+  .navItem {
+    margin-bottom: mvw(12);
+  }
+  .navLink {
+    font-size: mvw(14);
+    /* opacity: 0.6; */
+    color: var(--white);
+  }
+
+  .navLink:hover,
+  .navLink:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+  }
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: mvw(16);
+    padding: mvw(24) 0 0;
+  }
+  .copyright {
+    font-size: mvw(14);
+    color: var(--white);
+    opacity: 1;
+    color: rgba(255, 254, 252, 0.4);
+  }
+  .paymentMethods {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: mvw(12);
+    margin-bottom: 0;
+  }
+  .paymentMethod svg {
+    height: mvw(20);
+    width: mvw(45);
+    color: var(--white);
+    opacity: 0.8;
+  }
+  .credits {
+    font-size: mvw(14);
+    color: var(--white);
+    opacity: 1;
+
+    font-family: var(--font-family);
+    font-weight: 500;
+
+    line-height: 120%;
+    color: rgba(255, 254, 252, 0.4);
+  }
+  .creditsLink {
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    color: rgba(255, 254, 252, 0.8);
+  }
 }

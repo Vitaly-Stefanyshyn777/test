@@ -7,17 +7,29 @@ import ContactForm, { ContactFormValues } from "./ContactForm/ContactForm";
 import { ThemeSettingsPost } from "@/lib/bfbApi";
 import { useThemeSettingsQuery } from "@/components/hooks/useWpQueries";
 import { useContactQuestion } from "@/lib/useMutation";
+import { getContactData } from "@/lib/themeSettingsUtils";
+import { useMemo } from "react";
 
 const ContactsSection: React.FC = () => {
   const [themeSettings, setThemeSettings] = useState<ThemeSettingsPost[]>([]);
   const { data, isLoading, isError } = useThemeSettingsQuery();
+  const contactData = useMemo(() => getContactData(data), [data]);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
   } = useForm<ContactFormValues>();
+
+  const formValues = watch();
+  const isFormFilled = !!(
+    formValues.name?.trim() &&
+    formValues.phone?.trim() &&
+    formValues.email?.trim() &&
+    formValues.nickname?.trim()
+  );
 
   const contactMutation = useContactQuestion();
 
@@ -39,12 +51,11 @@ const ContactsSection: React.FC = () => {
     if (data.question) payload.question = data.question;
 
     contactMutation.mutate(payload, {
-      onSuccess: (resp) => {
-        console.log("[Contacts] POST success:", resp);
+      onSuccess: () => {
         reset();
       },
-      onError: (err) => {
-        console.error("[Contacts] POST error:", err);
+      onError: () => {
+        // Silent error handling
       },
     });
   };
@@ -52,14 +63,10 @@ const ContactsSection: React.FC = () => {
   return (
     <section className={s.contactSection}>
       <div className={s.header}>
-        <p className={s.subtitle}>Зв&amp;apos;яжись з нами</p>
+        <p className={s.subtitle}>Зв’яжись з нами</p>
         <h2 className={s.title}>
-          {themeSettings[0]?.acf?.input_text_phone?.trim() ||
-            (isLoading
-              ? "Завантаження…"
-              : isError
-              ? "Дані не прийшли"
-              : "Маєте питання щодо BFB?")}
+          Маєте питання <br />
+          щодо навчання?
         </h2>
       </div>
       <div className={s.container}>
@@ -72,6 +79,7 @@ const ContactsSection: React.FC = () => {
             isSubmitting={isSubmitting || contactMutation.isPending}
             isPending={contactMutation.isPending}
             isError={!!contactMutation.isError}
+            isFormFilled={isFormFilled}
           />
         </div>
         <div className={s.innerContainer}>

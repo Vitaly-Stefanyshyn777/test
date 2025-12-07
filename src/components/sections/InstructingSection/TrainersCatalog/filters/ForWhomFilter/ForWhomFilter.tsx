@@ -3,6 +3,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./ForWhomFilter.module.css";
 import { MinuswIcon, PlusIcon } from "@/components/Icons/Icons";
 import { fetchTrainersWithLogging } from "@/lib/bfbApi";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface ForWhomFilterProps {
   value: string;
@@ -52,7 +54,6 @@ export const ForWhomFilter = ({ value, onChange }: ForWhomFilterProps) => {
         setOptions(fallbackOptions);
       }
     } catch (error) {
-      console.error("[ForWhomFilter] ❌ Помилка завантаження опцій:", error);
       setOptions(fallbackOptions);
     } finally {
       setLoading(false);
@@ -92,34 +93,43 @@ export const ForWhomFilter = ({ value, onChange }: ForWhomFilterProps) => {
         }`}
       >
         {loading ? (
-          <div className={styles.loadingText}>Завантаження...</div>
+          <div className={styles.radioGroup}>
+            {[...Array(4)].map((_, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Skeleton width={20} height={20} borderRadius={10} />
+                <Skeleton width={160} height={16} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className={styles.radioGroup}>
             {options.map((option) => {
               const isSelected = value === option;
+              const inputId = `for-whom-${option.toLowerCase().replace(/\s+/g, '-')}`;
               return (
                 <label
                   key={option}
+                  htmlFor={inputId}
                   className={`${styles.radioLabel} ${
                     isSelected ? styles.selected : ""
                   }`}
-                  onClick={() => {
-                    // Toggle behavior: if already selected, deselect; if not selected, select
-                    if (isSelected) {
-                      handleOptionChange(""); // Deselect
-                    } else {
-                      handleOptionChange(option); // Select
-                    }
-                  }}
                 >
                   <input
-                    type="radio"
+                    type="checkbox"
+                    id={inputId}
                     name="forWhom"
                     value={option}
                     checked={isSelected}
-                    onChange={() => {}} // Controlled by onClick
+                    onChange={() => {
+                      if (isSelected) {
+                        handleOptionChange(""); // скасувати вибір
+                      } else {
+                        handleOptionChange(option); // встановити
+                      }
+                    }}
                     className={styles.radioInput}
                   />
+                  <span className={styles.radioCircle} aria-hidden="true" />
                   <span className={styles.radioText}>{option}</span>
                 </label>
               );

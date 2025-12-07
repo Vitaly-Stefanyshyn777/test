@@ -2,14 +2,18 @@
 import React, { useState, useEffect } from "react";
 import styles from "./ProductsGrid.module.css";
 import ProductCard from "../ProductCard/ProductCard";
+import { normalizeImageUrl } from "@/lib/imageUtils";
+import EmptyState from "@/components/ui/EmptyState";
 // Видалено fetchProductCategoriesFromWp - використовуємо категорії з продуктів
 
 interface Product {
   id: number;
+  slug?: string; // Slug продукту
   name: string;
   price: string;
   regular_price?: string;
   sale_price?: string;
+  sku?: string; // Код товару (SKU)
   images: Array<{ src: string; alt: string }>;
   categories: Array<{ id: number; name: string; slug: string }>;
   attributes: Array<{ name: string; options: string[] }>;
@@ -67,10 +71,7 @@ export default function ProductsGrid({
           setNoCertificationProducts(data);
         }
       } catch (error) {
-        console.error(
-          "[ProductsGrid] Помилка отримання товарів без сертифікації:",
-          error
-        );
+        // Silent error handling
       }
     };
 
@@ -87,15 +88,7 @@ export default function ProductsGrid({
   }, [selectedCertificationFilter]);
 
   if (products.length === 0) {
-    return (
-      <div className={styles.emptyState}>
-        <div className={styles.emptyIcon}>🔍</div>
-        <h3 className={styles.emptyTitle}>Продукти не знайдено</h3>
-        <p className={styles.emptyDescription}>
-          Спробуйте змінити фільтри або пошукові критерії
-        </p>
-      </div>
-    );
+    return <EmptyState variant="products" />;
   }
 
   // Об'єднуємо товари: спочатку основні, потім товари без сертифікації внизу
@@ -117,37 +110,6 @@ export default function ProductsGrid({
     return 0;
   });
 
-  // Логи для перевірки новинок в залежності від фільтра сертифікації
-  const checkNewProducts = () => {
-    const today = new Date();
-    allProducts.filter((p) => {
-      if (!p.date_created) return false;
-      const createdDate = new Date(p.date_created);
-
-      // Нормалізуємо дати до початку дня для правильної різниці
-      const createdDateNormalized = new Date(
-        createdDate.getFullYear(),
-        createdDate.getMonth(),
-        createdDate.getDate()
-      );
-      const todayNormalized = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
-      const daysDiff = Math.floor(
-        (todayNormalized.getTime() - createdDateNormalized.getTime()) /
-          (1000 * 60 * 60 * 24)
-      );
-      return daysDiff <= 14;
-    });
-
-    // тихий режим — без логів та без використання результатів
-  };
-
-  // Викликаємо перевірку новинок
-  checkNewProducts();
 
   return (
     <div className={styles.productsGrid}>
@@ -155,7 +117,10 @@ export default function ProductsGrid({
         const id = String(p.id);
         const priceNum = Number(p.price) || 0;
         const original = p.regular_price ? Number(p.regular_price) : undefined;
-        const image = p.images?.[0]?.src;
+        
+        // Нормалізуємо image: обробляємо випадок, коли src може бути рядком-масивом
+        const image = normalizeImageUrl(p.images?.[0]?.src);
+        
         const storeProduct = undefined; // Спрощено
 
         // тихий режим — без логів
@@ -174,10 +139,12 @@ export default function ProductsGrid({
           <ProductCard
             key={`${p.id}-${index}`}
             id={id}
+            slug={p.slug}
             name={p.name}
             price={priceNum}
             originalPrice={original}
             image={image}
+            sku={p.sku}
             categories={productCategories[p.id] || p.categories}
             dateCreated={p.date_created}
             wcProduct={storeProduct}

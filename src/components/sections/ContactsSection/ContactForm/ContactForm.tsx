@@ -11,6 +11,9 @@ import {
   QuestionIcon,
   UserIcon,
 } from "@/components/Icons/Icons";
+import SubmitButton from "@/components/ui/SubmitButton/SubmitButton";
+import InputField from "@/components/ui/FormFields/InputField";
+import TextareaField from "@/components/ui/FormFields/TextareaField";
 import s from "./ContactForm.module.css";
 
 export interface ContactFormValues {
@@ -29,6 +32,7 @@ interface TrainerFormProps {
   isSubmitting: boolean;
   isPending: boolean;
   isError: boolean;
+  isFormFilled: boolean;
 }
 
 export default function ContactForm({
@@ -39,6 +43,7 @@ export default function ContactForm({
   isSubmitting,
   isPending,
   isError,
+  isFormFilled,
 }: TrainerFormProps) {
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
@@ -49,7 +54,7 @@ export default function ContactForm({
     try {
       setSubmitStatus({ type: null, message: "" });
       await onSubmit(data);
-      setSubmitStatus({ type: "success", message: "Заявку надіслано" });
+      // setSubmitStatus({ type: "success", message: "Заявку надіслано" });
     } catch (error) {
       setSubmitStatus({
         type: "error",
@@ -59,52 +64,49 @@ export default function ContactForm({
   };
 
   return (
-    <form className={s.form} onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      className={s.form}
+      onSubmit={handleSubmit(handleFormSubmit)}
+      noValidate
+    >
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <UserIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваше ім'я та прізвище"
+          <InputField
+            icon={<UserIcon />}
+            label="Ваше ім'я та прізвище"
                 type="text"
+            id="contact-form-name-field"
+            hasError={!!errors.name}
+            supportingText="Будь ласка, вкажіть імʼя"
                 {...register("name", { required: true })}
               />
-            </div>
-          </div>
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <NumberIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Ваш номер телефону"
+          <InputField
+            icon={<NumberIcon />}
+            label="Ваш номер телефону"
                 type="tel"
+            id="contact-form-phone-field"
+            onlyDigits
+            hasError={!!errors.phone}
+            supportingText="Невірний номер"
                 {...register("phone")}
               />
-            </div>
-          </div>
         </div>
       </div>
 
       <div className={s.row}>
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <EmailDoggieIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Нікнейм Telegram/Instagram"
+          <InputField
+            icon={<EmailDoggieIcon />}
+            label="Нікнейм Telegram/Instagram"
                 type="text"
+            id="contact-form-nickname-field"
+            hasError={!!errors.nickname}
+            supportingText={
+              (errors.nickname?.message as string) || "Некоректний нікнейм"
+            }
                 {...register("nickname", {
                   // allow optional @, letters, numbers, underscore and dot
                   pattern: {
@@ -113,45 +115,38 @@ export default function ContactForm({
                   },
                 })}
               />
-            </div>
-          </div>
         </div>
 
         <div className={s.inputGroup}>
-          <div className={s.inputWrapper}>
-            <div className={s.inputIcon}>
-              <EmailIcon />
-            </div>
-            <div className={s.inputBlock}>
-              <input
-                className={s.input}
-                placeholder="Вашa пошта"
+          <InputField
+            icon={<EmailIcon />}
+            label="Ваша пошта"
                 type="email"
-                {...register("email")}
+            id="contact-form-email-field"
+            hasError={!!errors.email}
+            supportingText={
+              (errors.email?.message as string) ||
+              'Електронна адреса має містити знак "@"'
+            }
+            {...register("email", {
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message:
+                  'Електронна адреса має містити знак "@" та коректний домен',
+              },
+            })}
               />
-            </div>
-          </div>
         </div>
       </div>
 
       <div className={s.rowSingle}>
-        <div className={s.inputWrapper}>
-          <div className={s.inputIconWrapper}>
-            <QuestionIcon />
-          </div>
-          <textarea
-            className={`${s.input} ${s.textarea}`}
-            placeholder="Ваше питання"
+        <TextareaField
+          icon={<QuestionIcon />}
+          label="Ваше питання"
             rows={4}
             {...register("question")}
           />
         </div>
-      </div>
-
-      {errors.name && <p className={s.error}>Будь ласка, вкажіть імʼя</p>}
-      {errors.nickname && (
-        <p className={s.error}>{errors.nickname.message as string}</p>
-      )}
       {isError && (
         <p className={s.error}>Помилка відправки заявки. Спробуйте ще раз.</p>
       )}
@@ -167,13 +162,11 @@ export default function ContactForm({
       )}
 
       <div className={s.privacyLinkBlock}>
-        <button
-          className={s.submit}
-          type="submit"
-          disabled={isSubmitting || isPending}
-        >
-          {isPending ? "Відправка..." : "Залишити заявку"}
-        </button>
+        <SubmitButton
+          isPending={isPending}
+          isSubmitting={isSubmitting}
+          isFormFilled={isFormFilled}
+        />
 
         <p className={s.privacyText}>
           Натискаючи на кнопку, ви погоджуєтесь з{" "}

@@ -62,7 +62,6 @@ export default function PaymentHistory() {
 
   const handleDownload = (paymentId: number) => {
     // Тут можна додати логіку завантаження квитанції
-    console.log("Downloading payment receipt:", paymentId);
   };
 
   const handlePageChange = (page: number) => {

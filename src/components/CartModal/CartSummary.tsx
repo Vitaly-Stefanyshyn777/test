@@ -51,10 +51,12 @@ export default function CartSummary({
         </div>
         <div className={s.summaryRows}>
           <div className={s.summaryRow}>
-            <span className={s.label}>Сума замовлення</span>
+            <span className={s.summaryLabelPrimary}>Сума замовлення</span>
             <span className={s.value}>
-              <span className={s.amount}>{total.toLocaleString()}</span>{" "}
-              <span className={s.currency}>₴</span>
+              <span className={s.summaryAmountPrimary}>
+                {total.toLocaleString()}
+              </span>{" "}
+              <span className={s.summaryCurrencyPrimary}>₴</span>
             </span>
           </div>
           <div className={s.summaryRow}>

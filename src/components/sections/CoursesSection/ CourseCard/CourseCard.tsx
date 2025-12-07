@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./ CourseCard.module.css";
 import { FavoriteHeader, BasketHeader } from "../../../Icons/Icons";
-
+import { FavoriteIcon } from "../../../Icons/Icons";
+import Badge from "@/components/ui/Badge/Badge";
+import BadgeContainer from "@/components/ui/Badge/BadgeContainer";
+import SubscriptionBadge from "@/components/ui/SubscriptionBadge/SubscriptionBadge";
 interface CourseCardProps {
   id: string;
   name: string;
@@ -109,21 +112,13 @@ const CourseCard = ({
           className={styles.productImage}
         />
 
-        <div className={styles.badges}>
-          {isNew && (
-            <span className={`${styles.badge} ${styles.newBadge}`}>
-              Новинка
-            </span>
-          )}
-          {isHit && (
-            <span className={`${styles.badge} ${styles.hitBadge}`}>Хіт</span>
-          )}
+        <BadgeContainer>
+          {isNew && <Badge variant="new" />}
+          {isHit && <Badge variant="hit" />}
           {finalDiscount > 0 && (
-            <span className={`${styles.badge} ${styles.discountBadge}`}>
-              -{finalDiscount}%
-            </span>
+            <Badge variant="discount" text={`-${finalDiscount}%`} />
           )}
-        </div>
+        </BadgeContainer>
 
         <button
           className={`${styles.favoriteBtn} ${
@@ -131,24 +126,26 @@ const CourseCard = ({
           }`}
           onClick={toggleFavorite}
         >
-          <FavoriteHeader />
+          <FavoriteIcon />
         </button>
       </div>
 
       <div className={styles.cardContent}>
-        <h3 className={styles.productName}>{name || "Товар без назви"}</h3>
+        <div className={styles.productInfo}>
+          <h3 className={styles.productName}>{name || "Товар без назви"}</h3>
 
-        <p className={styles.productDescription}>
-          {truncateDescription(description)}
-        </p>
+          <p className={styles.productDescription}>
+            {truncateDescription(description)}
+          </p>
 
-        <div className={styles.rating}>
-          <div className={styles.stars}>{renderStars(rating)}</div>
-          <span className={styles.reviewsCount}>({reviewsCount})</span>
-        </div>
+          <div className={styles.rating}>
+            <div className={styles.stars}>{renderStars(rating)}</div>
+            <span className={styles.reviewsCount}>({reviewsCount})</span>
+          </div>
 
-        <div className={styles.requirements}>
-          <span className={styles.requirementsBadge}>{requirements}</span>
+          <div className={styles.requirements}>
+            <span className={styles.requirementsBadge}>{requirements}</span>
+          </div>
         </div>
 
         <div className={styles.subscriptionBlock}>
@@ -156,9 +153,9 @@ const CourseCard = ({
             {finalDiscount > 0 && (
               <div className={styles.subscriptionDiscountBlock}>
                 <div className={styles.subscriptionDiscount}>
-                  <span className={styles.subscriptionBadge}>
+                  <SubscriptionBadge>
                     -{finalDiscount}% з підпискою
-                  </span>
+                  </SubscriptionBadge>
                 </div>
 
                 <div className={styles.pricing}>

@@ -54,7 +54,7 @@ export default function UserLocationMarker({
   shouldCenter = false,
   userLocation: externalUserLocation,
 }: Props) {
-  console.log("🔍 UserLocationMarker: Компонент завантажується");
+  // Component loading
   const [userLocation, setUserLocation] = React.useState<{
     lat: number;
     lng: number;
@@ -66,16 +66,13 @@ export default function UserLocationMarker({
 
   // Отримуємо геолокацію користувача
   const getUserLocation = React.useCallback(() => {
-    console.log("🚀 UserLocationMarker: Запитуємо геолокацію");
     if (!navigator.geolocation) {
       const errorMsg = "Геолокація не підтримується цим браузером";
-      console.log("❌ UserLocationMarker:", errorMsg);
       setError(errorMsg);
       onLocationError?.(errorMsg);
       return;
     }
 
-    console.log("📍 UserLocationMarker: Запитуємо геолокацію у браузера");
     setIsLoading(true);
     setError(null);
 
@@ -84,7 +81,6 @@ export default function UserLocationMarker({
         const { latitude, longitude } = position.coords;
         const location = { lat: latitude, lng: longitude };
 
-        console.log("🎯 UserLocationMarker: Отримано геолокацію:", location);
         setUserLocation(location);
         setIsLoading(false);
         onLocationFound?.(latitude, longitude);
@@ -120,19 +116,9 @@ export default function UserLocationMarker({
 
   // Оновлюємо локацію при зміні refreshTrigger
   React.useEffect(() => {
-    console.log(
-      "🔄 UserLocationMarker: useEffect refreshTrigger:",
-      refreshTrigger
-    );
     if (refreshTrigger !== undefined && refreshTrigger > 0) {
-      console.log(
-        "⏰ UserLocationMarker: Запускаємо таймер для запиту геолокації"
-      );
       // Додаємо невелику затримку для стабільності
       const timer = setTimeout(() => {
-        console.log(
-          "⏰ UserLocationMarker: Таймер спрацював, запитуємо геолокацію"
-        );
         getUserLocation();
       }, 200);
 
@@ -145,10 +131,6 @@ export default function UserLocationMarker({
 
   // Створюємо кастомну іконку для геолокації користувача
   const userLocationIcon = React.useMemo(() => {
-    console.log(
-      "🎨 UserLocationMarker: Створюємо іконку з Frame-1321317309.svg"
-    );
-
     const icon = new Icon({
       iconUrl: "/Frame-1321317309.svg",
       iconSize: [40, 40], // Розмір іконки
@@ -156,32 +138,10 @@ export default function UserLocationMarker({
       popupAnchor: [0, -40], // Зміщення попапу
     });
 
-    console.log("🎨 UserLocationMarker: Icon створена:", icon);
     return icon;
   }, []);
 
-  // Додаємо діагностику стану
-  console.log("🔍 UserLocationMarker: Стан компонента:", {
-    userLocation: currentUserLocation,
-    externalUserLocation,
-    internalUserLocation: userLocation,
-    isLoading,
-    error,
-    refreshTrigger,
-    shouldCenter,
-  });
-
-  // Додаткова діагностика координат
-  console.log("📍 UserLocationMarker: Координати для маркера:", {
-    lat: currentUserLocation?.lat,
-    lng: currentUserLocation?.lng,
-    isValid:
-      currentUserLocation &&
-      typeof currentUserLocation.lat === "number" &&
-      typeof currentUserLocation.lng === "number" &&
-      !isNaN(currentUserLocation.lat) &&
-      !isNaN(currentUserLocation.lng),
-  });
+  // Component state
 
   return (
     <>
@@ -194,13 +154,6 @@ export default function UserLocationMarker({
       {/* Показуємо маркер тільки якщо є локація */}
       {currentUserLocation ? (
         <>
-          {console.log(
-            "📍 UserLocationMarker: Відображаємо маркер на",
-            currentUserLocation
-          )}
-          {console.log(
-            "📍 UserLocationMarker: Використовуємо іконку Frame-1321317309.svg"
-          )}
           {/* Marker з кастомною іконкою для геолокації користувача */}
           <Marker
             position={[currentUserLocation.lat, currentUserLocation.lng]}
@@ -208,15 +161,10 @@ export default function UserLocationMarker({
             key={`user-location-${currentUserLocation.lat}-${currentUserLocation.lng}`} // Додаємо key для примусового оновлення
             eventHandlers={{
               add: () => {
-                console.log(
-                  "✅ UserLocationMarker: Marker з іконкою додано на карту з координатами:",
-                  currentUserLocation
-                );
+                // Marker added
               },
               remove: () => {
-                console.log(
-                  "❌ UserLocationMarker: CircleMarker видалено з карти"
-                );
+                // Marker removed
               },
             }}
           >
@@ -235,11 +183,7 @@ export default function UserLocationMarker({
             </Popup>
           </Marker>
         </>
-      ) : (
-        console.log(
-          "❌ UserLocationMarker: currentUserLocation є null, маркер не відображається"
-        )
-      )}
+      ) : null}
     </>
   );
 }

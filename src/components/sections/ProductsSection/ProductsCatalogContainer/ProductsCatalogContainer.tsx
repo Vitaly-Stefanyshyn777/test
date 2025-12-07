@@ -4,6 +4,7 @@ import styles from "./ProductsCatalogContainer.module.css";
 import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
 import type SwiperType from "swiper";
 import ProductsGrid from "../ProductsGrid/ProductsGrid";
+import ProductsGridSkeleton from "../ProductsGrid/ProductsGridSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { productsWithFiltersQuery } from "@/lib/productsQueries";
 
@@ -15,19 +16,24 @@ interface Props {
   filteredProducts: unknown[];
   isNoCertificationFilter?: boolean;
   selectedCertificationFilter?: string; // Вибраний фільтр сертифікації (78, 79, або undefined)
+  isLoading?: boolean; // Стан завантаження з батьківського компонента
 }
 
 const ProductsCatalogContainer = ({
   filteredProducts,
   isNoCertificationFilter = false,
   selectedCertificationFilter,
+  isLoading: parentIsLoading,
 }: Props) => {
   // Якщо зовнішній фільтр не передано – отримуємо товари категорії "товари для спорту"
   const {
     data: sportsProducts = [],
-    isLoading,
+    isLoading: localIsLoading,
     isError,
   } = useQuery(productsWithFiltersQuery({ category: "tovary-dlya-sportu" }));
+  
+  // Використовуємо isLoading з батьківського компонента, якщо передано, інакше локальний
+  const isLoading = parentIsLoading !== undefined ? parentIsLoading : localIsLoading;
 
   // debug logs removed
 
@@ -57,12 +63,44 @@ const ProductsCatalogContainer = ({
   const sortedProducts: ProductLike[] = useMemo(() => {
     const base: ProductLike[] = (filteredProducts ?? products) as ProductLike[];
     const copy = [...base];
-    if (sortBy === "name")
-      copy.sort((a, b) => String(a.name).localeCompare(String(b.name)));
-    if (sortBy === "price")
-      copy.sort(
-        (a, b) => parseFloat(String(a.price)) - parseFloat(String(b.price))
-      );
+    
+    // Функція для визначення чи товар новий (30 днів – як у ProductCard)
+    const isNewProduct = (product: ProductLike): boolean => {
+      if (!product.dateCreated) return false;
+      try {
+        const createdDate = new Date(product.dateCreated);
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        return createdDate > thirtyDaysAgo;
+      } catch {
+        return false;
+      }
+    };
+    
+    // Сортуємо: спочатку нові товари, потім решта
+    copy.sort((a, b) => {
+      const aIsNew = isNewProduct(a);
+      const bIsNew = isNewProduct(b);
+      
+      // Якщо один новий, а інший ні - новий першим
+      if (aIsNew && !bIsNew) return -1;
+      if (!aIsNew && bIsNew) return 1;
+      
+      // Якщо обидва нові або обидва старі - сортуємо за поточним sortBy
+      if (sortBy === "name")
+        return String(a.name).localeCompare(String(b.name));
+      if (sortBy === "price")
+        return parseFloat(String(a.price)) - parseFloat(String(b.price));
+      
+      // За замовчуванням - за датою створення (новіші першими)
+      if (a.dateCreated && b.dateCreated) {
+        return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+      }
+      if (a.dateCreated) return -1;
+      if (b.dateCreated) return 1;
+      
+      return 0;
+    });
+    
     return copy;
   }, [filteredProducts, products, sortBy]);
 
@@ -80,8 +118,12 @@ const ProductsCatalogContainer = ({
       on_sale: boolean;
       stock_status: string;
       images: Array<{ src: string; alt?: string }>;
+      date_created?: string;
     }>;
-    const p = product as ProductLike & SnakeCaseFields;
+    type CamelCaseFields = Partial<{
+      dateCreated?: string;
+    }>;
+    const p = product as ProductLike & SnakeCaseFields & CamelCaseFields;
     const imagesArr =
       Array.isArray(p.images) && p.images.length > 0
         ? (p.images as Array<{ src: string; alt?: string }>).map((img) => ({
@@ -89,6 +131,14 @@ const ProductsCatalogContainer = ({
             alt: img.alt || product.name,
           }))
         : [{ src: product.images?.[0]?.src || "", alt: product.name }];
+
+    // Отримуємо dateCreated з різних можливих джерел
+    // mapProductToUi мапить date_created -> dateCreated, тому спочатку перевіряємо camelCase
+    const dateCreatedValue =
+      product.dateCreated ??
+      (product as { date_created?: string }).date_created ??
+      p.dateCreated ??
+      p.date_created;
 
     return {
       id: Number(product.id),
@@ -106,8 +156,7 @@ const ProductsCatalogContainer = ({
         }>) || [],
       attributes: [],
       stock_status: String(p.stock_status ?? product.stockStatus ?? ""),
-      date_created:
-        (p as { date_created?: string }).date_created ?? product.dateCreated,
+      date_created: dateCreatedValue,
     };
   });
 
@@ -129,8 +178,9 @@ const ProductsCatalogContainer = ({
         {isError && (
           <div className={styles.error}>Не вдалося завантажити товари</div>
         )}
-        {isLoading && <div className={styles.loading}>Завантаження…</div>}
-        {!isLoading && !isError && (
+        {isLoading ? (
+          <ProductsGridSkeleton />
+        ) : (
           <ProductsGrid
             products={productsForGrid}
             isNoCertificationFilter={isNoCertificationFilter}

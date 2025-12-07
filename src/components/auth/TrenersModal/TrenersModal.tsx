@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTrainerApplication } from "@/lib/useMutation";
 import { useScrollLock } from "../../hooks/useScrollLock";
@@ -21,6 +22,21 @@ export default function TrenersModal({ isOpen, onClose }: TrainerModalProps) {
 
   const trainerMutation = useTrainerApplication();
   useScrollLock(isOpen);
+
+  // Додаємо/прибираємо клас до body для приховування хедера
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (isOpen) {
+      document.body.classList.add("treners-modal-open");
+    } else {
+      document.body.classList.remove("treners-modal-open");
+    }
+
+    return () => {
+      document.body.classList.remove("treners-modal-open");
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

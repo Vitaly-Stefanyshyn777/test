@@ -5,12 +5,14 @@ import s from "./OrderSuccessSection.module.css";
 
 interface OrderSummaryProps {
   safeTotal: number;
+  discount: number;
   deliveryCost: number;
   finalTotal: number;
 }
 
 export default function OrderSummary({
   safeTotal,
+  discount,
   deliveryCost,
   finalTotal,
 }: OrderSummaryProps) {
@@ -24,9 +26,13 @@ export default function OrderSummary({
           <span className={s.costValue}>{safeTotal.toLocaleString()} ₴</span>
         </div>
         <div className={s.costRow}>
+          <span className={s.costLabel}>Сума знижки:</span>
+          <span className={s.costValue}>{discount.toLocaleString()} ₴</span>
+        </div>
+        <div className={s.costRow}>
           <span className={s.costLabel}>Вартість доставки:</span>
           <span className={s.costValue}>
-            {deliveryCost === 0 ? "Безкоштовно" : `${deliveryCost} ₴`}
+            {deliveryCost === 0 ? "Безкоштовно" : 'За тарифами "Нової Пошти"'}
           </span>
         </div>
         <div className={s.costRow}>
@@ -37,10 +43,9 @@ export default function OrderSummary({
         </div>
       </div>
 
-      <Link href="/" className={s.returnButton}>
+      <Link href="/checkout" className={s.returnButton}>
         Повернутися на головну
       </Link>
     </>
   );
 }
-

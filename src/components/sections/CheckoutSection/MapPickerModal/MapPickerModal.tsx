@@ -147,7 +147,7 @@ export default function MapPickerModal({
           // Автоматично центруємо карту на збереженій геолокації при відкритті
           setShouldCenterOnUserLocation(true);
         } catch (error) {
-          console.warn("Помилка при відновленні збереженої геолокації:", error);
+          // Silent error handling
         }
       }
     }
@@ -177,7 +177,7 @@ export default function MapPickerModal({
             });
             setMap(googleMap);
           } catch (error) {
-            console.warn("Помилка ініціалізації Google Maps:", error);
+            // Silent error handling
             // Fallback до простого iframe
             mapElement.innerHTML = `
               <iframe 
@@ -203,9 +203,7 @@ export default function MapPickerModal({
         if (apiKey) {
           script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         } else {
-          console.warn(
-            "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY не встановлений, використовуємо iframe fallback"
-          );
+          // Silent warning
           // Відразу показуємо iframe якщо немає API ключа
           const mapElement = document.getElementById("map");
           if (mapElement) {
@@ -226,9 +224,7 @@ export default function MapPickerModal({
 
         script.onload = initMap;
         script.onerror = () => {
-          console.warn(
-            "Google Maps API не завантажився, використовуємо iframe fallback"
-          );
+          // Silent warning
           // Fallback - показуємо iframe замість JavaScript API
           const mapElement = document.getElementById("map");
           if (mapElement) {
@@ -273,7 +269,7 @@ export default function MapPickerModal({
       setCities(data);
       setFilteredCities(data);
     } catch (error) {
-      console.error("Помилка завантаження даних:", error);
+      // Silent error handling
     } finally {
       setLoading(false);
     }
@@ -288,7 +284,6 @@ export default function MapPickerModal({
       // Знаходимо місто
       const city = data.find((c: City) => c.name === cityName);
       if (!city) {
-        console.error("Місто не знайдено:", cityName);
         return;
       }
 
@@ -303,7 +298,7 @@ export default function MapPickerModal({
       ];
       setWarehouses(allWarehouses);
     } catch (error) {
-      console.error("Помилка завантаження відділень для міста:", error);
+      // Silent error handling
     } finally {
       setLoading(false);
     }
@@ -615,32 +610,6 @@ export default function MapPickerModal({
       <div className={s.modal} onClick={(e) => e.stopPropagation()}>
         <div className={s.body}>
           <div className={s.mapBox}>
-            {(() => {
-              console.log(
-                "🔍 MapPickerModal: Передаємо пропси до LeafletMap:",
-                {
-                  userLocation,
-                  shouldCenterOnUserLocation,
-                  warehousesCount: filteredWarehousesForMap.length,
-                }
-              );
-              return null;
-            })()}
-            {(() => {
-              console.log("📍 MapPickerModal: userLocation деталі:", {
-                userLocation,
-                hasUserLocation: !!userLocation,
-                lat: userLocation?.lat,
-                lng: userLocation?.lng,
-                isValid:
-                  userLocation &&
-                  typeof userLocation.lat === "number" &&
-                  typeof userLocation.lng === "number" &&
-                  !isNaN(userLocation.lat) &&
-                  !isNaN(userLocation.lng),
-              });
-              return null;
-            })()}
             <LeafletMap
               warehouses={filteredWarehousesForMap}
               onSelect={(text: string) => {
@@ -663,15 +632,6 @@ export default function MapPickerModal({
               userLocation={userLocation}
               shouldCenterOnUserLocation={shouldCenterOnUserLocation}
               onUserLocationFound={(lat: number, lng: number) => {
-                console.log(
-                  "🎯 MapPickerModal: Отримано геолокацію:",
-                  lat,
-                  lng
-                );
-                console.log("📍 MapPickerModal: Оновлюємо userLocation:", {
-                  lat,
-                  lng,
-                });
                 setUserLocation({ lat, lng });
                 // Автоматично центруємо карту на новій геолокації
                 setShouldCenterOnUserLocation(true);
@@ -701,7 +661,11 @@ export default function MapPickerModal({
         <div className={s.sidePanel}>
           <div className={s.panelTitle}>
             {selectedCityState || selectedCity
-              ? `${activeTab === "branch" ? "Відділення" : "Поштомати"}`
+              ? `${
+                  activeTab === "branch"
+                    ? "Оберіть адресу доставки"
+                    : "Поштомати"
+                }`
               : "Оберіть місто"}
           </div>
           <div className={s.panelDivider}></div>

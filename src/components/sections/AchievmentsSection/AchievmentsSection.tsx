@@ -1,132 +1,325 @@
+"use client";
 import s from "./AchievmentsSection.module.css";
 import UpperDescription from "@/components/ui/UpperDescription/UpperDescription";
 import Container from "@/components/ui/Container/Container";
 import Image from "next/image";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { A11y } from "swiper/modules";
+import type { Swiper as SwiperClass } from "swiper/types";
+import SliderNav from "@/components/ui/SliderNav/SliderNavActions";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 export default function AchievmentsSection() {
+  const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [swiper, setSwiper] = React.useState<SwiperClass | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Слайдовий контент (щоб рендер був декларативний як у прикладі)
+  const slideFirst = (
+    <div className={s.firstBlock}>
+      <div className={s.topBlock}>
+        <h3>Різні формати навчання</h3>
+        <p>
+          BFB має такі формати, як онлайн, офлайн та гібридний. Ставай
+          інструктором будь-де
+        </p>
+        <div className={s.photos}>
+          <Image
+            className={s.trainingImg}
+            src={"/images/image15.png"}
+            width={198}
+            height={126}
+            alt="Women doing fitness"
+          />
+          <div className={s.group}>
+            <div>{book}</div>
+            <Image
+              src={"/images/studying.jpg"}
+              width={100}
+              height={57}
+              alt="Student"
+            />
+            <Image
+              src={"/images/zoom.jpg"}
+              width={100}
+              height={57}
+              alt="Zoom"
+            />
+            <div>{laptop}</div>
+          </div>
+        </div>
+      </div>
+      <div className={s.bottomBlock}>
+        <Image
+          className={s.bg}
+          src={"/images/bg-logo.png"}
+          width={529}
+          height={557}
+          alt="Woman logo"
+        />
+        <div className={s.happyMen}>
+          <Image
+            src={"/images/happy-man.jpg"}
+            width={50}
+            height={50}
+            alt="Happy man"
+          />
+          <Image
+            src={"/images/happy-woman1.jpg"}
+            width={50}
+            height={50}
+            alt="Happy man"
+          />
+          <Image
+            src={"/images/happy-man1.jpg"}
+            width={50}
+            height={50}
+            alt="Happy man"
+          />
+          <Image
+            src={"/images/happy-woman.jpg"}
+            width={50}
+            height={50}
+            alt="Happy man"
+          />
+        </div>
+        <h3>1 000+ людей</h3>
+        <p>Які по-новому відкрили для себе спорт і тренування</p>
+      </div>
+    </div>
+  );
+
+  const slideSecond = (
+    <div className={s.secondBlock}>
+      <h3>500 000+</h3>
+      <div className={s.stonks}>
+        <div className={s.blockTitle}>
+          <span>{stonks}</span>
+          <div>
+            <h4>Проданих абонементів</h4>
+            <p>за рік навчання</p>
+          </div>
+        </div>
+        <Image
+          className={s.stonksImg}
+          src={"/images/stonks.png"}
+          height={346}
+          width={343}
+          alt="statistics"
+        />
+      </div>
+    </div>
+  );
+
+  const slideCommunity = (
+    <div className={s.communityBlock}>
+      <h3>Комʼюніті BFB</h3>
+      <p>Обʼєднує сертифікованих тренерів з усього світу в одне комʼюніті</p>
+    </div>
+  );
+
+  const slideGroup = (
+    <div className={s.groupContainer}>
+      <div className={s.instructors}>
+        <ul>
+          <li>{graduate}</li>
+          <li>{gym}</li>
+          <li>{brain}</li>
+        </ul>
+        <div className={s.instructorsText}>
+          <h3>300+ </h3>
+          <p>Сертифікованих інструкторів BFB по всій Україні та за її межами</p>
+        </div>
+      </div>
+      <div className={s.patent}>
+        <h3>Запатентована методика тренувань на баланс-борді</h3>
+      </div>
+    </div>
+  );
+
+  const slidesMobile = [slideFirst, slideSecond, slideCommunity, slideGroup];
+
   return (
     <section className={s.section}>
       <Container>
         <UpperDescription>Наші досягнення</UpperDescription>
         <h2>BFB у фактах і цифрах</h2>
         <div className={s.content}>
-          <div className={s.firstBlock}>
-            <div className={s.topBlock}>
-              <h3>Різні формати навчання</h3>
-              <p>
-                BFB має такі формати, як онлайн, офлайн та гібридний. Ставай
-                інструктором будь-де
-              </p>
-              <div className={s.photos}>
-                <Image
-                  className={s.trainingImg}
-                  src={"/images/woman-fitness.jpg"}
-                  width={198}
-                  height={126}
-                  alt="Women doing fitness"
-                />
-                <div className={s.group}>
-                  <div>{book}</div>
+          {isMobile ? (
+            <div className={s.mobileSliderWrap}>
+              <Swiper
+                modules={[A11y]}
+                slidesPerView={"auto"}
+                spaceBetween={16}
+                allowTouchMove={true}
+                simulateTouch={true}
+                touchRatio={1}
+                resistanceRatio={0.85}
+                watchOverflow={true}
+                centeredSlides={false}
+                longSwipes={true}
+                longSwipesRatio={0.2}
+                threshold={5}
+                speed={350}
+                grabCursor={true}
+                className={s.mobileSlider}
+                onSwiper={(inst) => setSwiper(inst)}
+                onSlideChange={(inst) => setActiveIndex(inst.activeIndex || 0)}
+              >
+                {slidesMobile.map((el, idx) => (
+                  <SwiperSlide key={idx}>{el}</SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          ) : (
+            <>
+              <div className={s.firstBlock}>
+                <div className={s.topBlock}>
+                  <h3>Різні формати навчання</h3>
+                  <p>
+                    BFB має такі формати, як онлайн, офлайн та гібридний. Ставай
+                    інструктором будь-де
+                  </p>
+                  <div className={s.photos}>
+                    <Image
+                      className={s.trainingImg}
+                      src={"/images/image8.png"}
+                      width={198}
+                      height={126}
+                      alt="Women doing fitness"
+                    />
+                    <div className={s.group}>
+                      <div>{book}</div>
+                      <Image
+                        src={"/images/studying.jpg"}
+                        width={100}
+                        height={57}
+                        alt="Student"
+                      />
+                      <Image
+                        src={"/images/zoom.jpg"}
+                        width={100}
+                        height={57}
+                        alt="Zoom"
+                      />
+                      <div>{laptop}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className={s.bottomBlock}>
                   <Image
-                    src={"/images/studying.jpg"}
-                    width={100}
-                    height={57}
-                    alt="Student"
+                    className={s.bg}
+                    src={"/images/bg-logo.png"}
+                    width={529}
+                    height={557}
+                    alt="Woman logo"
                   />
-                  <Image
-                    src={"/images/zoom.jpg"}
-                    width={100}
-                    height={57}
-                    alt="Zoom"
-                  />
-                  <div>{laptop}</div>
+                  <div className={s.happyMen}>
+                    <Image
+                      src={"/images/happy-man.jpg"}
+                      width={50}
+                      height={50}
+                      alt="Happy man"
+                    />
+                    <Image
+                      src={"/images/happy-woman1.jpg"}
+                      width={50}
+                      height={50}
+                      alt="Happy man"
+                    />
+                    <Image
+                      src={"/images/happy-man1.jpg"}
+                      width={50}
+                      height={50}
+                      alt="Happy man"
+                    />
+                    <Image
+                      src={"/images/happy-woman.jpg"}
+                      width={50}
+                      height={50}
+                      alt="Happy man"
+                    />
+                  </div>
+
+                  <h3>1 000+ людей</h3>
+                  <p>Які по-новому відкрили для себе спорт і тренування</p>
                 </div>
               </div>
-            </div>
-            <div className={s.bottomBlock}>
-              <Image
-                className={s.bg}
-                src={"/images/bg-logo.png"}
-                width={529}
-                height={557}
-                alt="Woman logo"
-              />
-              <div className={s.happyMen}>
-                <Image
-                  src={"/images/happy-man.jpg"}
-                  width={50}
-                  height={50}
-                  alt="Happy man"
-                />
-                <Image
-                  src={"/images/happy-woman1.jpg"}
-                  width={50}
-                  height={50}
-                  alt="Happy man"
-                />
-                <Image
-                  src={"/images/happy-man1.jpg"}
-                  width={50}
-                  height={50}
-                  alt="Happy man"
-                />
-                <Image
-                  src={"/images/happy-woman.jpg"}
-                  width={50}
-                  height={50}
-                  alt="Happy man"
-                />
-              </div>
 
-              <h3>1 000+ людей</h3>
-              <p>Які по-новому відкрили для себе спорт і тренування</p>
-            </div>
-          </div>
-
-          <div className={`${s.secondBlock}`}>
-            <h3>500 000+</h3>
-            <div className={s.stonks}>
-              <div className={s.blockTitle}>
-                <span>{stonks}</span>
-                <div>
-                  <h4>Проданих абонементів</h4>
-                  <p>за рік навчання</p>
+              <div className={`${s.secondBlock}`}>
+                <h3>500 000+</h3>
+                <div className={s.stonks}>
+                  <div className={s.blockTitle}>
+                    <span>{stonks}</span>
+                    <div>
+                      <h4>Проданих абонементів</h4>
+                      <p>за рік навчання</p>
+                    </div>
+                  </div>
+                  <Image
+                    className={s.stonksImg}
+                    src={"/images/stonks.png"}
+                    height={346}
+                    width={343}
+                    alt="statistics"
+                  />
                 </div>
               </div>
-              <Image
-                className={s.stonksImg}
-                src={"/images/stonks.png"}
-                height={346}
-                width={343}
-                alt="statistics"
-              />
-            </div>
-          </div>
 
-          <div className={s.thirdBlock}>
-            <div className={s.communityBlock}>
-              <h3>Комʼюніті BFB</h3>
-              <p>
-                Обʼєднує сертифікованих тренерів з усього світу в одне комʼюніті
-              </p>
-            </div>
-            <div className={s.instructors}>
-              <ul>
-                <li>{graduate}</li>
-                <li>{gym}</li>
-                <li>{brain}</li>
-              </ul>
-              <h3>300+ </h3>
-              <p>
-                Сертифікованих інструкторів BFB по всій Україні та за її межами
-              </p>
-            </div>
-            <div className={s.patent}>
-              <h3>Запатентована методика тренувань на баланс-борді</h3>
-            </div>
-          </div>
+              <div className={s.thirdBlock}>
+                <div className={s.communityBlock}>
+                  <h3>Комʼюніті BFB</h3>
+                  <p>
+                    Обʼєднує сертифікованих тренерів з усього світу в одне
+                    комʼюніті
+                  </p>
+                </div>
+                <div className={s.instructors}>
+                  <ul>
+                    <li>{graduate}</li>
+                    <li>{gym}</li>
+                    <li>{brain}</li>
+                  </ul>
+                  <div className={s.instructorsText}>
+                    <h3>400+ </h3>
+                    <p>
+                      Сертифікованих інструкторів BFB по всій Україні та за її
+                      межами
+                    </p>
+                  </div>
+                </div>
+                <div className={s.patent}>
+                  <h3>Запатентована методика тренувань на баланс-борді</h3>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </Container>
+      {isMobile && (
+        <div className={s.sliderNavOutside}>
+          <SliderNav
+            activeIndex={activeIndex}
+            dots={4}
+            onPrev={() => swiper?.slidePrev()}
+            onNext={() => swiper?.slideNext()}
+            onDotClick={(idx) => swiper?.slideTo(idx)}
+            buttonBgColor="#f9f9f9"
+          />
+        </div>
+      )}
     </section>
   );
 }

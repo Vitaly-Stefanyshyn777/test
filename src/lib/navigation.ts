@@ -6,14 +6,6 @@ export interface NavigationItem {
 
 export const mainNavigation: NavigationItem[] = [
   {
-    href: "/",
-    label: "Головна",
-  },
-  {
-    href: "/about-bfb",
-    label: "Про BFB",
-  },
-  {
     href: "/trainers",
     label: "Тренери",
   },
@@ -21,16 +13,13 @@ export const mainNavigation: NavigationItem[] = [
     href: "/courses",
     label: "Навчання B.F.B",
   },
-  {
-    href: "/course",
-    label: "Курс BFB",
-  },
+
   {
     href: "/products",
     label: "Інвентар",
   },
   {
-    href: "/instructing",
+    href: "/#events",
     label: "Воркшопи",
   },
 ];

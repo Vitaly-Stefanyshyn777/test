@@ -9,6 +9,7 @@ import Navigation from "./Navigation";
 import Overview from "./Overview";
 import TrainerMap from "./TrainerMap";
 import TrainerBreadcrumbs from "@/components/layout/Breadcrumbs/TrainerBreadcrumbs";
+import TrainerProfileSkeleton from "./TrainerProfileSkeleton";
 
 interface TrainerProfileProps {
   trainerId?: string;
@@ -140,9 +141,7 @@ const TrainerProfile = ({ trainerId }: TrainerProfileProps) => {
   }
 
   if (isLoading) {
-    return (
-      <div className={styles.loading}>Завантаження профілю тренера...</div>
-    );
+    return <TrainerProfileSkeleton />;
   }
 
   if (isError || !trainer) {
@@ -156,7 +155,7 @@ const TrainerProfile = ({ trainerId }: TrainerProfileProps) => {
   }
 
   return (
-    <div>
+    <div className={styles.trainerProfileWrapper}>
       <TrainerBreadcrumbs trainerName={trainer.name} />
 
       <div className={styles.trainerProfile}>

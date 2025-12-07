@@ -72,7 +72,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -81,14 +80,9 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
 }
 
-.advInventoryBlock {
-}
-.advInventoryCard {
-}
 .advInfoBlock {
   width: 100%;
   height: 100%;
@@ -261,7 +255,6 @@
   font-weight: 700;
   font-size: 56px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -346,7 +339,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: #8426d7;
 }
 
@@ -459,7 +451,6 @@
   font-weight: 600;
   font-size: 20px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -468,7 +459,6 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: var(--black);
 }
@@ -534,7 +524,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0;
 }
@@ -544,7 +533,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.7);
   margin: 0;
 }
@@ -600,13 +588,12 @@
   font-weight: 500;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   text-align: right;
   color: #8426d7;
 }
 
 .pauseBlock {
-  background-image: url(/images/Frame-1321318677.png);
+  background-image: url(/images/Frame-1321318102.png);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -633,7 +620,6 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0;
 }
@@ -643,7 +629,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.7);
   margin: 0;
 }
@@ -920,7 +905,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 .discountText {
@@ -928,7 +912,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(255, 254, 252, 0.6);
 }
 
@@ -949,6 +932,20 @@
   background: #8426d7;
   display: flex;
   gap: 12px;
+  position: relative;
+}
+.audienceHeaderIcon {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.audienceHeaderIcon svg {
+  width: 19px;
+  height: 17px;
 }
 .badge {
   display: flex;
@@ -974,7 +971,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 120%;
-  letter-spacing: -0.02em;
   color: var(--black);
 }
 .audienceText {
@@ -982,12 +978,11 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
 }
 
 .mentorCard {
-  background-image: url(/images/Frame1321318853.png);
+  background-image: url(/images/Frame13213181023.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -1003,7 +998,6 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 110%;
-  letter-spacing: -0.01em;
   color: var(--white);
 }
 
@@ -1045,7 +1039,6 @@
   font-weight: 600;
   font-size: 28px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
 }
 
@@ -1054,7 +1047,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 140%;
-  letter-spacing: -0.01em;
   color: rgba(14, 14, 14, 0.4);
 }
 
@@ -1135,7 +1127,6 @@
   font-weight: 700;
   font-size: 28px;
   line-height: 120%;
-  letter-spacing: -0.01em;
   color: var(--black);
   margin: 0 0 8px 0;
 }
@@ -1192,6 +1183,9 @@
   top: 44%;
   right: 54%;
   background: var(--white);
+  background-image: url(/images/fi_12626532.png);
+  background-size: cover;
+  border-radius: 50%;
 }
 
 .inventoryIcon.smallRight {
@@ -1201,8 +1195,494 @@
   left: 81%;
   border-radius: 62px;
   color: var(--violet);
+  background-image: url(/images/fi_12626532.png);
+  background-size: cover;
+  border-radius: 50%;
+
   svg {
     width: 52px;
     height: 52px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .advantagesSection {
+    padding: mvw(24) 0;
+  }
+  .advantagesContainer {
+    padding: 0;
+    gap: mvw(32);
+  }
+  .advantagesHeader {
+    gap: mvw(8);
+    padding: 0 mvw(16);
+    text-align: center;
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .advantagesSubtitle {
+    font-size: mvw(14);
+  }
+  .advantagesTitle {
+    font-size: mvw(28);
+    line-height: 120%;
+    width: mvw(238);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mobileSliderWrap {
+    width: 100%;
+    overflow: hidden;
+    margin: 0; /* уникаємо виходу за межі контейнера */
+    padding: 0 mvw(16);
+  }
+  .mobileSlider {
+    width: 100%;
+    padding: 0;
+  }
+  .mobileSlider :global(.swiper) {
+    width: 100%;
+    overflow: visible;
+    padding: 0 mvw(16); /* внутрішні відступи замість margin у wrap */
+    box-sizing: border-box; /* щоб padding не розширював ширину */
+  }
+  .mobileSlider :global(.swiper-wrapper) {
+    display: flex;
+    width: 100%;
+  }
+  /* Кожен слайд фіксованої ширини, щоб наступний був видимий на ~10% */
+  .mobileSlider :global(.swiper-slide) {
+    width: mvw(308) !important;
+    height: mvw(200) !important;
+    flex-shrink: 0;
+    display: block;
+    box-sizing: border-box;
+  }
+  .advantageCardBox {
+    width: mvw(308) !important;
+    height: mvw(200) !important;
+    /* padding: mvw(16); */
+    border-radius: mvw(16);
+    /* gap: mvw(12); */
+    box-sizing: border-box;
+  }
+  .advantageCardBoxGap {
+    gap: mvw(12);
+    padding: mvw(16);
+  }
+  .advantageCardBoxSecond,
+  .advantageCardBoxFifth,
+  .advantageCardBoxSixth,
+  .advantageCardBoxWide {
+    width: 100% !important;
+  }
+  .advantageContent {
+    gap: mvw(8);
+  }
+  .advantageTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+
+    font-family: var(--second-family);
+    font-weight: 600;
+  }
+  .advantageVisualContainer {
+    min-height: mvw(200);
+    border-radius: mvw(12);
+  }
+  .advantageImagesContainer {
+    width: 100%;
+    height: auto;
+    gap: mvw(8);
+  }
+  .advantageImages {
+    display: flex !important;
+    gap: mvw(10) !important; /* 8px між зображеннями */
+    width: 100% !important;
+    height: auto !important;
+    justify-content: flex-start !important;
+  }
+  .advantageImage {
+    width: mvw(133) !important;
+    height: mvw(100) !important;
+    min-width: mvw(133) !important;
+    position: relative;
+    border-radius: mvw(6);
+    overflow: hidden;
+    flex: 0 0 mvw(133) !important;
+  }
+  .advantageImage :global(img),
+  .advantageImage :global(picture) img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  .advantageCardBox {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* Блок 1 - Право проводити тренування */
+  .advantageCardBoxGap {
+    gap: mvw(20);
+    display: flex;
+  }
+
+  /* Блок 2 - Отримай новий професійний статус */
+  .secondBlockWrap {
+    padding: mvw(16);
+    gap: mvw(12);
+    min-height: mvw(200);
+    background: var(--white);
+    border-radius: mvw(16);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .statusBadge {
+    padding: mvw(2) mvw(5);
+    height: auto;
+    border-radius: mvw(20);
+    font-size: mvw(14);
+    gap: mvw(8);
+    width: fit-content;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    display: flex;
+  }
+  .badgeIcon {
+    font-size: mvw(28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .medalIcon {
+    width: mvw(32);
+    height: mvw(32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .medalIcon svg {
+    width: mvw(20);
+    height: mvw(20);
+  }
+  .statusText {
+    font-size: mvw(12);
+    line-height: 140%;
+
+    font-family: var(--font-family);
+    font-weight: 500;
+    color: var(--violet);
+  }
+  .arcWrap {
+    /* position: relative; */
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: mvw(100);
+  }
+  .arcWrapImage {
+    width: mvw(44);
+    height: mvw(44);
+    position: absolute;
+    top: -15;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .arcWrapImage img,
+  .arcWrapImage :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .chartBars {
+    width: 100%;
+    display: flex;
+    gap: mvw(6);
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .chartBar {
+    width: mvw(50);
+    border-radius: mvw(8);
+  }
+  .chartBar:nth-child(1) {
+    height: mvw(60);
+  }
+  .chartBar:nth-child(2) {
+    height: mvw(75);
+  }
+  .chartBar:nth-child(3) {
+    height: mvw(100);
+  }
+  .chartBar:nth-child(4) {
+    height: mvw(75);
+  }
+  .chartBar:nth-child(5) {
+    height: mvw(60);
+  }
+
+  /* Блок 3 - Навчання й інвентар */
+  .advInventoryBlock {
+    width: 100%;
+    height: auto;
+  }
+  .advInventoryCard {
+  }
+  .advInventoryCardInner {
+    display: flex;
+    flex-direction: column;
+    gap: mvw(16);
+  }
+  .advInventoryText {
+    width: 100%;
+  }
+  .advInfoBlock {
+    min-height: auto;
+  }
+  .advInfoBlockText {
+    gap: mvw(8);
+    padding: 0 mvw(6);
+    position: relative;
+    top: mvw(15);
+  }
+  .cardTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+  .cardText {
+    font-size: mvw(14);
+    line-height: 140%;
+  }
+  .advInventoryVisualWrap {
+    width: 100%;
+    height: mvw(200);
+    position: relative;
+  }
+  .inventoryVisual {
+    width: 100%;
+    height: 100%;
+  }
+  .inventoryIcon {
+    width: mvw(60) !important;
+    height: mvw(60) !important;
+  }
+  .inventoryIcon.large {
+    width: mvw(113) !important;
+    height: mvw(113) !important;
+    top: -3%;
+    right: mvw(22);
+    svg {
+      width: mvw(40) !important;
+      height: mvw(50) !important;
+    }
+  }
+  .inventoryIcon svg {
+    width: mvw(24) !important;
+    height: mvw(24) !important;
+  }
+
+  /* Блок 4 - Знижка для 2+ тренерів */
+  .discountCard {
+    width: 100% !important;
+    height: auto !important;
+    padding: mvw(16);
+    border-radius: mvw(16);
+    background: var(--violet);
+    gap: mvw(16);
+    min-height: mvw(200);
+    background-image: url(/images/Frame-1321318104.png);
+    background-position: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-origin: border-box;
+  }
+  .discountIcon {
+    width: mvw(48);
+    height: mvw(48);
+    border-radius: 50%;
+  }
+  .discountIcon svg {
+    width: mvw(24);
+    height: mvw(24);
+  }
+  .discountContent {
+    gap: mvw(8);
+  }
+  .discountTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+  .discountText {
+    font-size: mvw(14);
+    line-height: 140%;
+
+    font-weight: 400;
+
+    line-height: 140%;
+  }
+
+  /* Блок 5 - Розширення цільової аудиторії */
+  .audienceCard {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: mvw(16);
+    background: var(--white);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-height: auto;
+    gap: mvw(40);
+  }
+  .audienceHeader {
+    border-radius: mvw(16);
+    padding: mvw(12) mvw(16);
+    gap: mvw(8);
+    background: var(--violet);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    top: mvw(10);
+  }
+  .audienceHeaderIcon {
+    position: absolute;
+    bottom: mvw(-8);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .audienceHeaderIcon svg {
+    width: mvw(19);
+    height: mvw(17);
+  }
+  .badge {
+    gap: mvw(6);
+
+    border-radius: mvw(20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    max-width: none;
+  }
+  .badge svg {
+    width: mvw(16);
+    height: mvw(16);
+    color: var(--violet);
+  }
+  .IcoBlock {
+    width: mvw(24);
+    height: mvw(24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .IcoBlock svg {
+    width: mvw(22);
+    height: mvw(24);
+    color: var(--violet);
+  }
+  .badgeText {
+    font-size: mvw(18);
+
+    color: var(--white);
+    font-family: var(--second-family);
+
+    font-family: var(--font-family);
+    font-weight: 500;
+
+    line-height: 140%;
+    color: var(--white);
+  }
+  .audienceContent {
+    gap: mvw(8);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .audienceTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+    font-weight: 600;
+    color: var(--black);
+    margin: 0;
+  }
+  .audienceText {
+    font-size: mvw(14);
+    line-height: 140%;
+    color: rgba(14, 14, 14, 0.6);
+    margin: 0;
+  }
+
+  /* Блок 6 - Підтримка наставника */
+  .mentorCard {
+    width: 100% !important;
+    height: auto !important;
+    padding: mvw(16);
+    border-radius: mvw(16);
+    min-height: mvw(200);
+    background-size: cover;
+    background-position: center;
+  }
+  .mentorTitle {
+    font-size: mvw(20);
+    line-height: 120%;
+  }
+
+  .inventorySlide {
+    background-image: url(/images/Frame1321318100.png);
+    background-position: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-origin: border-box;
+
+    width: 100%;
+
+    border-radius: mvw(16);
+  }
+  .smallRight {
+    /* transform: translate(-50%, -50%); */
+    width: mvw(66) !important;
+    height: mvw(66) !important;
+    border-radius: mvw(34);
+    bottom: 17% !important;
+    left: 85% !important;
+
+    transform: rotate(17deg); /* Поворот на 45 градусів */
+
+    svg {
+      width: mvw(30);
+      height: mvw(30);
+    }
+  }
+  .smallLeft {
+    width: mvw(66) !important;
+    height: mvw(66) !important;
+    border-radius: mvw(34) !important;
+
+    top: 66% !important;
+    right: 40% !important;
+    svg {
+      width: mvw(30);
+      height: mvw(30);
+    }
+  }
+  .dollarIcon {
+    width: auto;
+    height: auto;
   }
 }
