@@ -144,13 +144,25 @@ export type CourseData = {
 async function safeFetch<T>(url: string): Promise<T> {
   // Якщо URL вже повний (починається з http), використовуємо його як є
   // Якщо URL відносний і починається з /api/, це Next.js API роут - використовуємо як є
+  // Якщо URL починається з /wp-json/, використовуємо проксі /api/proxy
   // Інакше додаємо BASE_URL для зовнішніх API
-  const fullUrl =
-    url.startsWith("http") || url.startsWith("/api/")
-      ? url
-      : `${BASE_URL}${url}`;
+  let fullUrl: string;
+  
+  if (url.startsWith("http")) {
+    fullUrl = url;
+  } else if (url.startsWith("/api/")) {
+    fullUrl = url;
+  } else if (url.startsWith("/wp-json/")) {
+    // Використовуємо проксі для WordPress API
+    fullUrl = `/api/proxy?path=${encodeURIComponent(url)}`;
+  } else {
+    fullUrl = `${BASE_URL}${url}`;
+  }
 
-  const res = await fetch(fullUrl, { next: { revalidate: 60 } });
+  const res = await fetch(fullUrl, { 
+    next: { revalidate: 60 },
+    credentials: "include", // Важливо для передачі cookie з JWT токеном
+  });
   if (!res.ok) {
     throw new Error(`Request failed ${res.status}: ${await res.text()}`);
   }
@@ -852,26 +864,13 @@ export async function fetchInstructorAdvantages(): Promise<
   InstructorAdvantagePost[]
 > {
   try {
-    const fullUrl = `${BASE_URL}/wp-json/wp/v2/instructor_advantages`;
-    const res = await fetch(fullUrl, { next: { revalidate: 60 } });
-    
-    // Якщо ендпоінт не існує (404), повертаємо порожній масив без помилки
-    if (res.status === 404) {
-      return [];
-    }
-    
-    if (!res.ok) {
-      throw new Error(`Request failed ${res.status}: ${await res.text()}`);
-    }
-    
-    return (await res.json()) as InstructorAdvantagePost[];
+    // Використовуємо safeFetch, який тепер автоматично проксує WordPress запити
+    return await safeFetch<InstructorAdvantagePost[]>(
+      "/wp-json/wp/v2/instructor_advantages"
+    );
   } catch (error) {
-    // Ендпоінт може не існувати, повертаємо порожній масив
+    // Якщо ендпоінт не існує (404) або інша помилка, повертаємо порожній масив
     // Не логуємо помилку для 404, оскільки це очікувана поведінка
-    if (error instanceof Error && error.message.includes('404')) {
-      return [];
-    }
-    // Для інших помилок також повертаємо порожній масив, але можна додати логування
     return [];
   }
 }

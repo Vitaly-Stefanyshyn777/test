@@ -47,6 +47,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "gravatar.com",
       },
+      {
+        protocol: "https",
+        hostname: "test-7j1v.vercel.app",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
     ],
     // Дозволяємо SVG, але обмежуємо безпечними заголовками
     dangerouslyAllowSVG: true,

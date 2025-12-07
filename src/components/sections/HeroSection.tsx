@@ -160,39 +160,38 @@ const HeroSection = () => {
     let rawVideoUrl = "";
 
     if (!b) {
-      const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-      rawVideoUrl = `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
-    } else {
-      // Нова структура: acf.video.url (якщо video є об'єктом)
-      if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
-        if (b.acf.video.url) {
-          rawVideoUrl = b.acf.video.url;
-        }
-      }
+      // Якщо банер не передано, повертаємо порожній рядок
+      return "";
+    }
 
-      // Стара структура (якщо acf.video є рядком або масивом)
-      if (!rawVideoUrl) {
-        const video =
-          b.Aside_video ||
-          b.acf?.Aside_video ||
-          b.video ||
-          (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
-          (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
-          b.video_url ||
-          b.acf?.video_url;
-
-        if (Array.isArray(video) && video.length > 0) {
-          rawVideoUrl = video[0];
-        } else if (typeof video === "string" && video.length > 0) {
-          rawVideoUrl = video;
-        }
+    // Нова структура: acf.video.url (якщо video є об'єктом)
+    if (b.acf?.video && typeof b.acf.video === "object" && !Array.isArray(b.acf.video)) {
+      if (b.acf.video.url) {
+        rawVideoUrl = b.acf.video.url;
       }
+    }
 
-      // Fallback до дефолтного відео
-      if (!rawVideoUrl) {
-        const baseUrl = process.env.NEXT_PUBLIC_UPSTREAM_BASE;
-        rawVideoUrl = `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
+    // Стара структура (якщо acf.video є рядком або масивом)
+    if (!rawVideoUrl) {
+      const video =
+        b.Aside_video ||
+        b.acf?.Aside_video ||
+        b.video ||
+        (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
+        (Array.isArray(b.acf?.video) && b.acf.video.length > 0 ? b.acf.video[0] : undefined) ||
+        b.video_url ||
+        b.acf?.video_url;
+
+      if (Array.isArray(video) && video.length > 0) {
+        rawVideoUrl = video[0];
+      } else if (typeof video === "string" && video.length > 0) {
+        rawVideoUrl = video;
       }
+    }
+
+    // Якщо відео не знайдено, повертаємо порожній рядок
+    if (!rawVideoUrl) {
+      return "";
     }
 
     // Якщо URL вже є проксованим (починається з /api/video-proxy), повертаємо як є
