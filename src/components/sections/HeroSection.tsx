@@ -18,7 +18,7 @@ const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiper, setSwiper] = useState<SwiperClass | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [, setIsLoading] = useState(true);
+  // local loading not used in UI
 
   // Визначення мобільної версії
   useEffect(() => {
@@ -36,22 +36,11 @@ const HeroSection = () => {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
-      setIsLoading(true);
       try {
-        console.log("🎨 [HeroSection] → Завантажую банери...");
         const fetched = await fetchBanners();
-        console.log("🎨 [HeroSection] → Отримано дані:", fetched);
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
-        console.log(
-          "🎨 [HeroSection] → Нормалізовано банерів:",
-          normalized.length
-        );
-        console.log(
-          "🎨 [HeroSection] → Структура першого банера:",
-          normalized[0]
-        );
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -108,29 +97,16 @@ const HeroSection = () => {
         });
         const initial =
           bannerWithVideo ?? bannerWithPoster ?? normalized[0] ?? null;
-        console.log("🎨 [HeroSection] → Банер з відео:", bannerWithVideo?.id);
-        console.log(
-          "🎨 [HeroSection] → Банер з постером:",
-          bannerWithPoster?.id
-        );
-        console.log("🎨 [HeroSection] → Активний банер:", initial?.id);
         setActiveBannerId(initial ? initial.id : null);
         if (initial) {
           const idx = normalized.findIndex((b) => b.id === initial.id);
           setActiveIndex(idx >= 0 ? idx : 0);
-          console.log("🎨 [HeroSection] → Індекс активного банера:", idx);
-        } else {
-          console.warn("🎨 [HeroSection] ⚠️ Активний банер не знайдено!");
         }
-      } catch (error) {
-        console.error(
-          "🎨 [HeroSection] ❌ Помилка завантаження банерів:",
-          error
-        );
+      } catch {
         setBanners([]);
         setActiveBannerId(null);
       } finally {
-        setIsLoading(false);
+        // no-op
       }
     };
     load();
@@ -155,22 +131,14 @@ const HeroSection = () => {
   // Helpers to read fields from a banner
   const getBackgroundFromBanner = useCallback(
     (b?: BannerPost | null): string => {
-      if (!b) {
-        console.log("🎨 [getBackgroundFromBanner] ⚠️ Банер не передано");
-        return "";
-      }
-
-      console.log("🎨 [getBackgroundFromBanner] Banner ID:", b.id, "isMobile:", isMobile);
-      console.log("🎨 [getBackgroundFromBanner] acf.image:", b.acf?.image);
+      if (!b) return "";
 
       // Нова структура: acf.image.mobile / acf.image.desctop
       if (b.acf?.image) {
         if (isMobile && b.acf.image.mobile) {
-          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю mobile:", b.acf.image.mobile);
           return b.acf.image.mobile;
         }
         if (!isMobile && b.acf.image.desctop) {
-          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю desktop:", b.acf.image.desctop);
           return b.acf.image.desctop;
         }
       }
@@ -178,9 +146,7 @@ const HeroSection = () => {
       // На мобільних використовуємо Banner_Mobile, якщо він є (стара структура)
       if (isMobile) {
         const mobileBg = b.Banner_Mobile || b.acf?.Banner_Mobile;
-        console.log("🎨 [getBackgroundFromBanner] mobileBg (fallback):", mobileBg);
         if (typeof mobileBg === "string" && mobileBg.length > 6) {
-          console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю mobile fallback:", mobileBg);
           return mobileBg;
         }
       }
@@ -194,20 +160,16 @@ const HeroSection = () => {
         b.background ||
         b.acf?.background;
 
-      console.log("🎨 [getBackgroundFromBanner] rawBg (fallback):", rawBg);
-      const result = typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
-      console.log("🎨 [getBackgroundFromBanner] ✅ Повертаю остаточний результат:", result || "ПОРОЖНІЙ РЯДОК!");
-      return result;
+      return typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
     },
     [isMobile]
   );
 
   const getVideoUrlFromBanner = (b?: BannerPost | null): string => {
-    let rawVideoUrl = "";
-
     if (!b) {
-      // Якщо банер не передано, повертаємо порожній рядок
-      return "";
+      const baseUrl =
+        process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+      return `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
     }
 
     // Нова структура: acf.video.url (якщо video є об'єктом)
@@ -217,42 +179,32 @@ const HeroSection = () => {
       !Array.isArray(b.acf.video)
     ) {
       if (b.acf.video.url) {
-        rawVideoUrl = b.acf.video.url;
+        return b.acf.video.url;
       }
     }
 
     // Стара структура (якщо acf.video є рядком або масивом)
-    if (!rawVideoUrl) {
-      const video =
-        b.Aside_video ||
-        b.acf?.Aside_video ||
-        b.video ||
-        (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
-        (Array.isArray(b.acf?.video) && b.acf.video.length > 0
-          ? b.acf.video[0]
-          : undefined) ||
-        b.video_url ||
-        b.acf?.video_url;
+    const video =
+      b.Aside_video ||
+      b.acf?.Aside_video ||
+      b.video ||
+      (typeof b.acf?.video === "string" ? b.acf.video : undefined) ||
+      (Array.isArray(b.acf?.video) && b.acf.video.length > 0
+        ? b.acf.video[0]
+        : undefined) ||
+      b.video_url ||
+      b.acf?.video_url;
 
-      if (Array.isArray(video) && video.length > 0) {
-        rawVideoUrl = video[0];
-      } else if (typeof video === "string" && video.length > 0) {
-        rawVideoUrl = video;
-      }
+    if (Array.isArray(video) && video.length > 0) {
+      return video[0];
+    }
+    if (typeof video === "string" && video.length > 0) {
+      return video;
     }
 
-    // Якщо відео не знайдено, повертаємо порожній рядок
-    if (!rawVideoUrl) {
-      return "";
-    }
-
-    // Якщо URL вже є проксованим (починається з /api/video-proxy), повертаємо як є
-    if (rawVideoUrl.startsWith("/api/video-proxy")) {
-      return rawVideoUrl;
-    }
-
-    // Інакше проксуємо через /api/video-proxy для уникнення CORS проблем
-    return `/api/video-proxy?url=${encodeURIComponent(rawVideoUrl)}`;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_UPSTREAM_BASE || "https://www.api.bfb.in.ua";
+    return `${baseUrl}/wp-content/uploads/2025/11/videopreview.mp4`;
   };
 
   const getPosterFromBanner = (b?: BannerPost | null): string => {
@@ -311,34 +263,9 @@ const HeroSection = () => {
     (activeBanner?.Description as string) ||
     "";
 
-  // Для діагностики
-  console.log(
-    "🎨 [HeroSection RENDER] banners:",
-    banners.length,
-    "activeBannerId:",
-    activeBannerId
-  );
-
   return (
     <section className={s.hero} data-hero-section>
       {/* Banner slider (background) */}
-      {banners.length === 0 && (
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "rgba(255,0,0,0.8)",
-            color: "white",
-            padding: "20px",
-            borderRadius: "8px",
-            zIndex: 9999,
-          }}
-        >
-          ⚠️ Банери не завантажені! banners.length = {banners.length}
-        </div>
-      )}
       {banners.length > 0 && (
         <Swiper
           modules={[A11y]}
