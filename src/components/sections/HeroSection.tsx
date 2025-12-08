@@ -39,20 +39,10 @@ const HeroSection = () => {
     const load = async () => {
       setIsLoading(true);
       try {
-        console.log("🎨 [HeroSection] → Завантажую банери...");
         const fetched = await fetchBanners();
-        console.log("🎨 [HeroSection] → Отримано дані:", fetched);
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
-        console.log(
-          "🎨 [HeroSection] → Нормалізовано банерів:",
-          normalized.length
-        );
-        console.log(
-          "🎨 [HeroSection] → Структура першого банера:",
-          normalized[0]
-        );
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -109,19 +99,10 @@ const HeroSection = () => {
         });
         const initial =
           bannerWithVideo ?? bannerWithPoster ?? normalized[0] ?? null;
-        console.log("🎨 [HeroSection] → Банер з відео:", bannerWithVideo?.id);
-        console.log(
-          "🎨 [HeroSection] → Банер з постером:",
-          bannerWithPoster?.id
-        );
-        console.log("🎨 [HeroSection] → Активний банер:", initial?.id);
         setActiveBannerId(initial ? initial.id : null);
         if (initial) {
           const idx = normalized.findIndex((b) => b.id === initial.id);
           setActiveIndex(idx >= 0 ? idx : 0);
-          console.log("🎨 [HeroSection] → Індекс активного банера:", idx);
-        } else {
-          console.warn("🎨 [HeroSection] ⚠️ Активний банер не знайдено!");
         }
       } catch {
         setBanners([]);
@@ -152,27 +133,14 @@ const HeroSection = () => {
   // Helpers to read fields from a banner
   const getBackgroundFromBanner = useCallback(
     (b?: BannerPost | null): string => {
-      if (!b) {
-        console.log("🖼️ [getBackgroundFromBanner] ⚠️ Банер не передано");
-        return "";
-      }
-
-      console.log(
-        "🖼️ [getBackgroundFromBanner] Banner ID:",
-        b.id,
-        "isMobile:",
-        isMobile
-      );
-      console.log("🖼️ [getBackgroundFromBanner] acf.image:", b.acf?.image);
+      if (!b) return "";
 
       // Нова структура: acf.image.mobile / acf.image.desctop
       if (b.acf?.image) {
         if (isMobile && b.acf.image.mobile) {
-          console.log("🖼️ ✅ Повертаю mobile:", b.acf.image.mobile);
           return b.acf.image.mobile;
         }
         if (!isMobile && b.acf.image.desctop) {
-          console.log("🖼️ ✅ Повертаю desktop:", b.acf.image.desctop);
           return b.acf.image.desctop;
         }
       }
@@ -194,13 +162,7 @@ const HeroSection = () => {
         b.background ||
         b.acf?.background;
 
-      console.log("🖼️ [getBackgroundFromBanner] rawBg (fallback):", rawBg);
-      const result = typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
-      console.log(
-        "🖼️ [getBackgroundFromBanner] ✅ Повертаю остаточний результат:",
-        result || "ПОРОЖНІЙ РЯДОК!"
-      );
-      return result;
+      return typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
     },
     [isMobile]
   );
@@ -317,46 +279,13 @@ const HeroSection = () => {
 
   // Показуємо skeleton поки дані завантажуються
   if (isLoading) {
-    console.log("🎨 [HeroSection] ⏳ Показую skeleton...");
     return <HeroSectionSkeleton />;
   }
 
-  console.log(
-    "🎨 [HeroSection] ✅ Рендерю HeroSection з банерами:",
-    banners.length
-  );
-  console.log("🎨 [HeroSection] ✅ Активний банер ID:", activeBannerId);
-
-  // 🔧 DEBUG: простий background без Swiper
-  const firstBannerBg =
-    banners.length > 0 ? getBackgroundFromBanner(banners[0]) : "";
-  console.log("🔧 [DEBUG] firstBannerBg:", firstBannerBg);
-
   return (
     <section className={s.hero} data-hero-section>
-      {/* 🔧 ТИМЧАСОВО: простий background замість Swiper для тестування */}
+      {/* Banner slider (background) */}
       {banners.length > 0 && (
-        <div
-          className={s.heroBanner}
-          style={{
-            background: `url(${firstBannerBg}) center / cover no-repeat`,
-            backgroundColor: "red", // 🔴 Червоний фон для debug - якщо зображення не завантажиться
-          }}
-        >
-          <div
-            style={{
-              padding: "20px",
-              color: "white",
-              background: "rgba(0,0,0,0.5)",
-            }}
-          >
-            🔧 DEBUG: Background URL = {firstBannerBg}
-          </div>
-        </div>
-      )}
-
-      {/* ЗАКОМЕНТОВАНО SWIPER ДЛЯ ТЕСТУВАННЯ */}
-      {/* {banners.length > 0 && (
         <Swiper
           modules={[A11y]}
           onSwiper={(inst) => setSwiper(inst)}
@@ -370,9 +299,10 @@ const HeroSection = () => {
           spaceBetween={0}
           allowTouchMove={true}
           touchEventsTarget="container"
+          style={{ height: "100%" }} // 🔧 FIX: Явно вказуємо висоту для Railway
         >
           {banners.map((b) => (
-            <SwiperSlide key={b.id}>
+            <SwiperSlide key={b.id} style={{ height: "100%" }}>
               <div
                 style={{
                   width: "100%",
@@ -385,7 +315,7 @@ const HeroSection = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      )} */}
+      )}
       <div className={s.heroContainer}>
         <div className={s.heroContent}>
           <div className={s.heroContentBlock}>
