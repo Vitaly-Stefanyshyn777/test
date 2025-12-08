@@ -4,6 +4,7 @@
   justify-content: center;
 
   position: relative; /* for absolutely positioned banner */
+  min-height: 1110px; /* 🔧 FIX: Гарантуємо висоту для Railway */
 
   background-position: center;
   background-repeat: no-repeat;
@@ -26,25 +27,10 @@
   pointer-events: none;
 }
 
-/* 🔧 FIX: Явно вказуємо висоту для Swiper на Railway */
-.heroBanner :global(.swiper) {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.heroBanner :global(.swiper-wrapper) {
-  width: 100% !important;
-  height: 100% !important;
-}
-
+/* 🔧 FIX: Гарантуємо висоту для Swiper на Railway */
+.heroBanner :global(.swiper),
+.heroBanner :global(.swiper-wrapper),
 .heroBanner :global(.swiper-slide) {
-  width: 100% !important;
-  height: 100% !important;
-  position: relative !important;
-}
-
-.heroBanner :global(.swiper-slide) > div {
-  width: 100% !important;
   height: 100% !important;
 }
 
