@@ -45,8 +45,14 @@ const HeroSection = () => {
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
-        console.log("🎨 [HeroSection] → Нормалізовано банерів:", normalized.length);
-        console.log("🎨 [HeroSection] → Структура першого банера:", normalized[0]);
+        console.log(
+          "🎨 [HeroSection] → Нормалізовано банерів:",
+          normalized.length
+        );
+        console.log(
+          "🎨 [HeroSection] → Структура першого банера:",
+          normalized[0]
+        );
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -104,7 +110,10 @@ const HeroSection = () => {
         const initial =
           bannerWithVideo ?? bannerWithPoster ?? normalized[0] ?? null;
         console.log("🎨 [HeroSection] → Банер з відео:", bannerWithVideo?.id);
-        console.log("🎨 [HeroSection] → Банер з постером:", bannerWithPoster?.id);
+        console.log(
+          "🎨 [HeroSection] → Банер з постером:",
+          bannerWithPoster?.id
+        );
         console.log("🎨 [HeroSection] → Активний банер:", initial?.id);
         setActiveBannerId(initial ? initial.id : null);
         if (initial) {
@@ -148,7 +157,12 @@ const HeroSection = () => {
         return "";
       }
 
-      console.log("🖼️ [getBackgroundFromBanner] Banner ID:", b.id, "isMobile:", isMobile);
+      console.log(
+        "🖼️ [getBackgroundFromBanner] Banner ID:",
+        b.id,
+        "isMobile:",
+        isMobile
+      );
       console.log("🖼️ [getBackgroundFromBanner] acf.image:", b.acf?.image);
 
       // Нова структура: acf.image.mobile / acf.image.desctop
@@ -182,7 +196,10 @@ const HeroSection = () => {
 
       console.log("🖼️ [getBackgroundFromBanner] rawBg (fallback):", rawBg);
       const result = typeof rawBg === "string" && rawBg.length > 6 ? rawBg : "";
-      console.log("🖼️ [getBackgroundFromBanner] ✅ Повертаю остаточний результат:", result || "ПОРОЖНІЙ РЯДОК!");
+      console.log(
+        "🖼️ [getBackgroundFromBanner] ✅ Повертаю остаточний результат:",
+        result || "ПОРОЖНІЙ РЯДОК!"
+      );
       return result;
     },
     [isMobile]
@@ -304,11 +321,15 @@ const HeroSection = () => {
     return <HeroSectionSkeleton />;
   }
 
-  console.log("🎨 [HeroSection] ✅ Рендерю HeroSection з банерами:", banners.length);
+  console.log(
+    "🎨 [HeroSection] ✅ Рендерю HeroSection з банерами:",
+    banners.length
+  );
   console.log("🎨 [HeroSection] ✅ Активний банер ID:", activeBannerId);
 
   // 🔧 DEBUG: простий background без Swiper
-  const firstBannerBg = banners.length > 0 ? getBackgroundFromBanner(banners[0]) : "";
+  const firstBannerBg =
+    banners.length > 0 ? getBackgroundFromBanner(banners[0]) : "";
   console.log("🔧 [DEBUG] firstBannerBg:", firstBannerBg);
 
   return (
@@ -322,12 +343,18 @@ const HeroSection = () => {
             backgroundColor: "red", // 🔴 Червоний фон для debug - якщо зображення не завантажиться
           }}
         >
-          <div style={{ padding: "20px", color: "white", background: "rgba(0,0,0,0.5)" }}>
+          <div
+            style={{
+              padding: "20px",
+              color: "white",
+              background: "rgba(0,0,0,0.5)",
+            }}
+          >
             🔧 DEBUG: Background URL = {firstBannerBg}
           </div>
         </div>
       )}
-      
+
       {/* ЗАКОМЕНТОВАНО SWIPER ДЛЯ ТЕСТУВАННЯ */}
       {/* {banners.length > 0 && (
         <Swiper
