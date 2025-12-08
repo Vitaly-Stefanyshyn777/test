@@ -36,13 +36,14 @@ type YoastHeadJson = {
 async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
   try {
     // Використовуємо змінну середовища або fallback для статичної генерації
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                    (process.env.VERCEL_URL 
-                      ? `https://${process.env.VERCEL_URL}`
-                      : process.env.NODE_ENV === "production"
-                        ? "https://bfb.com.ua"
-                        : "http://localhost:3000");
-    
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : process.env.NODE_ENV === "production"
+        ? "https://bfb.com.ua"
+        : "http://localhost:3000");
+
     const res = await fetch(`${baseUrl}/api/banners`, {
       next: { revalidate: 600 }, // 🔧 10 хвилин для SEO metadata
     });
@@ -54,7 +55,9 @@ async function fetchHomeSeo(): Promise<YoastHeadJson | null> {
     const first = Array.isArray(data) && data.length > 0 ? data[0] : data;
     const yoast = first?.yoast_head_json as YoastHeadJson | undefined;
     if (!yoast) {
-      console.warn("[generateMetadata] No yoast_head_json found in banner data");
+      console.warn(
+        "[generateMetadata] No yoast_head_json found in banner data"
+      );
       return null;
     }
     return yoast;

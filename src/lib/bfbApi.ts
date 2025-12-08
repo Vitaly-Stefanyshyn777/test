@@ -149,15 +149,19 @@ async function safeFetch<T>(url: string, retries = 3): Promise<T> {
         next: { revalidate: 300 }, // 🔧 5 хвилин для уникнення rate limiting
         credentials: "include",
       });
-      
+
       // 🔧 Retry на 429 (Too Many Requests)
       if (res.status === 429 && attempt < retries) {
         const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff
-        console.warn(`⏳ Rate limited (429), retry ${attempt + 1}/${retries} after ${waitTime}ms`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
+        console.warn(
+          `⏳ Rate limited (429), retry ${
+            attempt + 1
+          }/${retries} after ${waitTime}ms`
+        );
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
         continue;
       }
-      
+
       if (!res.ok) {
         throw new Error(`Request failed ${res.status}: ${await res.text()}`);
       }
@@ -166,7 +170,7 @@ async function safeFetch<T>(url: string, retries = 3): Promise<T> {
       if (attempt === retries) throw error;
     }
   }
-  
+
   throw new Error(`Failed after ${retries} retries`);
 }
 
