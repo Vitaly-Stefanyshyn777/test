@@ -142,7 +142,11 @@ async function safeFetch<T>(url: string): Promise<T> {
       ? url
       : `${BASE_URL}${url}`;
 
-  const res = await fetch(fullUrl, { next: { revalidate: 60 } });
+  const res = await fetch(fullUrl, { 
+    // @ts-expect-error - Next.js specific fetch options
+    next: { revalidate: 60 },
+    credentials: "include",
+  });
   if (!res.ok) {
     throw new Error(`Request failed ${res.status}: ${await res.text()}`);
   }
@@ -372,6 +376,10 @@ export async function fetchBanners(): Promise<BannerPost[]> {
 
 export type ThemeSettingsPost = {
   id: number;
+  // Поля можуть бути на верхньому рівні або в acf
+  hl_data_gallery?: Array<{
+    hl_img_link_photo?: string[];
+  }>;
   acf?: {
     input_text_phone?: string;
     input_text_schedule?: string;
@@ -402,6 +410,7 @@ export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
   url.searchParams.set("hl_data_gallery", "1");
 
   const res = await fetch(url.toString(), {
+    // @ts-expect-error - Next.js specific fetch options
     next: { revalidate: 60 },
   });
   if (!res.ok) {
