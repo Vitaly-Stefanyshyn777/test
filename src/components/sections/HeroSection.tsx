@@ -45,7 +45,10 @@ const HeroSection = () => {
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
-        console.log("🎨 [HeroSection] → Нормалізовано банерів:", normalized.length);
+        console.log(
+          "🎨 [HeroSection] → Нормалізовано банерів:",
+          normalized.length
+        );
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -141,7 +144,12 @@ const HeroSection = () => {
         return "";
       }
 
-      console.log("🖼️ [getBackgroundFromBanner] Banner ID:", b.id, "isMobile:", isMobile);
+      console.log(
+        "🖼️ [getBackgroundFromBanner] Banner ID:",
+        b.id,
+        "isMobile:",
+        isMobile
+      );
       console.log("🖼️ [getBackgroundFromBanner] acf.image:", b.acf?.image);
 
       // Нова структура: acf.image.mobile / acf.image.desctop
