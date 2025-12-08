@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import s from "./HeroSection.module.css";
 import { ArrowLeftIcon, ArrowRightIcon, TimePayIcon } from "../Icons/Icons";
-import { fetchBanners, BannerPost } from "@/lib/bfbApi";
+import { fetchBanners, BannerPost } from "../../lib/bfbApi";
 import VideoPlayer from "./ProfileSection/VideoInstruction/VideoPlayer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";

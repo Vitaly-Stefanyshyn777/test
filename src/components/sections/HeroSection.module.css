@@ -4,7 +4,6 @@
   justify-content: center;
 
   position: relative; /* for absolutely positioned banner */
-  min-height: 1110px; /* 🔧 FIX: Гарантуємо висоту для Railway */
 
   background-position: center;
   background-repeat: no-repeat;
@@ -25,13 +24,6 @@
   /* background буде додано через inline style з JS */
   /* Не блокуємо кліки по елементам зверху (навігація, кнопки) */
   pointer-events: none;
-}
-
-/* 🔧 FIX: Гарантуємо висоту для Swiper на Railway */
-.heroBanner :global(.swiper),
-.heroBanner :global(.swiper-wrapper),
-.heroBanner :global(.swiper-slide) {
-  height: 100% !important;
 }
 
 .heroContainer {
