@@ -39,16 +39,10 @@ const HeroSection = () => {
     const load = async () => {
       setIsLoading(true);
       try {
-        console.log("🎨 [HeroSection] → Завантажую банери...");
         const fetched = await fetchBanners();
-        console.log("🎨 [HeroSection] → Отримано дані:", fetched);
         if (!mounted) return;
 
         const normalized = Array.isArray(fetched) ? fetched : [];
-        console.log(
-          "🎨 [HeroSection] → Нормалізовано банерів:",
-          normalized.length
-        );
         setBanners(normalized);
 
         // Встановлюємо активний банер за пріоритетом: той, що має відео -> той, що має постер -> перший
@@ -139,27 +133,14 @@ const HeroSection = () => {
   // Helpers to read fields from a banner
   const getBackgroundFromBanner = useCallback(
     (b?: BannerPost | null): string => {
-      if (!b) {
-        console.log("🖼️ [getBackgroundFromBanner] ⚠️ Банер не передано");
-        return "";
-      }
-
-      console.log(
-        "🖼️ [getBackgroundFromBanner] Banner ID:",
-        b.id,
-        "isMobile:",
-        isMobile
-      );
-      console.log("🖼️ [getBackgroundFromBanner] acf.image:", b.acf?.image);
+      if (!b) return "";
 
       // Нова структура: acf.image.mobile / acf.image.desctop
       if (b.acf?.image) {
         if (isMobile && b.acf.image.mobile) {
-          console.log("🖼️ ✅ Повертаю mobile:", b.acf.image.mobile);
           return b.acf.image.mobile;
         }
         if (!isMobile && b.acf.image.desctop) {
-          console.log("🖼️ ✅ Повертаю desktop:", b.acf.image.desctop);
           return b.acf.image.desctop;
         }
       }
