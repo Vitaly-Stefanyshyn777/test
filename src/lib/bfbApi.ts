@@ -143,7 +143,7 @@ async function safeFetch<T>(url: string): Promise<T> {
       : `${BASE_URL}${url}`;
 
   const res = await fetch(fullUrl, {
-    // @ts-expect-error - Next.js specific fetch options
+    // @ts-ignore - Next.js specific fetch options
     next: { revalidate: 60 },
     credentials: "include",
   });
@@ -414,7 +414,7 @@ export async function fetchThemeSettings(): Promise<ThemeSettingsPost[]> {
   url.searchParams.set("hl_data_gallery", "1");
 
   const res = await fetch(url.toString(), {
-    // @ts-expect-error - Next.js specific fetch options
+    // @ts-ignore - Next.js specific fetch options
     next: { revalidate: 60 },
   });
   if (!res.ok) {
