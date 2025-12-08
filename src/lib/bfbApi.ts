@@ -380,6 +380,10 @@ export type ThemeSettingsPost = {
   hl_data_gallery?: Array<{
     hl_img_link_photo?: string[];
   }>;
+  map_markers?: Array<{
+    title?: string;
+    coordinates?: number[][];
+  }>;
   acf?: {
     input_text_phone?: string;
     input_text_schedule?: string;
