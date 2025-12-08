@@ -104,9 +104,12 @@ const HeroSection = () => {
           const idx = normalized.findIndex((b) => b.id === initial.id);
           setActiveIndex(idx >= 0 ? idx : 0);
         }
-      } catch {
+      } catch (error) {
+        console.error("❌ [HeroSection] Помилка завантаження банерів:", error);
         setBanners([]);
         setActiveBannerId(null);
+        // Відправляємо event навіть при помилці, щоб PageLoader зник
+        window.dispatchEvent(new Event("hero-video-error"));
       } finally {
         setIsLoading(false);
       }
@@ -124,6 +127,18 @@ const HeroSection = () => {
       setActiveBannerId(first.id);
     }
   }, [banners, activeBannerId]);
+
+  // 🔧 Відправляємо event для PageLoader після завантаження
+  useEffect(() => {
+    if (!isLoading && banners.length > 0) {
+      // Чекаємо трохи, щоб DOM встиг відрендеритися
+      const timer = setTimeout(() => {
+        window.dispatchEvent(new Event("hero-video-ready"));
+        console.log("🎉 [HeroSection] Event 'hero-video-ready' dispatched");
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, banners.length]);
 
   const activeBanner: BannerPost | null = useMemo(() => {
     if (!activeBannerId) return null;
