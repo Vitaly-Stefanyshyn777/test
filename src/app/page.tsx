@@ -11,7 +11,7 @@ import EventsSection from "@/components/sections/EventsSection/EventsSection";
 import Founder from "@/components/sections/AboutBFBSection/Founder/Founder";
 import InstructorAdvantages from "@/components/sections/InstructorAdvantages/InstructorAdvantages";
 import ContactsSection from "@/components/sections/ContactsSection/ContactsSection";
-import PageLoader from "@/components/PageLoader";
+// import PageLoader from "@/components/PageLoader";
 
 type YoastRobots = {
   index?: string;
@@ -116,7 +116,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Home() {
   return (
     <>
-      <PageLoader />
+      {/* <PageLoader /> */}
       <HeroSection />
       <AchievmentsSection />
       <TargetAuditorySection />
