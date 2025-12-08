@@ -286,48 +286,34 @@ const HeroSection = () => {
     <section className={s.hero} data-hero-section>
       {/* Banner slider (background) */}
       {banners.length > 0 && (
-        <div className={s.heroBanner}>
-          <Swiper
-            modules={[A11y]}
-            onSwiper={(inst) => setSwiper(inst)}
-            onSlideChange={(inst) => {
-              setActiveIndex(inst.activeIndex || 0);
-              const b = banners[inst.activeIndex] || null;
-              setActiveBannerId(b ? b.id : null);
-            }}
-            slidesPerView={1}
-            spaceBetween={0}
-            allowTouchMove={true}
-            touchEventsTarget="container"
-            style={{ 
-              width: "100%", 
-              height: "100%",
-              position: "absolute",
-              top: 0,
-              left: 0,
-            }}
-          >
-            {banners.map((b) => (
-              <SwiperSlide 
-                key={b.id} 
-                style={{ 
+        <Swiper
+          modules={[A11y]}
+          onSwiper={(inst) => setSwiper(inst)}
+          onSlideChange={(inst) => {
+            setActiveIndex(inst.activeIndex || 0);
+            const b = banners[inst.activeIndex] || null;
+            setActiveBannerId(b ? b.id : null);
+          }}
+          className={s.heroBanner}
+          slidesPerView={1}
+          spaceBetween={0}
+          allowTouchMove={true}
+          touchEventsTarget="container"
+        >
+          {banners.map((b) => (
+            <SwiperSlide key={b.id}>
+              <div
+                style={{
                   width: "100%",
                   height: "100%",
+                  background: `url(${getBackgroundFromBanner(
+                    b
+                  )}) center / cover no-repeat`,
                 }}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    background: `url(${getBackgroundFromBanner(
-                      b
-                    )}) center / cover no-repeat`,
-                  }}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       )}
       <div className={s.heroContainer}>
         <div className={s.heroContent}>
