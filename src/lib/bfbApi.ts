@@ -377,6 +377,16 @@ export async function fetchBanners(): Promise<BannerPost[]> {
 export type ThemeSettingsPost = {
   id: number;
   // Поля можуть бути на верхньому рівні або в acf
+  input_text_phone?: string;
+  input_text_schedule?: string;
+  input_text_email?: string;
+  input_text_address?: string;
+  theme_video_url?: string;
+  hl_data_contact?: Array<{
+    hl_input_text_name?: string;
+    hl_input_text_link?: string;
+    hl_img_svg_icon?: string;
+  }>;
   hl_data_gallery?: Array<{
     hl_img_link_photo?: string[];
   }>;
@@ -384,6 +394,8 @@ export type ThemeSettingsPost = {
     title?: string;
     coordinates?: number[][];
   }>;
+  user_city?: string[];
+  user_country?: string[];
   acf?: {
     input_text_phone?: string;
     input_text_schedule?: string;
