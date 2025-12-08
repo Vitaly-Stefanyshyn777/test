@@ -286,35 +286,48 @@ const HeroSection = () => {
     <section className={s.hero} data-hero-section>
       {/* Banner slider (background) */}
       {banners.length > 0 && (
-        <Swiper
-          modules={[A11y]}
-          onSwiper={(inst) => setSwiper(inst)}
-          onSlideChange={(inst) => {
-            setActiveIndex(inst.activeIndex || 0);
-            const b = banners[inst.activeIndex] || null;
-            setActiveBannerId(b ? b.id : null);
-          }}
-          className={s.heroBanner}
-          slidesPerView={1}
-          spaceBetween={0}
-          allowTouchMove={true}
-          touchEventsTarget="container"
-          style={{ height: "100%" }} // 🔧 FIX: Явно вказуємо висоту для Railway
-        >
-          {banners.map((b) => (
-            <SwiperSlide key={b.id} style={{ height: "100%" }}>
-              <div
-                style={{
+        <div className={s.heroBanner}>
+          <Swiper
+            modules={[A11y]}
+            onSwiper={(inst) => setSwiper(inst)}
+            onSlideChange={(inst) => {
+              setActiveIndex(inst.activeIndex || 0);
+              const b = banners[inst.activeIndex] || null;
+              setActiveBannerId(b ? b.id : null);
+            }}
+            slidesPerView={1}
+            spaceBetween={0}
+            allowTouchMove={true}
+            touchEventsTarget="container"
+            style={{ 
+              width: "100%", 
+              height: "100%",
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          >
+            {banners.map((b) => (
+              <SwiperSlide 
+                key={b.id} 
+                style={{ 
                   width: "100%",
                   height: "100%",
-                  background: `url(${getBackgroundFromBanner(
-                    b
-                  )}) center / cover no-repeat`,
                 }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    background: `url(${getBackgroundFromBanner(
+                      b
+                    )}) center / cover no-repeat`,
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       )}
       <div className={s.heroContainer}>
         <div className={s.heroContent}>

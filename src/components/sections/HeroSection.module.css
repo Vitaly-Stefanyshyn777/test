@@ -26,6 +26,28 @@
   pointer-events: none;
 }
 
+/* 🔧 FIX: Явно вказуємо висоту для Swiper на Railway */
+.heroBanner :global(.swiper) {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.heroBanner :global(.swiper-wrapper) {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.heroBanner :global(.swiper-slide) {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}
+
+.heroBanner :global(.swiper-slide) > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .heroContainer {
   display: flex;
   align-items: center;
