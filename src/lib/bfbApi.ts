@@ -142,7 +142,7 @@ async function safeFetch<T>(url: string): Promise<T> {
       ? url
       : `${BASE_URL}${url}`;
 
-  const res = await fetch(fullUrl, { 
+  const res = await fetch(fullUrl, {
     // @ts-expect-error - Next.js specific fetch options
     next: { revalidate: 60 },
     credentials: "include",
