@@ -133,7 +133,7 @@ export type CourseData = {
   };
 };
 
-async function safeFetch<T>(url: string): Promise<T> {
+async function safeFetch<T>(url: string, retries = 3): Promise<T> {
   // Якщо URL вже повний (починається з http), використовуємо його як є
   // Якщо URL відносний і починається з /api/, це Next.js API роут - використовуємо як є
   // Інакше додаємо BASE_URL для зовнішніх API
@@ -142,15 +142,32 @@ async function safeFetch<T>(url: string): Promise<T> {
       ? url
       : `${BASE_URL}${url}`;
 
-  const res = await fetch(fullUrl, {
-    // @ts-ignore - Next.js specific fetch options
-    next: { revalidate: 60 },
-    credentials: "include",
-  });
-  if (!res.ok) {
-    throw new Error(`Request failed ${res.status}: ${await res.text()}`);
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(fullUrl, {
+        // @ts-ignore - Next.js specific fetch options
+        next: { revalidate: 300 }, // 🔧 5 хвилин для уникнення rate limiting
+        credentials: "include",
+      });
+      
+      // 🔧 Retry на 429 (Too Many Requests)
+      if (res.status === 429 && attempt < retries) {
+        const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff
+        console.warn(`⏳ Rate limited (429), retry ${attempt + 1}/${retries} after ${waitTime}ms`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+      
+      if (!res.ok) {
+        throw new Error(`Request failed ${res.status}: ${await res.text()}`);
+      }
+      return (await res.json()) as T;
+    } catch (error) {
+      if (attempt === retries) throw error;
+    }
   }
-  return (await res.json()) as T;
+  
+  throw new Error(`Failed after ${retries} retries`);
 }
 
 export async function fetchFaqCategories(): Promise<FaqCategory[]> {

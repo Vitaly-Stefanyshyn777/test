@@ -33,7 +33,7 @@ export default function AdminAutoLogin() {
 
     // Періодичне поновлення httpOnly токенів, щоб уникати 401/403
     // admin-login: maxAge ~= 12h; wp-token: ~= 24h — оновлюємо значно частіше
-    const intervalMs = 10 * 60 * 1000; // кожні 10 хвилин
+    const intervalMs = 30 * 60 * 1000; // 🔧 кожні 30 хвилин (зменшено навантаження)
     const intervalId = setInterval(async () => {
       try {
         await fetch("/api/admin-login", { method: "POST" });
