@@ -13,7 +13,7 @@
 
 /* Container of the photo (Banner) */
 .heroBanner {
-  position: absolute; /* sit behind content */
+  position: absolute !important;
   top: 0;
   left: 0;
   right: 0;
