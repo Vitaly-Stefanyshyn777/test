@@ -300,13 +300,36 @@ const HeroSection = () => {
 
   // Показуємо skeleton поки дані завантажуються
   if (isLoading) {
+    console.log("🎨 [HeroSection] ⏳ Показую skeleton...");
     return <HeroSectionSkeleton />;
   }
 
+  console.log("🎨 [HeroSection] ✅ Рендерю HeroSection з банерами:", banners.length);
+  console.log("🎨 [HeroSection] ✅ Активний банер ID:", activeBannerId);
+
+  // 🔧 DEBUG: простий background без Swiper
+  const firstBannerBg = banners.length > 0 ? getBackgroundFromBanner(banners[0]) : "";
+  console.log("🔧 [DEBUG] firstBannerBg:", firstBannerBg);
+
   return (
     <section className={s.hero} data-hero-section>
-      {/* Banner slider (background) */}
+      {/* 🔧 ТИМЧАСОВО: простий background замість Swiper для тестування */}
       {banners.length > 0 && (
+        <div
+          className={s.heroBanner}
+          style={{
+            background: `url(${firstBannerBg}) center / cover no-repeat`,
+            backgroundColor: "red", // 🔴 Червоний фон для debug - якщо зображення не завантажиться
+          }}
+        >
+          <div style={{ padding: "20px", color: "white", background: "rgba(0,0,0,0.5)" }}>
+            🔧 DEBUG: Background URL = {firstBannerBg}
+          </div>
+        </div>
+      )}
+      
+      {/* ЗАКОМЕНТОВАНО SWIPER ДЛЯ ТЕСТУВАННЯ */}
+      {/* {banners.length > 0 && (
         <Swiper
           modules={[A11y]}
           onSwiper={(inst) => setSwiper(inst)}
@@ -335,7 +358,7 @@ const HeroSection = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      )}
+      )} */}
       <div className={s.heroContainer}>
         <div className={s.heroContent}>
           <div className={s.heroContentBlock}>
