@@ -4,8 +4,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: #ffffff;
-  z-index: 9999;
+  background: #d40606;
+  z-index: 99;
   display: flex;
   flex-direction: column;
 }
@@ -26,4 +26,3 @@
   transition: width 0.3s ease;
   box-shadow: 0 0 10px rgba(132, 38, 215, 0.5);
 }
-
