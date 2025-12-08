@@ -118,7 +118,7 @@ export default function OrderSuccessSection() {
         }${recipientLastName}`
       : "Одержувач не вказаний";
 
-  const recipientPhone = shipping?.phone?.trim() || phoneRaw;
+  const recipientPhone = phoneRaw || "";
   const phoneDisplay = recipientPhone.length ? recipientPhone : "Телефон не вказано";
 
   // Адреса доставки
