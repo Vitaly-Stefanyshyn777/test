@@ -28,7 +28,11 @@
 }
 
 /* 🔧 FIX: ОБОВ'ЯЗКОВО для Railway! Swiper height */
-.heroBanner :global(.swiper),
+.heroBanner :global(.swiper) {
+  height: 100% !important;
+  position: static !important; /* Виправлення position: relative */
+}
+
 .heroBanner :global(.swiper-wrapper),
 .heroBanner :global(.swiper-slide) {
   height: 100% !important;
