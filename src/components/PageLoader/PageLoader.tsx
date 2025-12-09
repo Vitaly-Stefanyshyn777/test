@@ -9,13 +9,6 @@ const PageLoader = () => {
   const [hasVideoError, setHasVideoError] = useState(false);
 
   useEffect(() => {
-    // 🔧 Fallback: автоматично ховаємо через 5 секунд, якщо event не прийшов
-    const fallbackTimeout = setTimeout(() => {
-      console.warn("⚠️ [PageLoader] Fallback timeout: hiding loader after 5s");
-      setProgress(100);
-      setIsVisible(false);
-    }, 5000);
-
     // Симуляція візуального прогресу, доки відео не готове
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -37,8 +30,6 @@ const PageLoader = () => {
 
     // Подія, коли завантажився відеоплеєр у HeroSection
     const handleHeroVideoReady = () => {
-      console.log("✅ [PageLoader] Event 'hero-video-ready' received");
-      clearTimeout(fallbackTimeout); // Скасовуємо fallback
       setIsVideoReady(true);
       setProgress(100);
       setTimeout(() => {
@@ -48,21 +39,18 @@ const PageLoader = () => {
 
     // Подія, коли відео не змогло завантажитися (помилка)
     const handleHeroVideoError = () => {
-      console.warn("⚠️ [PageLoader] Event 'hero-video-error' received");
-      clearTimeout(fallbackTimeout); // Скасовуємо fallback
       setHasVideoError(true);
       // Даємо кілька секунд, щоб відобразити помилку відео, потім ховаємо лоадер
       setTimeout(() => {
         setProgress(100);
         setIsVisible(false);
-      }, 1000); // Зменшено до 1 секунди
+      }, 3000);
     };
 
     window.addEventListener("hero-video-ready", handleHeroVideoReady);
     window.addEventListener("hero-video-error", handleHeroVideoError);
 
     return () => {
-      clearTimeout(fallbackTimeout);
       clearInterval(interval);
       window.removeEventListener("hero-video-ready", handleHeroVideoReady);
       window.removeEventListener("hero-video-error", handleHeroVideoError);

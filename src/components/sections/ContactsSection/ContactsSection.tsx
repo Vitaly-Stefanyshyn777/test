@@ -63,7 +63,7 @@ const ContactsSection: React.FC = () => {
   return (
     <section className={s.contactSection}>
       <div className={s.header}>
-        <p className={s.subtitle}>Зв’яжись з нами</p>
+        <p className={s.subtitle}>Переваги</p>
         <h2 className={s.title}>
           Маєте питання <br />
           щодо навчання?

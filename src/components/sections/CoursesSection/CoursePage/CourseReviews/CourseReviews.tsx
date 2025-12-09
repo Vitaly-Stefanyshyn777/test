@@ -42,9 +42,9 @@ const CourseReviews: React.FC<CourseReviewsProps> = ({ courseId }) => {
       
       const ui: ReviewUi[] = (data as WcReview[]).map((r: WcReview) => ({
         id: r.id,
-        name: r.reviewer_name || "Користувач",
+        name: r.reviewer_name || r.reviewer || "Користувач",
         date: new Date(
-          r.date_created || Date.now()
+          r.date_created_gmt || r.date_created || Date.now()
         ).toLocaleDateString("uk-UA"),
         rating: r.rating || 0,
         text: r.review?.replace(/<[^>]*>/g, "") || "",

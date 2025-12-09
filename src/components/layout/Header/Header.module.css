@@ -1079,7 +1079,7 @@
   }
 
   .mobileHeader {
-    padding: mvw(12) mvw(16);
+    padding: mvw(7) mvw(16);
     background: var(--white);
   }
 

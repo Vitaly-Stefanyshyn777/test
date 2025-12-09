@@ -227,6 +227,26 @@
   padding: 40px 20px;
 }
 
+.loading {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  color: var(--black);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty {
+  font-family: var(--font-family);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+  color: rgba(14, 14, 14, 0.6);
+  text-align: center;
+  padding: 40px 20px;
+}
+
 @media (max-width: 1000px) {
   .ordersContainer {
     gap: mvw(24);
